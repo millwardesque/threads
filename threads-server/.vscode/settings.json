@@ -1,0 +1,45 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": false
+    },
+    "editor.formatOnSave": true,
+    "eslint.run": "onSave",
+    "eslint.packageManager": "yarn",
+    "eslint.lintTask.enable": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.validate": ["typescript"],
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[graphql]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[svg]": {
+      "editor.defaultFormatter": "jock.svg"
+    },
+    "prettier.arrowParens": "avoid",
+    "prettier.semi": true,
+    "prettier.trailingComma": "es5",
+    "prettier.singleQuote": true,
+    "prettier.printWidth": 120,
+    "prettier.tabWidth": 4,
+  }
+  

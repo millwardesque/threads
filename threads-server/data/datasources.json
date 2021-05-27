@@ -1,0 +1,27 @@
+[
+    {
+        "id": "test_datasource_1",
+        "type": "csv",
+        "file": "test_datasource_1.csv",
+        "date_field": "date",
+        "date_format": "yyyy-MM-dd",
+        "dimensions": {
+            "test_dimension": {
+                "fieldName": "test_dimension",
+                "label": "Test Dimension"
+            }
+        },
+        "measures": {
+            "test_metric": {
+                "fieldName": "test_metric",
+                "label": "Test Metric"
+            }
+        },
+        "plots": {
+            "sum_test_metric": {
+                "measureName": "test_metric",
+                "aggregator": "sum"
+            }
+        }
+    }
+]
