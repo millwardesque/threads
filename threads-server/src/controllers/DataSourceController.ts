@@ -2,51 +2,48 @@ import fs from 'fs';
 
 import { DataSourceDefinition, DataSourceMap } from "../models/DataSourceDefinition";
 
-const loadSourcesFromJson = (): DataSourceMap | undefined => {
-    let dataSources: DataSourceMap = {};
+export const SOURCES_PATH = './data/datasources.json';
 
-    const rawData: Buffer = fs.readFileSync('./data/datasources.json');
-    if (!rawData) {
-        return undefined;
+export type LoadSourcesReturn = { hasError: boolean, sources?: DataSourceMap, error?: string };
+
+export const loadSourcesFromJson = (filename: string): LoadSourcesReturn => {
+    let dataSources: DataSourceMap = {};
+    
+    if (!fs.existsSync(filename)) {
+        return { hasError: true, error: `File ${filename} not found` };
+    }
+    const rawData: string = fs.readFileSync(filename, {encoding: 'utf8'});
+    if (rawData.length === 0) {
+        return { hasError: true, error: `File ${filename} is empty` };
     }
     
-    const sources = JSON.parse(rawData.toString());
-    if (!sources) { 
-        return undefined;
+    let sources: any;
+    try {
+        sources = JSON.parse(rawData);
+    }
+    catch (error) {
+        return { hasError: true, error: `JSON error parsing ${filename}: ${error}` };
     }
 
     sources.forEach((source: DataSourceDefinition) => {
         dataSources[source.id] = source;
     });
-
-    return dataSources;
+    return { hasError: false, sources: dataSources };
 };
 
 class DataSourceController {
-    dataSources: DataSourceMap | undefined;
+    dataSources: DataSourceMap;
 
     constructor() {
-        this.dataSources = loadSourcesFromJson();
-        console.log("Loaded data sources", this.dataSources);
+        const result = loadSourcesFromJson(SOURCES_PATH);
+        if (result.hasError) {
+            throw Error(`Unable to create DataSourceController: ${result.error}`);
+        }
+        this.dataSources = result.sources!;        
     }
 
     getSourceDefinition(sourceId: string): DataSourceDefinition | undefined {
         return this.dataSources ? this.dataSources[sourceId]: undefined;
-    }
-
-    getSourceDimensionValues(sourceId: string, dimensionId: string): string[] | undefined {
-        let values = new Array<string>();
-        if (!this.dataSources || !this.dataSources[sourceId] || !this.dataSources[sourceId].dimensions[dimensionId]) {
-            return undefined;
-        }
-        const dimension = this.dataSources[sourceId].dimensions[dimensionId];
-        
-        // @DEBUG STUB DATA
-        for (let i = 1; i <= 10; i++) {
-            values.push(`${dimension.fieldName}_${i}`);
-        }        
-        
-        return values;
     }
 }
 

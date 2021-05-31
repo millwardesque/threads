@@ -15,7 +15,7 @@ class DataSourceRouter {
     }
 
     private _configure() {
-        this._router.get('/:sourceId', (req: Request, res: Response, next: NextFunction) => {
+        this._router.get('/:sourceId', (req: Request, res: Response, _next: NextFunction) => {
             const sourceId: string = req.params['sourceId'];
             const sourceDefinition: DataSourceDefinition | undefined = this._controller.getSourceDefinition(sourceId);
             if (sourceDefinition) {
@@ -24,20 +24,6 @@ class DataSourceRouter {
             else {
                 res.status(404).json({
                     message: `No source found with id ${sourceId}`,
-                });
-            }
-        });
-
-        this._router.get('/:sourceId/dimension-values/:dimensionId', (req: Request, res: Response, next: NextFunction) => {
-            const sourceId: string = req.params['sourceId'];
-            const dimensionId: string = req.params['dimensionId'];
-            const dimensionValues: string[] | undefined = this._controller.getSourceDimensionValues(sourceId, dimensionId);
-            if (dimensionValues) {
-                res.status(200).json(dimensionValues);
-            }
-            else {
-                res.status(404).json({
-                    message: `No source / dimension found with source id ${sourceId} and dimension id ${dimensionId}`,
                 });
             }
         });

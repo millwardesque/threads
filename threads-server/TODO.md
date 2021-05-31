@@ -1,5 +1,5 @@
-Tests
-Validate source definitions are correct
+Query CSV datasource
 Backend routes for data retrieval:
 * getSourceDimensionValues()
 * getSourceData()
+* tsconfig to match work
