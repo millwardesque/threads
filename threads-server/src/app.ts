@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response, } from 'express';
 
@@ -17,15 +18,17 @@ class Server {
 }
 
 const server = new Server();
+server.app.use(cors());
 server.app.use('/api', server.router);
 
-server.app.use((err: ErrorHandler, _req: Request, res: Response, _next: NextFunction) => {
+server.app.use((err: ErrorHandler, _req: Request, res: Response, next: NextFunction) => {
     res.status(err.statusCode || 500)
        .json({
         status: 'error',
         statusCode: err.statusCode,
         message: err.message
     });
+    next();
 });
 
 ((port = process.env.APP_PORT || 5000) => {

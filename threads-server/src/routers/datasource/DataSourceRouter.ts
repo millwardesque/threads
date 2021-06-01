@@ -15,7 +15,7 @@ class DataSourceRouter {
     }
 
     private _configure() {
-        this._router.get('/:sourceId', (req: Request, res: Response, _next: NextFunction) => {
+        this._router.get('/:sourceId', (req: Request, res: Response, next: NextFunction) => {
             const sourceId: string = req.params['sourceId'];
             const sourceDefinition: DataSourceDefinition | undefined = this._controller.getSourceDefinition(sourceId);
             if (sourceDefinition) {
@@ -26,6 +26,8 @@ class DataSourceRouter {
                     message: `No source found with id ${sourceId}`,
                 });
             }
+
+            next();
         });
     }
 }
