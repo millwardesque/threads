@@ -6,17 +6,21 @@ export type MeasureAggregator = "sum" | "count" | "average";
 
 export interface DataDimensionDefinition {
     fieldName: string,
+    id: string,
     label: string
 };
 
 export interface DataMeasureDefinition {
     fieldName: string,
+    id: string,
     label: string
 };
 
 export interface DataPlotDefinition {
-    measureName: DataMeasureDefinition,
     aggregator: MeasureAggregator
+    id: string,
+    label: string,
+    measureName: DataMeasureDefinition,
 }
 
 export interface DataSourceDefinition {

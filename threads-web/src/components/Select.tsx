@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface SelectOption {
     label: string,
@@ -9,27 +9,18 @@ interface SelectProps {
     id: string,
     label: string,
     options: SelectOption[],
+    selected?: string,
     onChange?: (selected: string) => void,
 };
 
-export const Select: React.FC<SelectProps> = ({ id, label, options, onChange }) => {
-    const [selected, setSelected] = useState<string | undefined>(undefined);
+export const Select: React.FC<SelectProps> = ({ id, label, options, selected, onChange }) => {
     const optionElements = options.map(o => { return <option key={o.value} value={o.value}>{o.label}</option>; });
 
-    const setSelectedWrapper = (selected: string): void => {
-        setSelected(selected);
-        if (onChange) {
-            onChange(selected);
-        }
-    }
-
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedWrapper(event.target.value);
+        if (onChange) {
+            onChange(event.target.value);
+        }
     };
-
-    if (selected === undefined && options.length) {
-        setSelectedWrapper(options[0].value);
-    }
 
     return (
     <div>

@@ -8,20 +8,30 @@
         "date_format": "yyyy-MM-dd",
         "dimensions": {
             "test_dimension": {
+                "id": "test_dimension",
                 "fieldName": "test_dimension",
                 "label": "Test Dimension"
             }
         },
         "measures": {
             "test_metric": {
+                "id": "test_metric",
                 "fieldName": "test_metric",
                 "label": "Test Metric"
             }
         },
         "plots": {
             "sum_test_metric": {
+                "id": "sum_test_metric",
                 "measureName": "test_metric",
-                "aggregator": "sum"
+                "aggregator": "sum",
+                "label": "Sum of Test Metric"
+            },
+            "avg_test_metric": {
+                "id": "avg_test_metric",
+                "measureName": "test_metric",
+                "aggregator": "avg",
+                "label": "Avg of Test Metric"
             }
         }
     },
@@ -33,21 +43,25 @@
         "date_field": "date",
         "date_format": "yyyy-MM-dd",
         "dimensions": {
-            "test_dimension": {
-                "fieldName": "test_dimension",
-                "label": "Test Dimension"
+            "test_dimension_2": {
+                "id": "test_dimension_2",
+                "fieldName": "test_dimension_2",
+                "label": "Test Dimension 2"
             }
         },
         "measures": {
-            "test_metric": {
-                "fieldName": "test_metric",
-                "label": "Test Metric"
+            "test_metric_2": {
+                "id": "test_metric_2",
+                "fieldName": "test_metric_2",
+                "label": "Test Metric 2"
             }
         },
         "plots": {
-            "sum_test_metric": {
-                "measureName": "test_metric",
-                "aggregator": "sum"
+            "count_test_metric_2": {
+                "id": "count_test_metric_2",
+                "measureName": "test_metric_2",
+                "aggregator": "count",
+                "label": "Count of Test Metric 2"
             }
         }
     }
