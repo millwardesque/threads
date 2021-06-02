@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import DataSourceController from '../../controllers/DataSourceController';
-import { DataSourceDefinition } from '../../models/DataSourceDefinition';
+import { DataSourceDefinition, DataSourceMap } from '../../models/DataSourceDefinition';
 
 class DataSourceRouter {
     private _router = Router();
@@ -15,6 +15,12 @@ class DataSourceRouter {
     }
 
     private _configure() {
+        this._router.get('/', (_req: Request, res: Response, next: NextFunction) => {
+            const sourceDefinitions: DataSourceMap = this._controller.getAllSourceDefinitions();
+            res.status(200).json(sourceDefinitions);
+            next();
+        });
+        
         this._router.get('/:sourceId', (req: Request, res: Response, next: NextFunction) => {
             const sourceId: string = req.params['sourceId'];
             const sourceDefinition: DataSourceDefinition | undefined = this._controller.getSourceDefinition(sourceId);

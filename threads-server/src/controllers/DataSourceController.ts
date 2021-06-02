@@ -45,6 +45,10 @@ class DataSourceController {
     getSourceDefinition(sourceId: string): DataSourceDefinition | undefined {
         return this.dataSources ? this.dataSources[sourceId]: undefined;
     }
+
+    getAllSourceDefinitions(): DataSourceMap {
+        return this.dataSources ?? {};
+    }
 }
 
 export default new DataSourceController();

@@ -18,6 +18,7 @@ class Server {
 }
 
 const server = new Server();
+
 server.app.use(cors());
 server.app.use('/api', server.router);
 

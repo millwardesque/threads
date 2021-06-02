@@ -1,5 +1,3 @@
-GetAllSources
-Add name / label to datasource definition
 Query CSV datasource
 Backend routes for data retrieval:
 * getSourceDimensionValues()
