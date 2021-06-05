@@ -20,13 +20,14 @@ export interface DataPlotDefinition {
     aggregator: MeasureAggregator
     id: string,
     label: string,
-    measureName: DataMeasureDefinition,
+    measureName: string,
 }
 
 export interface DataSourceDefinition {
     id: string;
     label: string;
     type: DataSourceType;
+    file?: string
     dateField: string;
     dateFormat: DateFormatType;
     dimensions: {[name: string]: DataDimensionDefinition};

@@ -4,8 +4,8 @@
         "label": "Test Datasource #1",
         "type": "csv",
         "file": "test_datasource_1.csv",
-        "date_field": "date",
-        "date_format": "yyyy-MM-dd",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
         "dimensions": {
             "test_dimension": {
                 "id": "test_dimension",
@@ -40,8 +40,8 @@
         "label": "Test Datasource #2",
         "type": "csv",
         "file": "test_datasource_2.csv",
-        "date_field": "date",
-        "date_format": "yyyy-MM-dd",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
         "dimensions": {
             "test_dimension_2": {
                 "id": "test_dimension_2",

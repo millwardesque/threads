@@ -1,5 +1,5 @@
 import path from 'path';
-import { loadSourcesFromJson, LoadSourcesReturn } from '../DataSourceController';
+import { loadSourcesFromJson, LoadSourcesReturn } from '../DataSourceDefinition';
 
 /**
  * @todo

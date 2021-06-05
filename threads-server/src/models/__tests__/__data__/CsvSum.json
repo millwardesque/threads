@@ -2,9 +2,9 @@
     {
         "id": "test_datasource_1",
         "type": "csv",
-        "file": "test_datasource_1.csv",
-        "date_field": "date",
-        "date_format": "yyyy-MM-dd",
+        "file": "src/models/__tests__/__data__/CsvSum.csv",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
         "dimensions": {
             "test_dimension": {
                 "fieldName": "test_dimension",
