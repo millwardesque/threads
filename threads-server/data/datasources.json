@@ -23,13 +23,13 @@
         "plots": {
             "sum_test_metric": {
                 "id": "sum_test_metric",
-                "measureName": "test_metric",
+                "measureId": "test_metric",
                 "aggregator": "sum",
                 "label": "Sum of Test Metric"
             },
             "avg_test_metric": {
                 "id": "avg_test_metric",
-                "measureName": "test_metric",
+                "measureId": "test_metric",
                 "aggregator": "avg",
                 "label": "Avg of Test Metric"
             }
@@ -59,7 +59,7 @@
         "plots": {
             "count_test_metric_2": {
                 "id": "count_test_metric_2",
-                "measureName": "test_metric_2",
+                "measureId": "test_metric_2",
                 "aggregator": "count",
                 "label": "Count of Test Metric 2"
             }

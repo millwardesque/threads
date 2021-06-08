@@ -1,14 +1,10 @@
 import fs from 'fs';
 import parse from 'csv-parse/lib/sync';
 
-import { DataSourceDefinition } from './DataSourceDefinition';
+import { DataSourceDefinition, QueryFilter, QueryRequest, QueryResults } from './DataSourceDefinition';
 
-export interface QueryResults {
-    hasError: boolean,
-    error?: string,
-    data: {
-        [date: string]: number
-    }
+export interface DataRow {
+    [field: string]: string
 }
 
 export class CsvQueryProcessor {
@@ -40,7 +36,7 @@ export class CsvQueryProcessor {
         return { hasError: false };
     }
 
-    canQuery(measureId?: string): QueryResults {
+    canQuery(query: QueryRequest): QueryResults {
         if (!this.source) {
             return {
                 hasError: true,
@@ -48,128 +44,222 @@ export class CsvQueryProcessor {
                 data: {},
             };
         }
-        else if (measureId !== undefined && !(measureId in this.source.measures)) {
+
+        if (!(query.plotId in this.source.plots)) {
             return {
                 hasError: true,
-                error: `[${this.source.id}] Measure ${measureId} doesn't exist on this source`,
+                error: `[${this.source.id}] Plot ${query.plotId} doesn't exist on this source`,
                 data: {},
             };
         }
-        else {
+
+        const plot = this.source.plots[query.plotId];
+        if (!(plot.measureId in this.source.measures)) {
             return {
-                hasError: false,
+                hasError: true,
+                error: `[${this.source.id}] Measure ${plot.measureId} doesn't exist on this source`,
                 data: {},
+            };
+        }
+
+        for (let filter of Object.keys(query.dimensionFilters ?? {})) {
+            if (!Object.keys(this.source.dimensions).includes(filter)) {
+                return {
+                    hasError: true,
+                    error: `[${this.source.id} "Filter dimension doesn't exist on this source: '${filter}'"]`,
+                    data: {},
+                }
             }
+        }
+
+        if (query.dimensionExploder) {
+            if (!Object.keys(this.source.dimensions).includes(query.dimensionExploder)) {
+                return {
+                    hasError: true,
+                    error: `[${this.source.id} "Dimension exploder doesn't exist on this source: '${query.dimensionExploder}'"]`,
+                    data: {},
+                }
+            }
+        }
+
+        return {
+            error: '',
+            hasError: false,
+            data: {},
         }
     }
 
-    queryByPlot(plotId: string): QueryResults {
-        if (!this.source) {
-            return {
-                hasError: true,
-                error: "No datasource is loaded",
-                data: {},
-            };
-        }
-        if (!(plotId in this.source.plots)) {
-            return {
-                hasError: true,
-                error: `[${this.source.id}] Plot ${plotId} doesn't exist on this source`,
-                data: {},
-            };
+    queryByQueryRequest(query: QueryRequest): QueryResults {
+        const validationResults = this.canQuery(query);
+        if (validationResults.hasError) {
+            return validationResults;
         }
 
-        const plot = this.source.plots[plotId];
+        const plot = this.source!.plots[query.plotId];
         switch(plot.aggregator) {
             case 'average':
-                return this.queryAverage(plot.measureName);
+                return this._queryAverage(query);
             case 'count':
-                return this.queryCount();
+                return this._queryCount(query);
             case 'sum':
-                return this.querySum(plot.measureName);
+                return this._querySum(query);
             default:
                 return {
                     hasError: true,
-                    error: `[${this.source.id}.${plotId}] ${plot.aggregator}  isn't a recognized aggregator`,
+                    error: `[${this.source!.id}.${plot.id}] ${plot.aggregator}  isn't a recognized aggregator`,
                     data: {}
                 };
         }
     }
 
-    querySum(measureId: string): QueryResults {
-        let results = this.canQuery(measureId);
-        if (results.hasError) {
-            return results;
+    filterData(row: DataRow, filters: QueryFilter): {} {
+        for (const filter in filters) {
+            if (!filters[filter].includes(row[filter])) {
+                return false;
+            }
         }
+        return true;
+    }
 
+    _querySum(query: QueryRequest): QueryResults {
         const dateField = this.source!.dateField;
-        const measure = this.source!.measures[measureId];
+        const plot = this.source!.plots[query.plotId];
+        const measure = this.source!.measures[plot.measureId];
+        const dimensionExploder = query.dimensionExploder;
+
+        let results = {
+            error: '',
+            hasError: false,
+            data: {},
+        };
 
         let data: {
-            [date: string]: number
+            [dimension: string]: {
+                [date: string]: number
+            }
         } = {};
         let lineNum = 2;    // Line 1 is the header
-        this.rawData.forEach(row => {
+        this.rawData.filter((row) => {
+            return query.dimensionFilters ? this.filterData(row, query.dimensionFilters) : true;
+        }).forEach(row => {
             const date: string = row[dateField];
+            const dimension = dimensionExploder ? row[dimensionExploder] : '*';
             const value = Number(row[measure.fieldName]);
 
             if (Number.isNaN(value)) {
                 results.hasError = true;
-                results.error = `[${lineNum}@${this.source!.id}:${measureId}] Measure is not a number: '${row[measure.fieldName]}'`;
+                results.error = `[${lineNum}@${this.source!.id}:${measure.id}] Measure is not a number: '${row[measure.fieldName]}'`;
             }
             else {
-                data[date] = (data[date] ?? 0) + value;
+                if (!Object.keys(data).includes(dimension)) {
+                    data[dimension] = {};
+                    data[dimension][date] = 0;
+                }
+                else if (!Object.keys(data[dimension]).includes(date)) {
+                    data[dimension][date] = 0;
+                }
+
+                data[dimension][date] += value;
             }
+            lineNum += 1;
         });
         results.data = data;
 
         return results;
     }
 
-    queryCount(): QueryResults {
-        let results = this.canQuery();
-        if (results.hasError) {
-            return results;
-        }
-
+    _queryCount(query: QueryRequest): QueryResults {
         const dateField = this.source!.dateField;
+        const dimensionExploder = query.dimensionExploder;
+        let results = {
+            error: '',
+            hasError: false,
+            data: {},
+        };
 
         let data: {
-            [date: string]: number
+            [dimension: string]: {
+                [date: string]: number
+            }
         } = {};
-        this.rawData.forEach(row => {
+        this.rawData.filter((row) => {
+            return query.dimensionFilters ? this.filterData(row, query.dimensionFilters) : true
+        }).forEach(row => {
             const date: string = row[dateField];
-            data[date] = (data[date] ?? 0) + 1;
+            const dimension = dimensionExploder ? row[dimensionExploder] : '*';
+
+            if (!Object.keys(data).includes(dimension)) {
+                data[dimension] = {};
+                data[dimension][date] = 0;
+            }
+            else if (!Object.keys(data[dimension]).includes(date)) {
+                data[dimension][date] = 0;
+            }
+
+            data[dimension][date] += 1;
         });
         results.data = data;
 
         return results;
     }
 
-    queryAverage(measureId: string): QueryResults {
-        let results = this.canQuery(measureId);
-        if (results.hasError) {
-            return results;
-        }
-
+    _queryAverage(query: QueryRequest): QueryResults {
         const dateField = this.source!.dateField;
-        const measure = this.source!.measures[measureId];
+        const plot = this.source!.plots[query.plotId];
+        const measure = this.source!.measures[plot.measureId];
+        const dimensionExploder = query.dimensionExploder;
 
-        let dateCounts: {
-            [date: string]: number
+        let results = {
+            error: '',
+            hasError: false,
+            data: {},
+        };
+
+        let dateDimensionCounts: {
+            [date: string]: {
+                [dimension: string]: number
+            }
         } = {};
         let data: {
-            [date: string]: number
+            [dimension: string]: {
+                [date: string]: number
+            }
         } = {};
-        this.rawData.forEach(row => {
+        let lineNum = 2;    // Line 1 is the header
+        this.rawData.filter((row) => {
+            return query.dimensionFilters ? this.filterData(row, query.dimensionFilters) : true
+        }).forEach(row => {
             const date: string = row[dateField];
             const value = Number(row[measure.fieldName]);
-            data[date] = (data[date] ?? 0) + value;
-            dateCounts[date] = (dateCounts[date] ?? 0) + 1
+            const dimension = dimensionExploder ? row[dimensionExploder] : '*';
+
+            if (Number.isNaN(value)) {
+                results.hasError = true;
+                results.error = `[${lineNum}@${this.source!.id}:${measure.id}] Measure is not a number: '${row[measure.fieldName]}'`;
+            }
+            else {
+                if (!Object.keys(data).includes(dimension)) {
+                    data[dimension] = {};
+                    data[dimension][date] = 0;
+
+                    dateDimensionCounts[dimension] = {};
+                    dateDimensionCounts[dimension][date] = 0;
+                }
+                else if (!Object.keys(data[dimension]).includes(date)) {
+                    data[dimension][date] = 0;
+                    dateDimensionCounts[dimension][date] = 0;
+                }
+                data[dimension][date] += value;
+                dateDimensionCounts[dimension][date] += 1;
+            }
+
+            lineNum++;
         });
 
-        for (let date in dateCounts) {
-            data[date] /= dateCounts[date];
+        for (let dimension in dateDimensionCounts) {
+            for (let date in dateDimensionCounts[dimension]) {
+                data[dimension][date] /= dateDimensionCounts[dimension][date];
+            }
         }
 
         results.data = data;

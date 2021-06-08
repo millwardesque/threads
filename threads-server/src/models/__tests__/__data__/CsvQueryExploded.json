@@ -2,6 +2,7 @@
     {
         "id": "test_datasource_1",
         "type": "csv",
+        "file": "src/models/__tests__/__data__/CsvQueryExploded.csv",
         "dateField": "date",
         "dateFormat": "yyyy-MM-dd",
         "dimensions": {

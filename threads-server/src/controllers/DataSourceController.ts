@@ -1,4 +1,5 @@
-import { DataSourceDefinition, DataSourceMap, loadSourcesFromJson } from "../models/DataSourceDefinition";
+import { CsvQueryProcessor } from "../models/CsvQueryProcessor";
+import { DataSourceDefinition, DataSourceMap, loadSourcesFromJson, QueryRequest, QueryResults } from "../models/DataSourceDefinition";
 
 export const SOURCES_PATH = './data/datasources.json';
 
@@ -19,6 +20,16 @@ class DataSourceController {
 
     getAllSourceDefinitions(): DataSourceMap {
         return this.dataSources ?? {};
+    }
+
+    query(sourceId: string, query: QueryRequest): QueryResults {
+        if (!this.dataSources) {
+            throw Error(`Unable to query data source ${sourceId}: No sources are loaded`);
+        }
+
+        const processor = new CsvQueryProcessor();
+        processor.load(this.dataSources[sourceId]);
+        return processor.queryByQueryRequest(query);
     }
 }
 

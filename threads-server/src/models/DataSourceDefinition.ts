@@ -22,7 +22,7 @@ export interface DataPlotDefinition {
     aggregator: MeasureAggregator
     id: string,
     label: string,
-    measureName: string,
+    measureId: string,
 }
 
 export interface DataSourceDefinition {
@@ -32,14 +32,34 @@ export interface DataSourceDefinition {
     file?: string
     dateField: string;
     dateFormat: DateFormatType;
-    dimensions: {[name: string]: DataDimensionDefinition};
-    measures: {[name: string]: DataMeasureDefinition};
-    plots: {[name: string]: DataPlotDefinition};
+    dimensions: {[id: string]: DataDimensionDefinition};
+    measures: {[id: string]: DataMeasureDefinition};
+    plots: {[id: string]: DataPlotDefinition};
 };
 
 export type DataSourceMap = { [id: string]: DataSourceDefinition };
 
 export type LoadSourcesReturn = { hasError: boolean, sources?: DataSourceMap, error?: string };
+
+export interface QueryFilter {
+    [dimensionId: string]: string[]
+}
+
+export interface QueryRequest {
+    plotId: string,
+    dimensionFilters?: QueryFilter,
+    dimensionExploder?: string
+}
+
+export interface QueryResults {
+    hasError: boolean,
+    error?: string,
+    data: {
+        [date: string]: {
+            [dimension: string]: number
+        }
+    }
+}
 
 export const loadSourcesFromJson = (filename: string): LoadSourcesReturn => {
     let dataSources: DataSourceMap = {};

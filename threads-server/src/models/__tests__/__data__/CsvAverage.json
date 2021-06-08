@@ -18,9 +18,9 @@
             }
         },
         "plots": {
-            "sum_test_metric": {
-                "measureName": "test_metric",
-                "aggregator": "sum"
+            "average_test_metric": {
+                "measureId": "test_metric",
+                "aggregator": "average"
             }
         }
     }
