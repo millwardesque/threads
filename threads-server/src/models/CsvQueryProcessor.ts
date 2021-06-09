@@ -1,7 +1,7 @@
 import fs from 'fs';
 import parse from 'csv-parse/lib/sync';
 
-import { DataSourceDefinition, QueryFilter, QueryRequest, QueryResults } from './DataSourceDefinition';
+import { DataSourceDefinition, LineData, LineDefinition, QueryFilter, QueryRequest, QueryResults } from './DataSourceDefinition';
 
 export interface DataRow {
     [field: string]: string
@@ -23,7 +23,7 @@ export class CsvQueryProcessor {
             return { hasError: true, error: `Source ${source.id} doesn't have a file specified` };
         }
         else if (!fs.existsSync(source.file)) {
-            return { hasError: true, error: `Source ${source.id} file ${source.file} wasn't found` };
+            return { hasError: true, error: `Source ${source.id} file ${source.file} wasn't found (relative to ${process.cwd()})` };
         }
 
         const fileData = fs.readFileSync(source.file).toString();
@@ -134,9 +134,7 @@ export class CsvQueryProcessor {
         };
 
         let data: {
-            [dimension: string]: {
-                [date: string]: number
-            }
+            [dimension: string]: LineDefinition
         } = {};
         let lineNum = 2;    // Line 1 is the header
         this.rawData.filter((row) => {
@@ -152,14 +150,17 @@ export class CsvQueryProcessor {
             }
             else {
                 if (!Object.keys(data).includes(dimension)) {
-                    data[dimension] = {};
-                    data[dimension][date] = 0;
+                    data[dimension] = {
+                        units: plot.units,
+                        data: {},
+                    };
+                    data[dimension]['data'][date] = 0;
                 }
-                else if (!Object.keys(data[dimension]).includes(date)) {
-                    data[dimension][date] = 0;
+                else if (!Object.keys(data[dimension]['data']).includes(date)) {
+                    data[dimension]['data'][date] = 0;
                 }
 
-                data[dimension][date] += value;
+                data[dimension]['data'][date] += value;
             }
             lineNum += 1;
         });
@@ -169,6 +170,7 @@ export class CsvQueryProcessor {
     }
 
     _queryCount(query: QueryRequest): QueryResults {
+        const plot = this.source!.plots[query.plotId];
         const dateField = this.source!.dateField;
         const dimensionExploder = query.dimensionExploder;
         let results = {
@@ -178,9 +180,7 @@ export class CsvQueryProcessor {
         };
 
         let data: {
-            [dimension: string]: {
-                [date: string]: number
-            }
+            [dimension: string]: LineDefinition
         } = {};
         this.rawData.filter((row) => {
             return query.dimensionFilters ? this.filterData(row, query.dimensionFilters) : true
@@ -189,14 +189,17 @@ export class CsvQueryProcessor {
             const dimension = dimensionExploder ? row[dimensionExploder] : '*';
 
             if (!Object.keys(data).includes(dimension)) {
-                data[dimension] = {};
-                data[dimension][date] = 0;
+                data[dimension] = {
+                    units: plot.units,
+                    data: {},
+                };
+                data[dimension]['data'][date] = 0;
             }
-            else if (!Object.keys(data[dimension]).includes(date)) {
-                data[dimension][date] = 0;
+            else if (!Object.keys(data[dimension]['data']).includes(date)) {
+                data[dimension]['data'][date] = 0;
             }
 
-            data[dimension][date] += 1;
+            data[dimension]['data'][date] += 1;
         });
         results.data = data;
 
@@ -216,14 +219,10 @@ export class CsvQueryProcessor {
         };
 
         let dateDimensionCounts: {
-            [date: string]: {
-                [dimension: string]: number
-            }
+            [dimension: string]: LineData
         } = {};
         let data: {
-            [dimension: string]: {
-                [date: string]: number
-            }
+            [dimension: string]: LineDefinition
         } = {};
         let lineNum = 2;    // Line 1 is the header
         this.rawData.filter((row) => {
@@ -239,17 +238,21 @@ export class CsvQueryProcessor {
             }
             else {
                 if (!Object.keys(data).includes(dimension)) {
-                    data[dimension] = {};
-                    data[dimension][date] = 0;
+                    data[dimension] = {
+                        units: plot.units,
+                        data: {},
+                    };
+                    data[dimension]['data'][date] = 0;
 
-                    dateDimensionCounts[dimension] = {};
+                    dateDimensionCounts[dimension] = {
+                        [date]: 0
+                    };
+                }
+                else if (!Object.keys(data[dimension]['data']).includes(date)) {
+                    data[dimension]['data'][date] = 0;
                     dateDimensionCounts[dimension][date] = 0;
                 }
-                else if (!Object.keys(data[dimension]).includes(date)) {
-                    data[dimension][date] = 0;
-                    dateDimensionCounts[dimension][date] = 0;
-                }
-                data[dimension][date] += value;
+                data[dimension]['data'][date] += value;
                 dateDimensionCounts[dimension][date] += 1;
             }
 
@@ -258,7 +261,7 @@ export class CsvQueryProcessor {
 
         for (let dimension in dateDimensionCounts) {
             for (let date in dateDimensionCounts[dimension]) {
-                data[dimension][date] /= dateDimensionCounts[dimension][date];
+                data[dimension]['data'][date] /= dateDimensionCounts[dimension][date];
             }
         }
 

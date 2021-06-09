@@ -1,5 +1,4 @@
-Query CSV datasource
-* DataQuery router
+Canonical data directory
 Fetch filter values for source
 tsconfig to match work
 Processing timeouts

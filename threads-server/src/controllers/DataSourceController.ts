@@ -11,7 +11,9 @@ class DataSourceController {
         if (result.hasError) {
             throw Error(`Unable to create DataSourceController: ${result.error}`);
         }
-        this.dataSources = result.sources!;        
+
+        this.dataSources = result.sources!;
+        console.log(`Loaded ${Object.keys(this.dataSources ?? []).length} sources`);
     }
 
     getSourceDefinition(sourceId: string): DataSourceDefinition | undefined {
@@ -23,13 +25,26 @@ class DataSourceController {
     }
 
     query(sourceId: string, query: QueryRequest): QueryResults {
-        if (!this.dataSources) {
-            throw Error(`Unable to query data source ${sourceId}: No sources are loaded`);
+        if (this.dataSources) {
+            const processor = new CsvQueryProcessor();
+            const loadResults = processor.load(this.dataSources[sourceId]);
+            if (loadResults.hasError) {
+                return {
+                    ...loadResults,
+                    data: {}
+                }
+            }
+            else {
+                return processor.queryByQueryRequest(query);
+            }
         }
-
-        const processor = new CsvQueryProcessor();
-        processor.load(this.dataSources[sourceId]);
-        return processor.queryByQueryRequest(query);
+        else {
+            return {
+                hasError: true,
+                error: `Data sources haven't been loaded`,
+                data: {}
+            };
+        }
     }
 }
 

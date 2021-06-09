@@ -23,6 +23,7 @@ export interface DataPlotDefinition {
     id: string,
     label: string,
     measureId: string,
+    units: string
 }
 
 export interface DataSourceDefinition {
@@ -51,13 +52,19 @@ export interface QueryRequest {
     dimensionExploder?: string
 }
 
+export interface LineData {
+    [date: string]: number
+}
+export interface LineDefinition {
+    units: string,
+    data: LineData
+}
+
 export interface QueryResults {
     hasError: boolean,
     error?: string,
     data: {
-        [date: string]: {
-            [dimension: string]: number
-        }
+        [dimension: string]: LineDefinition
     }
 }
 

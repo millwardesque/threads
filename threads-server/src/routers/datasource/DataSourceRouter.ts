@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import DataSourceController from '../../controllers/DataSourceController';
-import { DataSourceDefinition, DataSourceMap } from '../../models/DataSourceDefinition';
+import { QueryRequest, DataSourceDefinition, DataSourceMap } from '../../models/DataSourceDefinition';
 
 class DataSourceRouter {
     private _router = Router();
@@ -31,6 +31,23 @@ class DataSourceRouter {
                 res.status(404).json({
                     message: `No source found with id ${sourceId}`,
                 });
+            }
+
+            next();
+        });
+
+        this._router.post('/:sourceId/query', (req: Request, res: Response, next: NextFunction) => {
+            const sourceId: string = req.params['sourceId'];
+            const sourceDefinition: DataSourceDefinition | undefined = this._controller.getSourceDefinition(sourceId);
+            if (!sourceDefinition) {
+                res.status(404).json({
+                    message: `No source found with id ${sourceId}`,
+                });
+            }
+            else {
+                const query: QueryRequest = req.body as QueryRequest;
+                const results = this._controller.query(sourceId, query);
+                res.status(200).json(results);
             }
 
             next();

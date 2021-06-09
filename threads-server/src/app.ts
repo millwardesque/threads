@@ -20,6 +20,7 @@ class Server {
 const server = new Server();
 
 server.app.use(cors());
+server.app.use(express.json());
 server.app.use('/api', server.router);
 
 server.app.use((err: ErrorHandler, _req: Request, res: Response, next: NextFunction) => {

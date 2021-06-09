@@ -3,7 +3,7 @@
         "id": "test_datasource_1",
         "label": "Test Datasource #1",
         "type": "csv",
-        "file": "test_datasource_1.csv",
+        "file": "../data/test_datasource_1.csv",
         "dateField": "date",
         "dateFormat": "yyyy-MM-dd",
         "dimensions": {
@@ -25,43 +25,15 @@
                 "id": "sum_test_metric",
                 "measureId": "test_metric",
                 "aggregator": "sum",
-                "label": "Sum of Test Metric"
+                "label": "Sum of Test Metric",
+                "units": "$"
             },
             "avg_test_metric": {
                 "id": "avg_test_metric",
                 "measureId": "test_metric",
-                "aggregator": "avg",
-                "label": "Avg of Test Metric"
-            }
-        }
-    },
-    {
-        "id": "test_datasource_2",
-        "label": "Test Datasource #2",
-        "type": "csv",
-        "file": "test_datasource_2.csv",
-        "dateField": "date",
-        "dateFormat": "yyyy-MM-dd",
-        "dimensions": {
-            "test_dimension_2": {
-                "id": "test_dimension_2",
-                "fieldName": "test_dimension_2",
-                "label": "Test Dimension 2"
-            }
-        },
-        "measures": {
-            "test_metric_2": {
-                "id": "test_metric_2",
-                "fieldName": "test_metric_2",
-                "label": "Test Metric 2"
-            }
-        },
-        "plots": {
-            "count_test_metric_2": {
-                "id": "count_test_metric_2",
-                "measureId": "test_metric_2",
-                "aggregator": "count",
-                "label": "Count of Test Metric 2"
+                "aggregator": "average",
+                "label": "Avg of Test Metric",
+                "units": "$"
             }
         }
     }
