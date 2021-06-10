@@ -1,3 +1,4 @@
+Get rid of fieldName since we have ID
 Canonical data directory
 Fetch filter values for source
 tsconfig to match work

@@ -14,7 +14,7 @@ interface SelectProps {
 };
 
 export const Select: React.FC<SelectProps> = ({ id, label, options, selected, onChange }) => {
-    const optionElements = options.map(o => { return <option key={o.value} value={o.value}>{o.label}</option>; });
+    const optionElements = options.map(o => <option key={o.value} value={o.value}>{o.label}</option>);
 
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         if (onChange) {

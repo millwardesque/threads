@@ -15,3 +15,4 @@ Bug?: Switching to a new source with a default plot that has the same ID as the 
 Auto-number sources?
 Share types between server and client (central shared lib?)
 tsconfig to match work
+axios fail error states

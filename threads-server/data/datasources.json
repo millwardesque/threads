@@ -1,5 +1,84 @@
 [
     {
+        "id": "worldometer_coronavirus_daily_data",
+        "label": "Worldometer Coronavirus Daily Data",
+        "type": "csv",
+        "file": "../data/worldometer_coronavirus_daily_data.csv",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
+        "dimensions": {
+            "country": {
+                "id": "country",
+                "fieldName": "country",
+                "label": "Country"
+            }
+        },
+        "measures": {
+            "daily_new_cases": {
+                "id": "daily_new_cases",
+                "fieldName": "daily_new_cases",
+                "label": "Daily new cases"
+            },
+            "daily_new_deaths": {
+                "id": "daily_new_deaths",
+                "fieldName": "daily_new_deaths",
+                "label": "Daily new deaths"
+            },
+            "active_cases": {
+                "id": "active_cases",
+                "fieldName": "active_cases",
+                "label": "Active cases"
+            },
+            "cumulative_total_cases": {
+                "id": "cumulative_total_cases",
+                "fieldName": "cumulative_total_cases",
+                "label": "Cumulative total cases"
+            },
+            "cumulative_total_deaths": {
+                "id": "cumulative_total_deaths",
+                "fieldName": "cumulative_total_deaths",
+                "label": "Cumulative total deaths"
+            }
+        },
+        "plots": {
+            "daily_new_cases": {
+                "id": "daily_new_cases",
+                "measureId": "daily_new_cases",
+                "aggregator": "sum",
+                "label": "Daily new cases",
+                "units": ""
+            },
+            "daily_new_deaths": {
+                "id": "daily_new_deaths",
+                "measureId": "daily_new_deaths",
+                "aggregator": "sum",
+                "label": "Daily new deaths",
+                "units": ""
+            },
+            "active_cases": {
+                "id": "active_cases",
+                "measureId": "active_cases",
+                "aggregator": "sum",
+                "label": "Active cases",
+                "units": ""
+            },
+            "cumulative_total_cases": {
+                "id": "cumulative_total_cases",
+                "measureId": "cumulative_total_cases",
+                "aggregator": "sum",
+                "label": "Cumulative total cases",
+                "units": ""
+            },
+            "cumulative_total_deaths": {
+                "id": "cumulative_total_deaths",
+                "measureId": "cumulative_total_deaths",
+                "aggregator": "sum",
+                "label": "Cumulative total deaths",
+                "units": ""
+            }
+        }
+    },
+    {
         "id": "test_datasource_1",
         "label": "Test Datasource #1",
         "type": "csv",

@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, LineDefinition, QueryResults } from './models/DataSourceDefinition';
+import { Throbber } from './components/Throbber';
 import { SelectOption, Select } from './components/Select';
 import { ThreadsChart } from './components/ThreadsChart';
 
 type LoadingStatus = 'not-started' | 'loading' | 'loaded';
 
-function App() {
-    const getPlotOptions = () => {
-        if (!selectedSource) {
-            return [];
+const getPlotOptions = (source?: DataSourceDefinition) => {
+    if (!source) {
+        return [];
+    }
+
+    return Object.values(source.plots)
+        .map(p => {
+            return { label: p.label, value: p.id };
         }
+    );
+}
 
-        return Object.values(selectedSource.plots)
-            .map(p => {
-                return { label: p.label, value: p.id };
-            }
-        );
-    };
-
+function App() {
     const onSourceChange = (selected: string): void => {
         if (selected === selectedSource?.id) {
             return;
@@ -31,7 +32,6 @@ function App() {
             console.log(`Updating source and plot: ${source.id}.${plot.id}`);
             setSelectedSource(source);
             setSelectedPlot(plot);
-
             query(source, plot);
         }
         else {
@@ -42,6 +42,7 @@ function App() {
     const onPlotChange = (selected: string): void => {
         if (selectedSource && Object.keys(selectedSource.plots).includes(selected)) {
             const plot = selectedSource.plots[selected];
+
             console.log(`Updating plot: ${selectedSource.id}.${plot.id}`);
             setSelectedPlot(plot);
             query(selectedSource, plot);
@@ -53,9 +54,9 @@ function App() {
 
     const query = (source: DataSourceDefinition, plot: DataPlotDefinition): void => {
         if (source !== undefined && plot !== undefined) {
-            axios.post(`http://localhost:2999/api/datasource/${source.id}/query`, {
-                plotId: plot.id
-            })
+            setLines([]);
+            setIsLoadingLine('loading');
+            axios.post(`http://localhost:2999/api/datasource/${source.id}/query`, { plotId: plot.id })
             .then((response) => {
                 const payload = response.data as QueryResults;
                 if (payload.hasError) {
@@ -64,7 +65,6 @@ function App() {
                 else {
                     const lineData = Object.values(payload.data);
                     let newLines: LineDefinition[] = [];
-                    console.log(lineData);
                     for (let line of lineData) {
                         newLines.push({
                             plot: plot,
@@ -78,16 +78,20 @@ function App() {
             .catch((error) => {
                 console.log("Error querying data", error);
             })
+            .finally(() => {
+                setIsLoadingLine('loaded');
+            })
         }
     };
 
+    const [isLoadingLine, setIsLoadingLine] = useState<LoadingStatus>('not-started');
     const [lines, setLines] = useState<LineDefinition[]>([]);
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
     const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
     const [selectedSource, setSelectedSource] = useState<DataSourceDefinition | undefined>(undefined);
     const [selectedPlot, setSelectedPlot] = useState<DataPlotDefinition | undefined>(undefined);
-    const plotOptions: SelectOption[] = getPlotOptions();
+    const plotOptions: SelectOption[] = getPlotOptions(selectedSource);
 
     if (sourceStatus === 'not-started') {
         setSourceStatus('loading');
@@ -108,6 +112,8 @@ function App() {
         onSourceChange(sourceId);
     }
 
+    const filters = selectedSource ? Object.values(selectedSource.dimensions).map(d => <Select id={`filter-{d.id}`} label={d.label} options={[]}></Select>) : [];
+
     return (
         <div className="App h-screen">
             <div className="row flex h-5/6 flex-col">
@@ -119,9 +125,14 @@ function App() {
                 </div>
             </div>
             <div className="row flex h-1/6">
-                <div className="config-area flex-auto bg-blue-100">
-                    <Select id="sourceSelector" label="Data Source" options={sourceOptions} selected={selectedSource?.id} onChange={onSourceChange}></Select>
-                    <Select id="plotSelector" label="Plot" options={plotOptions} selected={selectedPlot?.id} onChange={onPlotChange}></Select>
+                <div className="config-area flex flex-row flex-auto bg-blue-100">
+                    <div className="flex flex-col w-1/3 h-full">
+                        <Select id="sourceSelector" label="Data Source" options={sourceOptions} selected={selectedSource?.id} onChange={onSourceChange}></Select>
+                        <Select id="plotSelector" label="Plot" options={plotOptions} selected={selectedPlot?.id} onChange={onPlotChange}></Select>
+                    </div>
+                    <div className="flex flex-row w-2/3 h-full">
+                        { isLoadingLine === "loading" ? <Throbber /> : filters }
+                    </div>
                 </div>
             </div>
         </div>

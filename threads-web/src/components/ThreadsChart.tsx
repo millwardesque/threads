@@ -7,8 +7,6 @@ interface ThreadsChartProps {
     lines: LineDefinition[]
 };
 
-
-
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
@@ -24,10 +22,11 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     }, [isRebuildingCanvas]);
 
     useEffect(() => {
-        const dates = lines.length ? Object.keys(lines[0].data) : [];
-        const lineData = lines.length ? Object.values(lines[0].data) : [];
-        const lineUnits = lines.length ? lines[0].plot.units : '';
-        const lineLabel = lines.length ? lines[0].plot.label : '';
+        const lineToRender = lines.length ? lines[0] : undefined;
+        const dates = Object.keys(lineToRender?.data ?? {}).sort();
+        const lineData: number[] = lineToRender ? dates.map(d => lineToRender.data[d]) : [];
+        const lineUnits = lineToRender ? lineToRender.plot.units : '';
+        const lineLabel = lineToRender ? lineToRender.plot.label : '';
 
         const data = {
             labels: dates,
@@ -46,6 +45,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
+                    display: lineData.length > 0,
                     position: 'right'
                 },
             },
@@ -55,6 +55,10 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                     beginAtZero: true,
                     ticks: {
                         callback: function(value: string) {
+                            if (lineData.length === 0) {
+                                return '';
+                            }
+
                             switch (lineUnits) {
                                 case '$':
                                     return lineUnits + value;
@@ -69,7 +73,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         };
 
         const chartCanvas = canvasRef.current;
-
         if (isRebuildingCanvas || chartCanvas === null) {
             return;
         }
