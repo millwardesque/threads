@@ -83,8 +83,8 @@ test('can query data with sum', () => {
     const results = processor.queryByQueryRequest(query);
 
     expect(results.hasError).toBe(false);
-    expect(results.data['*']['data']['2021-05-13']).toBe(7);
-    expect(results.data['*']['data']['2021-05-14']).toBe(5);
+    expect(results.data['*']['2021-05-13']).toBe(7);
+    expect(results.data['*']['2021-05-14']).toBe(5);
 });
 
 test('can query data with count', () => {
@@ -98,8 +98,8 @@ test('can query data with count', () => {
     const results = processor.queryByQueryRequest(query);
 
     expect(results.hasError).toBe(false);
-    expect(results.data['*']['data']['2021-05-13']).toBe(1);
-    expect(results.data['*']['data']['2021-05-14']).toBe(4);
+    expect(results.data['*']['2021-05-13']).toBe(1);
+    expect(results.data['*']['2021-05-14']).toBe(4);
 });
 
 test('can query data with average', () => {
@@ -114,8 +114,8 @@ test('can query data with average', () => {
     const results = processor.queryByQueryRequest(query);
 
     expect(results.hasError).toBe(false);
-    expect(results.data['*']['data']['2021-05-13']).toBe(1.5);
-    expect(results.data['*']['data']['2021-05-14']).toBe(6);
+    expect(results.data['*']['2021-05-13']).toBe(1.5);
+    expect(results.data['*']['2021-05-14']).toBe(6);
 });
 
 test('row measure is not numeric', () => {
@@ -143,8 +143,8 @@ test('can query data by QueryRequest', () => {
     const results = processor.queryByQueryRequest(query);
 
     expect(results.hasError).toBe(false);
-    expect(results.data['*']['data']['2021-05-13']).toBe(7);
-    expect(results.data['*']['data']['2021-05-14']).toBe(5);
+    expect(results.data['*']['2021-05-13']).toBe(7);
+    expect(results.data['*']['2021-05-14']).toBe(5);
 });
 
 test("query fails because plot doesn't exist", () => {
@@ -230,8 +230,8 @@ test('can filter query data', () => {
     const results = processor.queryByQueryRequest(query);
 
     expect(results.hasError).toBe(false);
-    expect(results.data['*']['data']['2021-05-13']).toBe(6);
-    expect(results.data['*']['data']['2021-05-14']).toBe(13);
+    expect(results.data['*']['2021-05-13']).toBe(6);
+    expect(results.data['*']['2021-05-14']).toBe(13);
 });
 
 test("dimesion exploder doesn't exist in source", () => {
@@ -261,8 +261,8 @@ test('can aggregate query data', () => {
     const results = processor.queryByQueryRequest(query);
 
     expect(results.hasError).toBe(false);
-    expect(results.data['dimension 1']['data']['2021-05-13']).toBe(5);
-    expect(results.data['dimension 2']['data']['2021-05-13']).toBe(2);
-    expect(results.data['dimension 1']['data']['2021-05-14']).toBe(4);
-    expect(results.data['dimension 2']['data']['2021-05-14']).toBe(1);
+    expect(results.data['dimension 1']['2021-05-13']).toBe(5);
+    expect(results.data['dimension 2']['2021-05-13']).toBe(2);
+    expect(results.data['dimension 1']['2021-05-14']).toBe(4);
+    expect(results.data['dimension 2']['2021-05-14']).toBe(1);
 });

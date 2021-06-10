@@ -56,7 +56,7 @@ export interface LineData {
     [date: string]: number
 }
 export interface LineDefinition {
-    units: string,
+    plot: DataPlotDefinition,
     data: LineData
 }
 
@@ -64,7 +64,7 @@ export interface QueryResults {
     hasError: boolean,
     error?: string,
     data: {
-        [dimension: string]: LineDefinition
+        [dimension: string]: LineData
     }
 }
 
