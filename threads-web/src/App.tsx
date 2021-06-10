@@ -117,7 +117,9 @@ function App() {
     return (
         <div className="App h-screen">
             <div className="row flex h-5/6 flex-col">
-                <h1 className="w-full h-12 bg-red-100">Header</h1>
+                <div id="header" className="flex w-full h-12 p-6 bg-green-500 items-center">
+                    <h1 className="text-2xl font-bold text-white">Threads</h1>
+                </div>
                 <div className="flex flex-row w-full h-full">
                     <div className="graph-area w-full h-full p-4">
                         <ThreadsChart id="chart" lines={lines}/>
@@ -125,12 +127,12 @@ function App() {
                 </div>
             </div>
             <div className="row flex h-1/6">
-                <div className="config-area flex flex-row flex-auto bg-blue-100">
-                    <div className="flex flex-col w-1/3 h-full">
-                        <Select id="sourceSelector" label="Data Source" options={sourceOptions} selected={selectedSource?.id} onChange={onSourceChange}></Select>
+                <div className="config-area flex flex-row flex-auto bg-gray-200">
+                    <div className="flex flex-col p-6 w-1/3 h-full">
+                        <Select id="sourceSelector" label="Source" options={sourceOptions} selected={selectedSource?.id} onChange={onSourceChange}></Select>
                         <Select id="plotSelector" label="Plot" options={plotOptions} selected={selectedPlot?.id} onChange={onPlotChange}></Select>
                     </div>
-                    <div className="flex flex-row w-2/3 h-full">
+                    <div className="flex flex-row p-6 w-2/3 h-full">
                         { isLoadingLine === "loading" ? <Throbber /> : filters }
                     </div>
                 </div>
