@@ -7,13 +7,13 @@
         "dateFormat": "yyyy-MM-dd",
         "dimensions": {
             "test_dimension": {
-                "fieldName": "test_dimension",
+                "id": "test_dimension",
                 "label": "Test Dimension"
             }
         },
         "measures": {
             "test_metric": {
-                "fieldName": "test_metric",
+                "id": "test_metric",
                 "label": "Test Metric"
             }
         },

@@ -2,12 +2,17 @@
     {
         "id": "test_datasource_1",
         "type": "csv",
+        "file": "src/models/__tests__/__data__/CsvLoadFilterValues.csv",
         "dateField": "date",
         "dateFormat": "yyyy-MM-dd",
         "dimensions": {
             "test_dimension": {
                 "id": "test_dimension",
                 "label": "Test Dimension"
+            },
+            "test_dimension_2": {
+                "id": "test_dimension_2",
+                "label": "Test Dimension #2"
             }
         },
         "measures": {

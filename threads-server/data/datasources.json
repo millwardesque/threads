@@ -9,34 +9,28 @@
         "dimensions": {
             "country": {
                 "id": "country",
-                "fieldName": "country",
                 "label": "Country"
             }
         },
         "measures": {
             "daily_new_cases": {
                 "id": "daily_new_cases",
-                "fieldName": "daily_new_cases",
                 "label": "Daily new cases"
             },
             "daily_new_deaths": {
                 "id": "daily_new_deaths",
-                "fieldName": "daily_new_deaths",
                 "label": "Daily new deaths"
             },
             "active_cases": {
                 "id": "active_cases",
-                "fieldName": "active_cases",
                 "label": "Active cases"
             },
             "cumulative_total_cases": {
                 "id": "cumulative_total_cases",
-                "fieldName": "cumulative_total_cases",
                 "label": "Cumulative total cases"
             },
             "cumulative_total_deaths": {
                 "id": "cumulative_total_deaths",
-                "fieldName": "cumulative_total_deaths",
                 "label": "Cumulative total deaths"
             }
         },
@@ -88,14 +82,12 @@
         "dimensions": {
             "test_dimension": {
                 "id": "test_dimension",
-                "fieldName": "test_dimension",
                 "label": "Test Dimension"
             }
         },
         "measures": {
             "test_metric": {
                 "id": "test_metric",
-                "fieldName": "test_metric",
                 "label": "Test Metric"
             }
         },

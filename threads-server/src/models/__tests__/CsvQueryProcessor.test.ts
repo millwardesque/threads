@@ -266,3 +266,21 @@ test('can aggregate query data', () => {
     expect(results.data['dimension 1']['2021-05-14']).toBe(4);
     expect(results.data['dimension 2']['2021-05-14']).toBe(1);
 });
+
+test('can load all values for all filters', () => {
+    const sourceFile = path.join(__dirname, '__data__', 'CsvLoadFilterValues.json');
+    const sources = Object.values(loadSourcesFromJson(sourceFile).sources!);
+    const processor = new CsvQueryProcessor();
+    processor.load(sources[0]);
+    const results = processor.getFilterValues();
+
+    expect(results.error).toBeUndefined();
+    expect(results.hasError).toBe(false);
+    expect(results.filters['test_dimension'].includes('dimension 1')).toBe(true);
+    expect(results.filters['test_dimension'].includes('dimension 2')).toBe(true);
+    expect(results.filters['test_dimension_2'].includes('test1')).toBe(true);
+    expect(results.filters['test_dimension_2'].includes('test2')).toBe(true);
+    expect(results.filters['test_dimension_2'].includes('test3')).toBe(true);
+    expect(results.filters['test_dimension_2'].includes('test4')).toBe(true);
+    expect(results.filters['test_dimension_2'].includes('test5')).toBe(false);
+})

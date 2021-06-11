@@ -1,4 +1,4 @@
-Filters
+Tabs
 Multiple lines
 Multiple axes
 Explode

@@ -1,5 +1,5 @@
 import { CsvQueryProcessor } from "../models/CsvQueryProcessor";
-import { DataSourceDefinition, DataSourceMap, loadSourcesFromJson, QueryRequest, QueryResults } from "../models/DataSourceDefinition";
+import { DataSourceDefinition, DataSourceMap, GetFilterResults, loadSourcesFromJson, QueryRequest, QueryResults } from "../models/DataSourceDefinition";
 
 export const SOURCES_PATH = './data/datasources.json';
 
@@ -22,6 +22,29 @@ class DataSourceController {
 
     getAllSourceDefinitions(): DataSourceMap {
         return this.dataSources ?? {};
+    }
+
+    getSourceFilterValues(sourceId: string): GetFilterResults {
+        if (this.dataSources) {
+            const processor = new CsvQueryProcessor();
+            const loadResults = processor.load(this.dataSources[sourceId]);
+            if (loadResults.hasError) {
+                return {
+                    ...loadResults,
+                    filters: {}
+                }
+            }
+            else {
+                return processor.getFilterValues();
+            }
+        }
+        else {
+            return {
+                hasError: true,
+                error: `Data sources haven't been loaded`,
+                filters: {}
+            };
+        }
     }
 
     query(sourceId: string, query: QueryRequest): QueryResults {

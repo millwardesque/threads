@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, LineDefinition, QueryResults } from './models/DataSourceDefinition';
+import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
 import { Throbber } from './components/Throbber';
 import { SelectOption, Select } from './components/Select';
+import { MultiSelect } from './components/MultiSelect';
 import { ThreadsChart } from './components/ThreadsChart';
 
 type LoadingStatus = 'not-started' | 'loading' | 'loaded';
@@ -20,6 +21,24 @@ const getPlotOptions = (source?: DataSourceDefinition) => {
 }
 
 function App() {
+    const getFilterSelects = (source?: DataSourceDefinition, filters?: FiltersAndValues, activeFilters?: FiltersAndValues) => {
+        if (!source || Object.keys(source).length === 0 || !filters || Object.keys(filters).length === 0) {
+            return [];
+        }
+
+        let filterSelects = [];
+        for (const dimension of Object.keys(filters)) {
+            const options = filters[dimension].map((d) => {
+                return { label: d, value: d };
+            });
+
+            const selected: string[] = (activeFilters && dimension in activeFilters) ? activeFilters[dimension] : [];
+            const select = <MultiSelect id={`filter-${dimension}`} label={source.dimensions[dimension].label} selected={selected} options={options} onChange={(selected: string[]) => {onFilterChange(dimension, selected)}}></MultiSelect>;
+            filterSelects.push(select);
+        }
+        return filterSelects;
+    }
+
     const onSourceChange = (selected: string): void => {
         if (selected === selectedSource?.id) {
             return;
@@ -32,7 +51,10 @@ function App() {
             console.log(`Updating source and plot: ${source.id}.${plot.id}`);
             setSelectedSource(source);
             setSelectedPlot(plot);
+            setActiveFilters({});
+
             query(source, plot);
+            getSourceFilters(source);
         }
         else {
             console.log(`Unable to select source '${selected}'.  Source doesn't exist in current source list.`)
@@ -52,11 +74,25 @@ function App() {
         }
     };
 
-    const query = (source: DataSourceDefinition, plot: DataPlotDefinition): void => {
+    const onFilterChange = (dimension: string, selected: string[]): void => {
+        const newActiveFilters = {
+            ...activeFilters,
+            [dimension]: selected
+        }
+        setActiveFilters(newActiveFilters);
+        query(selectedSource!, selectedPlot!, newActiveFilters);
+    }
+
+    const query = (source: DataSourceDefinition, plot: DataPlotDefinition, filters?: FiltersAndValues): void => {
         if (source !== undefined && plot !== undefined) {
             setLines([]);
             setIsLoadingLine('loading');
-            axios.post(`http://localhost:2999/api/datasource/${source.id}/query`, { plotId: plot.id })
+
+            const query: QueryRequest = {
+                plotId: plot.id,
+                dimensionFilters: filters
+            };
+            axios.post(`http://localhost:2999/api/datasource/${source.id}/query`, query)
             .then((response) => {
                 const payload = response.data as QueryResults;
                 if (payload.hasError) {
@@ -84,6 +120,30 @@ function App() {
         }
     };
 
+    const getSourceFilters = (source: DataSourceDefinition): void => {
+        if (source !== undefined) {
+            setSelectedSourceFilters({});
+            setIsLoadingSourceFilters('loading');
+            axios.get(`http://localhost:2999/api/datasource/${source.id}/filters`)
+            .then((response) => {
+                const payload = response.data as GetFilterResults;
+                if (payload.hasError) {
+                    console.log("Error fetching filter values", payload.error);
+                }
+                else {
+                    setSelectedSourceFilters(payload.filters);
+                    console.log("Filters retrieved", payload);
+                }
+            })
+            .catch((error) => {
+                console.log("Error retrieving filters", error);
+            })
+            .finally(() => {
+                setIsLoadingSourceFilters('loaded');
+            })
+        }
+    }
+
     const [isLoadingLine, setIsLoadingLine] = useState<LoadingStatus>('not-started');
     const [lines, setLines] = useState<LineDefinition[]>([]);
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
@@ -91,6 +151,9 @@ function App() {
     const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
     const [selectedSource, setSelectedSource] = useState<DataSourceDefinition | undefined>(undefined);
     const [selectedPlot, setSelectedPlot] = useState<DataPlotDefinition | undefined>(undefined);
+    const [selectedSourceFilters, setSelectedSourceFilters] = useState<FiltersAndValues | undefined>(undefined);
+    const [isLoadingSourceFilters, setIsLoadingSourceFilters] = useState<LoadingStatus>('not-started');
+    const [activeFilters, setActiveFilters] = useState<FiltersAndValues>({});
     const plotOptions: SelectOption[] = getPlotOptions(selectedSource);
 
     if (sourceStatus === 'not-started') {
@@ -112,7 +175,7 @@ function App() {
         onSourceChange(sourceId);
     }
 
-    const filters = selectedSource ? Object.values(selectedSource.dimensions).map(d => <Select id={`filter-{d.id}`} label={d.label} options={[]}></Select>) : [];
+    const filters = getFilterSelects(selectedSource, selectedSourceFilters, activeFilters);
 
     return (
         <div className="App h-screen">
@@ -131,9 +194,11 @@ function App() {
                     <div className="flex flex-col p-6 w-1/3 h-full">
                         <Select id="sourceSelector" label="Source" options={sourceOptions} selected={selectedSource?.id} onChange={onSourceChange}></Select>
                         <Select id="plotSelector" label="Plot" options={plotOptions} selected={selectedPlot?.id} onChange={onPlotChange}></Select>
+
+                        { isLoadingLine === "loading" && <Throbber /> }
                     </div>
                     <div className="flex flex-row p-6 w-2/3 h-full">
-                        { isLoadingLine === "loading" ? <Throbber /> : filters }
+                        { isLoadingSourceFilters === "loading" ? <Throbber /> : filters }
                     </div>
                 </div>
             </div>

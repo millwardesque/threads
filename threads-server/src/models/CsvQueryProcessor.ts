@@ -1,7 +1,7 @@
 import fs from 'fs';
 import parse from 'csv-parse/lib/sync';
 
-import { DataSourceDefinition, LineData, QueryFilter, QueryRequest, QueryResults } from './DataSourceDefinition';
+import { DataSourceDefinition, GetFilterResults, LineData, QueryFilter, QueryRequest, QueryResults } from './DataSourceDefinition';
 
 export interface DataRow {
     [field: string]: string
@@ -34,6 +34,41 @@ export class CsvQueryProcessor {
 
         this.source = source;
         return { hasError: false };
+    }
+
+    getFilterValues(): GetFilterResults {
+        if (!this.source) {
+            return {
+                hasError: true,
+                error: "No datasource is loaded",
+                filters: {}
+            };
+        }
+
+        let result: GetFilterResults = {
+            hasError: false,
+            filters: {}
+        };
+        let filterMap: {
+            [dimension: string]: {
+                [value: string]: Number
+            }
+        } = {};
+        const dimensions = Object.values(this.source.dimensions).map(d => d.id);
+        dimensions.forEach((d) => { filterMap[d] = {} });
+
+        for (let row of this.rawData) {
+            for (let dimension of dimensions) {
+                const value = row[dimension];
+                filterMap[dimension][value] = 1;
+            }
+        }
+
+        for (let dimension of Object.keys(filterMap)) {
+            result.filters[dimension] = Object.keys(filterMap[dimension]);
+        }
+
+        return result;
     }
 
     canQuery(query: QueryRequest): QueryResults {
@@ -142,11 +177,11 @@ export class CsvQueryProcessor {
         }).forEach(row => {
             const date: string = row[dateField];
             const dimension = dimensionExploder ? row[dimensionExploder] : '*';
-            const value = Number(row[measure.fieldName]);
+            const value = Number(row[measure.id]);
 
             if (Number.isNaN(value)) {
                 results.hasError = true;
-                results.error = `[${lineNum}@${this.source!.id}:${measure.id}] Measure is not a number: '${row[measure.fieldName]}'`;
+                results.error = `[${lineNum}@${this.source!.id}:${measure.id}] Measure is not a number: '${row[measure.id]}'`;
             }
             else {
                 if (!Object.keys(data).includes(dimension)) {
@@ -222,12 +257,12 @@ export class CsvQueryProcessor {
             return query.dimensionFilters ? this.filterData(row, query.dimensionFilters) : true
         }).forEach(row => {
             const date: string = row[dateField];
-            const value = Number(row[measure.fieldName]);
+            const value = Number(row[measure.id]);
             const dimension = dimensionExploder ? row[dimensionExploder] : '*';
 
             if (Number.isNaN(value)) {
                 results.hasError = true;
-                results.error = `[${lineNum}@${this.source!.id}:${measure.id}] Measure is not a number: '${row[measure.fieldName]}'`;
+                results.error = `[${lineNum}@${this.source!.id}:${measure.id}] Measure is not a number: '${row[measure.id]}'`;
             }
             else {
                 if (!Object.keys(data).includes(dimension)) {

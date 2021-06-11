@@ -1,0 +1,9 @@
+"date","test_dimension","test_dimension_2","test_metric"
+"2021-05-13","dimension 1","test4",5
+"2021-05-13","dimension 2","test1",2
+"2021-05-14","dimension 1","test2",4
+"2021-05-14","dimension 2","test1",3
+"2021-05-15","dimension 1","test2",8
+"2021-05-15","dimension 2","test3",3
+"2021-05-16","dimension 1","test1",9
+"2021-05-16","dimension 2","test3",4

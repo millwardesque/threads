@@ -7,13 +7,11 @@ export type DateFormatType = "yyyy-MM-dd";
 export type MeasureAggregator = "sum" | "count" | "average";
 
 export interface DataDimensionDefinition {
-    fieldName: string,
     id: string,
     label: string
 };
 
 export interface DataMeasureDefinition {
-    fieldName: string,
     id: string,
     label: string
 };
@@ -39,6 +37,16 @@ export interface DataSourceDefinition {
 };
 
 export type DataSourceMap = { [id: string]: DataSourceDefinition };
+
+export interface FiltersAndValues {
+    [dimensionId: string]: string[]
+}
+
+export interface GetFilterResults {
+    hasError: boolean,
+    error?: string,
+    filters: FiltersAndValues
+}
 
 export type LoadSourcesReturn = { hasError: boolean, sources?: DataSourceMap, error?: string };
 
