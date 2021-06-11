@@ -1,4 +1,11 @@
 Tabs
+* New tab
+* Close tab
+* Change source
+* Multiple background colors
+* max-width based on number of tabs
+* Scroll through tabs list
+*
 Multiple lines
 Multiple axes
 Explode
@@ -16,3 +23,4 @@ Auto-number sources?
 Share types between server and client (central shared lib?)
 tsconfig to match work
 axios fail error states
+Short labels for plots and sources

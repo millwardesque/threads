@@ -5,8 +5,21 @@ import { Throbber } from './components/Throbber';
 import { SelectOption, Select } from './components/Select';
 import { MultiSelect } from './components/MultiSelect';
 import { ThreadsChart } from './components/ThreadsChart';
+import { Tab } from './components/Tab';
 
 type LoadingStatus = 'not-started' | 'loading' | 'loaded';
+
+interface Thread {
+    source: DataSourceDefinition,
+    plot?: DataPlotDefinition,
+
+    filterLoadingStatus: LoadingStatus,
+    sourceFilters?: FiltersAndValues,
+    activeFilters?: FiltersAndValues,
+
+    lineLoadingStatus: LoadingStatus,
+    lines: LineDefinition[]
+};
 
 const getPlotOptions = (source?: DataSourceDefinition) => {
     if (!source) {
@@ -49,9 +62,20 @@ function App() {
             const plot = Object.values(source.plots)[0];
 
             console.log(`Updating source and plot: ${source.id}.${plot.id}`);
+            const newActiveThread: Thread = {
+                source,
+                plot,
+
+                filterLoadingStatus: 'not-started',
+                sourceFilters: undefined,
+                activeFilters: undefined,
+
+                lineLoadingStatus: 'not-started',
+                lines: []
+            };
+            setActiveThread(newActiveThread);
+
             setSelectedSource(source);
-            setSelectedPlot(plot);
-            setActiveFilters({});
 
             query(source, plot);
             getSourceFilters(source);
@@ -66,7 +90,13 @@ function App() {
             const plot = selectedSource.plots[selected];
 
             console.log(`Updating plot: ${selectedSource.id}.${plot.id}`);
-            setSelectedPlot(plot);
+            setActiveThread((oldActiveThread) => {
+                return {
+                    ...oldActiveThread!,
+                    plot
+                }
+            });
+
             query(selectedSource, plot);
         }
         else {
@@ -76,17 +106,31 @@ function App() {
 
     const onFilterChange = (dimension: string, selected: string[]): void => {
         const newActiveFilters = {
-            ...activeFilters,
+            ...activeThread!.activeFilters,
             [dimension]: selected
         }
-        setActiveFilters(newActiveFilters);
-        query(selectedSource!, selectedPlot!, newActiveFilters);
+
+        setActiveThread((oldActiveThread) => {
+            return {
+                ...oldActiveThread!,
+                activeFilters: newActiveFilters
+            }
+        });
+
+        query(activeThread!.source, activeThread!.plot!, newActiveFilters);
     }
 
     const query = (source: DataSourceDefinition, plot: DataPlotDefinition, filters?: FiltersAndValues): void => {
         if (source !== undefined && plot !== undefined) {
             setLines([]);
-            setIsLoadingLine('loading');
+
+            setActiveThread((oldActiveThread) => {
+                return {
+                    ...oldActiveThread!,
+                    line: [],
+                    lineLoadingStatus: 'loading'
+                }
+            });
 
             const query: QueryRequest = {
                 plotId: plot.id,
@@ -107,6 +151,14 @@ function App() {
                             data: line
                         });
                     }
+
+                    setActiveThread((oldActiveThread) => {
+                        return {
+                            ...oldActiveThread!,
+                            lines: newLines,
+                        }
+                    });
+
                     setLines(newLines);
                     console.log("Query results", payload, newLines);
                 }
@@ -115,15 +167,27 @@ function App() {
                 console.log("Error querying data", error);
             })
             .finally(() => {
-                setIsLoadingLine('loaded');
+                setActiveThread((oldActiveThread) => {
+                    return {
+                        ...oldActiveThread!,
+                        lineLoadingStatus: 'loaded',
+                    }
+                });
             })
         }
     };
 
     const getSourceFilters = (source: DataSourceDefinition): void => {
         if (source !== undefined) {
-            setSelectedSourceFilters({});
-            setIsLoadingSourceFilters('loading');
+            setActiveThread((oldActiveThread) => {
+                return {
+                    ...oldActiveThread!,
+                    filterLoadingStatus: 'loading',
+                    sourceFilters: {},
+                    activeFilters: {}
+                }
+            });
+
             axios.get(`http://localhost:2999/api/datasource/${source.id}/filters`)
             .then((response) => {
                 const payload = response.data as GetFilterResults;
@@ -131,7 +195,12 @@ function App() {
                     console.log("Error fetching filter values", payload.error);
                 }
                 else {
-                    setSelectedSourceFilters(payload.filters);
+                    setActiveThread((oldActiveThread) => {
+                        return {
+                            ...oldActiveThread!,
+                            sourceFilters: payload.filters,
+                        }
+                    });
                     console.log("Filters retrieved", payload);
                 }
             })
@@ -139,21 +208,22 @@ function App() {
                 console.log("Error retrieving filters", error);
             })
             .finally(() => {
-                setIsLoadingSourceFilters('loaded');
+                setActiveThread((oldActiveThread) => {
+                    return {
+                        ...oldActiveThread!,
+                        filterLoadingStatus: 'loaded',
+                    }
+                });
             })
         }
     }
 
-    const [isLoadingLine, setIsLoadingLine] = useState<LoadingStatus>('not-started');
+    const [activeThread, setActiveThread] = useState<Thread|undefined>(undefined);
     const [lines, setLines] = useState<LineDefinition[]>([]);
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
     const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
     const [selectedSource, setSelectedSource] = useState<DataSourceDefinition | undefined>(undefined);
-    const [selectedPlot, setSelectedPlot] = useState<DataPlotDefinition | undefined>(undefined);
-    const [selectedSourceFilters, setSelectedSourceFilters] = useState<FiltersAndValues | undefined>(undefined);
-    const [isLoadingSourceFilters, setIsLoadingSourceFilters] = useState<LoadingStatus>('not-started');
-    const [activeFilters, setActiveFilters] = useState<FiltersAndValues>({});
     const plotOptions: SelectOption[] = getPlotOptions(selectedSource);
 
     if (sourceStatus === 'not-started') {
@@ -175,7 +245,7 @@ function App() {
         onSourceChange(sourceId);
     }
 
-    const filters = getFilterSelects(selectedSource, selectedSourceFilters, activeFilters);
+    const filters = getFilterSelects(activeThread?.source, activeThread?.sourceFilters, activeThread?.activeFilters);
 
     return (
         <div className="App h-screen">
@@ -189,16 +259,19 @@ function App() {
                     </div>
                 </div>
             </div>
-            <div className="row flex h-1/6">
+            <div className="row flex flex-col h-1/6">
+                <div className="tabs-area flex flex-row bg-red-100">
+                    <Tab id="tab-1" label={`${activeThread?.source?.label}: ${activeThread?.plot?.label}`} onSelect={(tabId: string) => { console.log("Opened tab", tabId); }} />
+                </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-200">
                     <div className="flex flex-col p-6 w-1/3 h-full">
-                        <Select id="sourceSelector" label="Source" options={sourceOptions} selected={selectedSource?.id} onChange={onSourceChange}></Select>
-                        <Select id="plotSelector" label="Plot" options={plotOptions} selected={selectedPlot?.id} onChange={onPlotChange}></Select>
+                        <Select id="sourceSelector" label="Source" options={sourceOptions} selected={activeThread?.source?.id} onChange={onSourceChange}></Select>
+                        <Select id="plotSelector" label="Plot" options={plotOptions} selected={activeThread?.plot?.id} onChange={onPlotChange}></Select>
 
-                        { isLoadingLine === "loading" && <Throbber /> }
+                        { activeThread?.lineLoadingStatus === "loading" && <Throbber /> }
                     </div>
                     <div className="flex flex-row p-6 w-2/3 h-full">
-                        { isLoadingSourceFilters === "loading" ? <Throbber /> : filters }
+                        { activeThread?.filterLoadingStatus === "loading" ? <Throbber /> : filters }
                     </div>
                 </div>
             </div>
