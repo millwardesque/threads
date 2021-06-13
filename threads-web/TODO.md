@@ -1,15 +1,17 @@
 Tabs
-* New tab
+* Don't requery when switching tabs
+* Use IDs for threads / tab IDs rather than indexes
 * Close tab
-* Change source
 * Multiple background colors
+* Multiple line colours
 * max-width based on number of tabs
 * Scroll through tabs list
-*
 Multiple lines
+Loading page while loading sources
+Check all threads' active filters after source filters change
+Filter: Show count of selected filters
 Multiple axes
 Explode
-chartjs-plugin-zoom
 Named tabs
 Tooltip
 Persistent URLs
