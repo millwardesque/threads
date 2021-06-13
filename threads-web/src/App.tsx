@@ -107,10 +107,15 @@ function App() {
             const plot = activeThread.source.plots[selected];
 
             console.log(`Updating plot: ${activeThread.source.id}.${plot.id}`);
-            setActiveThread((oldActiveThread) => {
+            const newActiveThread: Thread = {
+                ...activeThread!,
+                plot
+            };
+            setActiveThread(newActiveThread);
+            setThreads((oldThreads) => {
                 return {
-                    ...oldActiveThread!,
-                    plot
+                    ...oldThreads,
+                    [newActiveThread.id]: newActiveThread
                 };
             });
         }

@@ -1,5 +1,6 @@
 Tabs
 * Don't requery when switching tabs
+* Make activeThread into a string ID to simplify updates
 * Use IDs for threads / tab IDs rather than indexes
 * Close tab
 * Multiple background colors
