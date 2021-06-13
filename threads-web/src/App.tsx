@@ -64,13 +64,7 @@ function App() {
             plot,
             activeFilters: undefined,
         };
-        setThreads((oldThreads) => {
-            return {
-                ...oldThreads,
-                [newThread.id]: newThread
-            };
-        });
-        setActiveThread(newThread);
+        updateActiveThread(newThread);
     }
 
     const onSourceChange = (selected: string): void => {
@@ -89,13 +83,7 @@ function App() {
                 plot,
                 activeFilters: undefined,
             };
-            setThreads((oldThreads) => {
-                return {
-                    ...oldThreads,
-                    [newActiveThread.id]: newActiveThread
-                };
-            });
-            setActiveThread(newActiveThread);
+            updateActiveThread(newActiveThread);
         }
         else {
             console.log(`Unable to select source '${selected}'.  Source doesn't exist in current source list.`)
@@ -111,13 +99,7 @@ function App() {
                 ...activeThread!,
                 plot
             };
-            setActiveThread(newActiveThread);
-            setThreads((oldThreads) => {
-                return {
-                    ...oldThreads,
-                    [newActiveThread.id]: newActiveThread
-                };
-            });
+            updateActiveThread(newActiveThread);
         }
         else {
             console.log(`Unable to select plot '${selected}'.  No source selected, or plot doesn't exist in selected source ${activeThread?.source.id}.`);
@@ -130,11 +112,29 @@ function App() {
             [dimension]: selected
         }
 
-        setActiveThread((oldActiveThread) => {
+        const newActiveThread: Thread = {
+            ...activeThread!,
+            activeFilters: newActiveFilters
+        };
+        updateActiveThread(newActiveThread);
+    }
+
+    const updateActiveThread = (newActiveThread: Thread) => {
+        setActiveThread(newActiveThread);
+        setThreads((oldThreads) => {
             return {
-                ...oldActiveThread!,
-                activeFilters: newActiveFilters
-            }
+                ...oldThreads,
+                [newActiveThread.id]: newActiveThread
+            };
+        });
+    };
+
+    const onTabClose = (id: string) => {
+        setThreads((oldThreads) => {
+            delete oldThreads[id];
+            return {
+                ...oldThreads
+            };
         });
     }
 
@@ -255,10 +255,10 @@ function App() {
         query(activeThread);
     }, [activeThread]);
 
-    const tabs = Object.values(threads).map((thread, index) => {
+    const tabs = Object.values(threads).map((thread) => {
         return {
-            id: 'tab' + index,
-            label: `${thread?.source?.label}: ${thread?.plot?.label}`,
+            id: thread.id,
+            label: `${thread.source?.label}: ${thread.plot?.label}`,
             thread
         };
     });
@@ -277,8 +277,8 @@ function App() {
             </div>
             <div className="row flex flex-col h-1/6">
                 <div className="tabs-area flex flex-row bg-red-100">
-                    {tabs.map(t => <Tab id={t.id} label={t.label} onSelect={(tabId: string) => { console.log("Opened tab", tabId); switchThread(t.thread); }} />)}
-                    <Tab id="tabNew" label="+" onSelect={(tabId: string) => { makeNewThread(); }} />
+                    {tabs.map((t, index) => <Tab id={t.id} label={t.label} onSelect={(tabId: string) => { console.log("Opened tab", tabId); switchThread(t.thread); }} onClose={onTabClose} suppressClose={index === 0} />)}
+                    <Tab id="tabNew" label="+" onSelect={(tabId: string) => { makeNewThread(); }} onClose={onTabClose} suppressClose={true}/>
                 </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-200">
                     <div className="flex flex-col p-6 w-1/3 h-full">
