@@ -130,6 +130,18 @@ function App() {
     };
 
     const onTabClose = (id: string) => {
+        const threadIds = Object.keys(threads);
+        const threadIndex = threadIds.indexOf(id);
+
+        let newActiveThreadIndex = "";
+        if (threadIndex < threadIds.length - 1) {
+            newActiveThreadIndex = threadIds[threadIndex + 1];
+        }
+        else if (threadIndex > 0) {
+            newActiveThreadIndex = threadIds[threadIndex - 1];
+        }
+
+        setActiveThread(threads[newActiveThreadIndex]);
         setThreads((oldThreads) => {
             delete oldThreads[id];
             return {
@@ -223,10 +235,10 @@ function App() {
     const [lineLoadingStatus, setLineLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
-    const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
-    const plotOptions: SelectOption[] = getPlotOptions(activeThread?.source);
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{[source: string]: FiltersAndValues}>({});
+    const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
+    const plotOptions: SelectOption[] = getPlotOptions(activeThread?.source);
 
     if (sourceStatus === 'not-started') {
         setSourceStatus('loading');
@@ -277,7 +289,7 @@ function App() {
             </div>
             <div className="row flex flex-col h-1/6">
                 <div className="tabs-area flex flex-row bg-red-100">
-                    {tabs.map((t, index) => <Tab id={t.id} label={t.label} onSelect={(tabId: string) => { console.log("Opened tab", tabId); switchThread(t.thread); }} onClose={onTabClose} suppressClose={index === 0} />)}
+                    {tabs.map((t, index) => <Tab id={t.id} label={t.label} onSelect={(tabId: string) => { console.log("Opened tab", tabId); switchThread(t.thread); }} onClose={onTabClose} suppressClose={index === 0 && tabs.length === 1} />)}
                     <Tab id="tabNew" label="+" onSelect={(tabId: string) => { makeNewThread(); }} onClose={onTabClose} suppressClose={true}/>
                 </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-200">

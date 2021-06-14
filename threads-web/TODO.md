@@ -1,9 +1,8 @@
 Tabs
-* Close tab
-  * Change active thread if it's the one that was closed
-  * Make lines into thread-id => line map rather than array
-* Make activeThread into a string ID to simplify updates
 * Don't requery when switching tabs
+  * Make lines into thread-id => line map rather than array and then check index
+* Make activeThread into a string ID to simplify updates
+* Tab order should be deterministic and not change based on which tabs are present in the dictionary
 * Styling Close-tab button
 * Multiple background colors
   * https://randomcolor.lllllllllllllllll.com/
