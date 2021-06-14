@@ -22,22 +22,38 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     }, [isRebuildingCanvas]);
 
     useEffect(() => {
-        const lineToRender = lines.length ? lines[0] : undefined;
-        const dates = Object.keys(lineToRender?.data ?? {}).sort();
-        const lineData: number[] = lineToRender ? dates.map(d => lineToRender.data[d]) : [];
-        const lineUnits = lineToRender ? lineToRender.plot.units : '';
-        const lineLabel = lineToRender ? lineToRender.plot.label : '';
+        let lineUnits: string = '';
 
-        const data = {
-            labels: dates,
-            datasets: [
+        // First pass: Collect, merge, and sort all the dates from all the lines to get the true date range.
+        const dateSet = new Set<string>();
+        for (let line of lines) {
+            const lineDates = Object.keys(line?.data ?? {});
+            lineDates.forEach(item => dateSet.add(item));
+        }
+        const dates: string[] = Array.from(dateSet).sort();
+
+        // Second pass, create datasets based on available date range
+        const datasets = [];
+        for (let line of lines) {
+            const lineLabel = line.plot.label;
+            const lineData: number[] = dates.map(d => line.data[d]);
+            datasets.push(
                 {
                     label: lineLabel,
                     data: lineData,
                     fill: false,
                     borderColor: 'rgba(255, 99, 132, 0.8)',
                 },
-            ],
+            );
+
+            if (!lineUnits) {
+                lineUnits = line.plot.units;
+            }
+        }
+
+        const data = {
+            labels: dates,
+            datasets: datasets,
         };
 
         const options = {
@@ -45,7 +61,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: lineData.length > 0,
+                    display: datasets.length > 0,
                     position: 'right'
                 },
             },
@@ -55,7 +71,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                     beginAtZero: true,
                     ticks: {
                         callback: function(value: string) {
-                            if (lineData.length === 0) {
+                            if (datasets.length === 0) {
                                 return '';
                             }
 

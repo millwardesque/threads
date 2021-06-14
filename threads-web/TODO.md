@@ -1,3 +1,6 @@
+Multiple lines
+* Pass multiple lines to ThreadsChart
+
 Tabs
 * Don't requery when switching tabs
   * Make lines into thread-id => line map rather than array and then check index
@@ -10,7 +13,6 @@ Tabs
   * https://randomcolor.lllllllllllllllll.com/
 * max-width w/ text truncation based on number of tabs
 * Scroll through tabs list
-Multiple lines
 Loading page while loading sources
 Check all threads' active filters after source filters change
 Filter: Show count of selected filters
