@@ -1,16 +1,12 @@
-Multiple lines
-* Pass multiple lines to ThreadsChart
+Don't requery when switching tabs
+  * Make activeThread into a string ID to simplify updates
+
+Thread colours
+  * https://randomcolor.lllllllllllllllll.com/
 
 Tabs
-* Don't requery when switching tabs
-  * Make lines into thread-id => line map rather than array and then check index
-* Make activeThread into a string ID to simplify updates
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary
 * Styling Close-tab button
-* Multiple background colors
-  * https://randomcolor.lllllllllllllllll.com/
-* Multiple line colours
-  * https://randomcolor.lllllllllllllllll.com/
 * max-width w/ text truncation based on number of tabs
 * Scroll through tabs list
 Loading page while loading sources

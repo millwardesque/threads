@@ -148,6 +148,13 @@ function App() {
                 ...oldThreads
             };
         });
+
+        setLineMap((oldMap) => {
+            delete oldMap[id];
+            return {
+                ...oldMap
+            };
+        });
     }
 
     const query = (thread?: Thread): void => {
@@ -155,7 +162,12 @@ function App() {
             return;
         }
 
-        setLines([]);
+        setLineMap((oldMap) => {
+            return {
+                ...oldMap,
+                [thread.id]: []
+            };
+        });
         setLineLoadingStatus('loading');
 
         const query: QueryRequest = {
@@ -178,7 +190,12 @@ function App() {
                     });
                 }
 
-                setLines(newLines);
+                setLineMap((oldMap) => {
+                    return {
+                        ...oldMap,
+                        [thread.id]: newLines
+                    };
+                });
                 console.log("Query results", payload, newLines);
             }
         })
@@ -229,9 +246,10 @@ function App() {
         setActiveThread(thread);
     };
 
+    const [lineMap, setLineMap] = useState<{[id: string]: LineDefinition[]}>({});
+
     const [threads, setThreads] = useState<{[id: string]: Thread}>({});
     const [activeThread, setActiveThread] = useState<Thread|undefined>(undefined);
-    const [lines, setLines] = useState<LineDefinition[]>([]);
     const [lineLoadingStatus, setLineLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
@@ -275,6 +293,11 @@ function App() {
         };
     });
 
+    let allLines: LineDefinition[] = []
+    Object.values(lineMap).forEach((threadLines) => {
+        allLines = allLines.concat(threadLines);
+    });
+
     return (
         <div className="App h-screen">
             <div className="row flex h-5/6 flex-col">
@@ -283,7 +306,7 @@ function App() {
                 </div>
                 <div className="flex flex-row w-full h-full">
                     <div className="graph-area w-full h-full p-4">
-                        <ThreadsChart id="chart" lines={lines}/>
+                        <ThreadsChart id="chart" lines={allLines}/>
                     </div>
                 </div>
             </div>
