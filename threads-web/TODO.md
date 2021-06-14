@@ -1,7 +1,5 @@
-Don't requery when switching tabs
-  * Make activeThread into a string ID to simplify updates
-
 Thread colours
+  * Tabs have separate instance for rendering
   * https://randomcolor.lllllllllllllllll.com/
 
 Tabs
@@ -9,11 +7,15 @@ Tabs
 * Styling Close-tab button
 * max-width w/ text truncation based on number of tabs
 * Scroll through tabs list
+* Rename tabs
+
+Bug: ChartJS doesn't normalize the date range like it should when there's a massive gap between ranges in datasources
+Don't requery when switching tabs
+  * Make activeThread into a string ID to simplify updates
+
 Loading page while loading sources
-Check all threads' active filters after source filters change
-Filter: Show count of selected filters
 Explode
-Named tabs
+
 Tooltip
 Persistent URLs
 Title
@@ -32,3 +34,4 @@ Nicer filter selector
 Source groups
 Source maker
 Line up axes on left side?
+Check all threads' active filters after source filters change
