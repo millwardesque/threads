@@ -293,7 +293,7 @@ function App() {
         };
     });
 
-    let allLines: LineDefinition[] = []
+    let allLines: LineDefinition[] = [];
     Object.values(lineMap).forEach((threadLines) => {
         allLines = allLines.concat(threadLines);
     });

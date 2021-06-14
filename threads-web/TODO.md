@@ -12,7 +12,6 @@ Tabs
 Loading page while loading sources
 Check all threads' active filters after source filters change
 Filter: Show count of selected filters
-Multiple axes
 Explode
 Named tabs
 Tooltip
@@ -32,3 +31,4 @@ Short labels for plots and sources
 Nicer filter selector
 Source groups
 Source maker
+Line up axes on left side?

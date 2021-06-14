@@ -7,6 +7,34 @@ interface ThreadsChartProps {
     lines: LineDefinition[]
 };
 
+interface ChartAxes {
+    [id: string]: {},
+};
+
+const makeAxis = (showAxis: boolean, drawGrid: boolean, units: string) => {
+    return {
+        beginAtZero: true,
+        position: units === '%' ? 'right' : 'left',
+        ticks: {
+            callback: function(value: string) {
+                if (!showAxis) {
+                    return '';
+                }
+
+                switch (units) {
+                    case '$':
+                        return units + value;
+                    case '%':
+                    default:
+                        return value + units;
+                };
+            },
+        },
+        grid: {
+            drawOnChartArea: drawGrid,
+        },
+    };
+}
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
@@ -23,6 +51,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
     useEffect(() => {
         let lineUnits: string = '';
+        let axes: ChartAxes = {};
 
         // First pass: Collect, merge, and sort all the dates from all the lines to get the true date range.
         const dateSet = new Set<string>();
@@ -34,15 +63,20 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
         // Second pass, create datasets based on available date range
         const datasets = [];
-        for (let line of lines) {
+        for (let index in lines) {
+            const line = lines[index];
+            const axisId = `y${index}`;
             const lineLabel = line.plot.label;
             const lineData: number[] = dates.map(d => line.data[d]);
+            axes[axisId] = makeAxis(lineData.length > 0, index === '0', line.plot.units);
+
             datasets.push(
                 {
                     label: lineLabel,
                     data: lineData,
                     fill: false,
                     borderColor: 'rgba(255, 99, 132, 0.8)',
+                    yAxisID: axisId,
                 },
             );
 
@@ -66,26 +100,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 },
             },
             responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value: string) {
-                            if (datasets.length === 0) {
-                                return '';
-                            }
-
-                            switch (lineUnits) {
-                                case '$':
-                                    return lineUnits + value;
-                                case '%':
-                                default:
-                                    return value + lineUnits;
-                            }
-                        }
-                    },
-                },
-            },
+            scales: axes,
         };
 
         const chartCanvas = canvasRef.current;
