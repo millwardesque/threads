@@ -1,3 +1,6 @@
+Tidy up
+Bug: Select All on FilterSelect unhighlights everything
+
 Thread colours
   * Tabs have separate instance for rendering
   * https://randomcolor.lllllllllllllllll.com/

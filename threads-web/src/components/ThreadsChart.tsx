@@ -37,7 +37,6 @@ const makeAxis = (showAxis: boolean, drawGrid: boolean, units: string) => {
     };
 }
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
-    const colors = new ColorProvider();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
 
@@ -52,6 +51,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     }, [isRebuildingCanvas]);
 
     useEffect(() => {
+        const colors = new ColorProvider();
         let lineUnits: string = '';
         let axes: ChartAxes = {};
 

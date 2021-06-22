@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
+import { DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
 import { Throbber } from './components/Throbber';
 import { SelectOption, Select } from './components/Select';
-import { MultiSelect } from './components/MultiSelect';
+import { FilterSet } from './components/FilterSet';
 import { ThreadsChart } from './components/ThreadsChart';
 import { Tab } from './components/Tab';
 import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-type LoadingStatus = 'not-started' | 'loading' | 'loaded';
+import { LoadingStatus, Thread } from './types';
 
-interface Thread {
-    id: string,
-    source: DataSourceDefinition,
-    plot?: DataPlotDefinition,
-    activeFilters?: FiltersAndValues,
-};
-
+// @TODO Coloured line definition
 const getPlotOptions = (source?: DataSourceDefinition) => {
     if (!source) {
         return [];
@@ -31,24 +25,6 @@ const getPlotOptions = (source?: DataSourceDefinition) => {
 }
 
 function App() {
-    const getFilterSelects = (source?: DataSourceDefinition, filters?: FiltersAndValues, activeFilters?: FiltersAndValues) => {
-        if (!source || Object.keys(source).length === 0 || !filters || Object.keys(filters).length === 0) {
-            return [];
-        }
-
-        let filterSelects = [];
-        for (const dimension of Object.keys(filters)) {
-            const options = filters[dimension].map((d) => {
-                return { label: d, value: d };
-            });
-
-            const selected: string[] = (activeFilters && dimension in activeFilters) ? activeFilters[dimension] : [];
-            const select = <MultiSelect id={`filter-${dimension}`} label={source.dimensions[dimension].label} selected={selected} options={options} onChange={(selected: string[]) => {onFilterChange(dimension, selected)}}></MultiSelect>;
-            filterSelects.push(select);
-        }
-        return filterSelects;
-    }
-
     const makeNewThread = () => {
         if (Object.keys(sources).length === 0) {
             return;
@@ -279,7 +255,6 @@ function App() {
     if (activeThread?.source && !(activeThread.source.id in sourceFilters)) {
         loadSourceFilters(activeThread.source);
     }
-    const filters = getFilterSelects(activeThread?.source, activeThread ? sourceFilters[activeThread.source.id] : {}, activeThread?.activeFilters);
 
     useEffect(() => {
         query(activeThread);
@@ -323,7 +298,7 @@ function App() {
                         { lineLoadingStatus === "loading" && <Throbber /> }
                     </div>
                     <div className="flex flex-row p-6 w-2/3 h-full">
-                        { filterLoadingStatus === "loading" ? <Throbber /> : filters }
+                        { activeThread && filterLoadingStatus === "loaded" ? <FilterSet thread={activeThread} filters={sourceFilters[activeThread.source.id]} onFilterChange={onFilterChange} /> : <Throbber /> }
                     </div>
                 </div>
             </div>

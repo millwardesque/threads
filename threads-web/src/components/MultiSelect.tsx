@@ -1,4 +1,5 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface MultiSelectOption {
     label: string,
@@ -6,15 +7,15 @@ export interface MultiSelectOption {
 };
 
 interface MultiSelectProps {
-    id: string,
     label: string,
     options: MultiSelectOption[],
     selected?: string[],
     onChange?: (selected: string[]) => void,
 };
 
-export const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, options, selected, onChange }) => {
+export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, selected, onChange }) => {
     const optionElements = options.map(o => <option key={o.value} value={o.value}>{o.label}</option>);
+    const id = uuidv4();
 
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOptionElements = event.target.selectedOptions;
@@ -36,7 +37,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ id, label, options, se
         <label className="block" htmlFor={id}>
             {label} {selected && selected.length > 0 && <span>({selected.length ?? 0} / {options.length})</span>}
         </label>
-        <select id={id} multiple onChange={handleOnChange} value={selected}>
+        <select multiple onChange={handleOnChange} value={selected}>
             {optionElements}
         </select>
     </div>
