@@ -96,13 +96,13 @@ function App() {
     }
 
     const updateActiveThread = (newActiveThread: Thread) => {
-        setActiveThread(newActiveThread);
         setThreads((oldThreads) => {
             return {
                 ...oldThreads,
                 [newActiveThread.id]: newActiveThread
             };
         });
+        setActiveThread(newActiveThread);
     };
 
     const onTabClose = (thread: Thread) => {

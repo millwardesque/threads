@@ -1,4 +1,8 @@
-Tidy up
+Refactor
+* Source selector
+* Plot selector
+* Data-loading hooks?
+
 Bug: Select All on FilterSelect unhighlights everything
 
 Thread colours
@@ -17,8 +21,8 @@ Don't requery when switching tabs
   * Make activeThread into a string ID to simplify updates
 
 Loading page while loading sources
+Axis: Merge axes of same unit together
 Explode
-
 Tooltip
 Persistent URLs
 Title
