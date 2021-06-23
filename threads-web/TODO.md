@@ -1,5 +1,4 @@
 Refactor
-* Source selector
 * Plot selector
 * Data-loading hooks?
 

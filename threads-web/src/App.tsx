@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
+import { SourceSelect } from './components/SourceSelect';
 import { Throbber } from './components/Throbber';
 import { SelectOption, Select } from './components/Select';
 import { FilterSet } from './components/FilterSet';
@@ -25,6 +26,10 @@ const getPlotOptions = (source?: DataSourceDefinition) => {
 }
 
 function App() {
+    const isReady = () => {
+        return (Object.keys(sources).length && activeThread !== undefined);
+    }
+
     const makeNewThread = () => {
         if (Object.keys(sources).length === 0) {
             return;
@@ -43,27 +48,15 @@ function App() {
         updateActiveThread(newThread);
     }
 
-    const onSourceChange = (selected: string): void => {
-        if (activeThread === undefined || selected === activeThread?.source.id) {
-            return;
-        }
-
-        if (Object.keys(sources).includes(selected)) {
-            const source = sources[selected];
-            const plot = Object.values(source.plots)[0];
-
-            console.log(`Updating source and plot: ${source.id}.${plot.id}`);
-            const newActiveThread: Thread = {
-                id: activeThread.id,
-                source,
-                plot,
-                activeFilters: undefined,
-            };
-            updateActiveThread(newActiveThread);
-        }
-        else {
-            console.log(`Unable to select source '${selected}'.  Source doesn't exist in current source list.`)
-        }
+    const onSourceChange = (selectedSource: DataSourceDefinition): void => {
+        const plot = Object.values(selectedSource.plots)[0];
+        const newActiveThread: Thread = {
+            id: activeThread!.id,
+            source: selectedSource,
+            plot,
+            activeFilters: undefined,
+        };
+        updateActiveThread(newActiveThread);
     };
 
     const onPlotChange = (selected: string): void => {
@@ -148,7 +141,6 @@ function App() {
                 [thread.id]: []
             };
         });
-        setLineLoadingStatus('loading');
 
         const query: QueryRequest = {
             plotId: thread.plot.id,
@@ -181,9 +173,6 @@ function App() {
         })
         .catch((error) => {
             console.log("Error querying data", error);
-        })
-        .finally(() => {
-            setLineLoadingStatus('loaded');
         });
     };
 
@@ -230,7 +219,6 @@ function App() {
 
     const [threads, setThreads] = useState<{[id: string]: Thread}>({});
     const [activeThread, setActiveThread] = useState<Thread|undefined>(undefined);
-    const [lineLoadingStatus, setLineLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
@@ -287,10 +275,9 @@ function App() {
                 </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-200">
                     <div className="flex flex-col p-6 w-1/3 h-full">
-                        <Select id="sourceSelector" label="Source" options={sourceOptions} selected={activeThread?.source?.id} onChange={onSourceChange}></Select>
-                        <Select id="plotSelector" label="Plot" options={plotOptions} selected={activeThread?.plot?.id} onChange={onPlotChange}></Select>
-
-                        { lineLoadingStatus === "loading" && <Throbber /> }
+                        { isReady() && <SourceSelect sources={sources} selectedSource={activeThread!.source} onSourceChange={onSourceChange} /> }
+                        { isReady() && <Select id="plotSelector" label="Plot" options={plotOptions} selected={activeThread?.plot?.id} onChange={onPlotChange}></Select> }
+                        { !isReady() && <Throbber /> }
                     </div>
                     <div className="flex flex-row p-6 w-2/3 h-full">
                         { activeThread && filterLoadingStatus === "loaded" ? <FilterSet thread={activeThread} filters={sourceFilters[activeThread.source.id]} onFilterChange={onFilterChange} /> : <Throbber /> }
