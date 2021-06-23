@@ -5,9 +5,9 @@ import { Throbber } from './components/Throbber';
 import { SelectOption, Select } from './components/Select';
 import { FilterSet } from './components/FilterSet';
 import { ThreadsChart } from './components/ThreadsChart';
-import { Tab } from './components/Tab';
 import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { ThreadTabs } from './components/ThreadTabs';
 
 import { LoadingStatus, Thread } from './types';
 
@@ -105,28 +105,32 @@ function App() {
         });
     };
 
-    const onTabClose = (id: string) => {
-        const threadIds = Object.keys(threads);
-        const threadIndex = threadIds.indexOf(id);
+    const onTabClose = (thread: Thread) => {
+        const threadList = Object.values(threads);
+        const threadIndex = threadList.indexOf(thread);
 
-        let newActiveThreadIndex = "";
-        if (threadIndex < threadIds.length - 1) {
-            newActiveThreadIndex = threadIds[threadIndex + 1];
+        let newActiveThread: Thread | undefined = undefined;
+        if (threadIndex < threadList.length - 1) {
+            newActiveThread = threadList[threadIndex + 1];
         }
         else if (threadIndex > 0) {
-            newActiveThreadIndex = threadIds[threadIndex - 1];
+            newActiveThread = threadList[threadIndex - 1];
+        }
+        else {
+            // This code is likely unreachable because of the restrictions around closing the final tab, but just in case...
+            throw new Error(`Attemting to close tab that shouldn't be closed. Thread ID ${thread.id}, Tab # ${threadIndex}.`);
         }
 
-        setActiveThread(threads[newActiveThreadIndex]);
+        setActiveThread(newActiveThread);
         setThreads((oldThreads) => {
-            delete oldThreads[id];
+            delete oldThreads[thread.id];
             return {
                 ...oldThreads
             };
         });
 
         setLineMap((oldMap) => {
-            delete oldMap[id];
+            delete oldMap[thread.id];
             return {
                 ...oldMap
             };
@@ -260,14 +264,6 @@ function App() {
         query(activeThread);
     }, [activeThread]);
 
-    const tabs = Object.values(threads).map((thread) => {
-        return {
-            id: thread.id,
-            label: `${thread.source?.label}: ${thread.plot?.label}`,
-            thread
-        };
-    });
-
     let allLines: LineDefinition[] = [];
     Object.values(lineMap).forEach((threadLines) => {
         allLines = allLines.concat(threadLines);
@@ -287,8 +283,7 @@ function App() {
             </div>
             <div className="row flex flex-col h-1/6">
                 <div className="tabs-area flex flex-row bg-red-100">
-                    {tabs.map((t, index) => <Tab id={t.id} label={t.label} onSelect={(tabId: string) => { console.log("Opened tab", tabId); switchThread(t.thread); }} onClose={onTabClose} suppressClose={index === 0 && tabs.length === 1} />)}
-                    <Tab id="tabNew" label="+" onSelect={(tabId: string) => { makeNewThread(); }} onClose={onTabClose} suppressClose={true}/>
+                    <ThreadTabs threads={threads} onSelectTab={switchThread} onCloseTab={onTabClose} onNewTab={makeNewThread} />
                 </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-200">
                     <div className="flex flex-col p-6 w-1/3 h-full">
