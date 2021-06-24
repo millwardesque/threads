@@ -1,10 +1,7 @@
 # NEXT
-* Finish config appearance styling
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary
-* Styling Close-tab button
 * max-width w/ text truncation based on number of tabs
 * Scroll through tabs list
-* Active tab has more prominence no bottom border
 
 # TODO
 

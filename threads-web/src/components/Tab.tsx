@@ -1,17 +1,17 @@
-import React, { CSSProperties } from 'react';
-
+import React from 'react';
 import { Color } from '../models/ColorProvider';
 
 interface TabProps {
-    id: string,
-    label: string,
-    onSelect?: (selectedTab: string) => void,
-    onClose?: (selectedTab: string) => void,
-    suppressClose: boolean,
-    color: Color
-};
+    id: string;
+    label: string;
+    onSelect?: (selectedTab: string) => void;
+    onClose?: (selectedTab: string) => void;
+    suppressClose: boolean;
+    color: Color;
+    isActive?: boolean;
+}
 
-export const Tab: React.FC<TabProps> = ({id, label, onSelect, onClose, suppressClose, color}) => {
+export const Tab: React.FC<TabProps> = ({ id, label, onSelect, onClose, suppressClose, color, isActive = false }) => {
     let isDeleted = false;
 
     const handleSelect = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -29,22 +29,32 @@ export const Tab: React.FC<TabProps> = ({id, label, onSelect, onClose, suppressC
             onClose(id);
         }
         isDeleted = true;
-    }
-
-    const styles: CSSProperties = {
-        background: color.light,
-        borderColor: color.dark,
-        borderWidth: "1px",
     };
+
+    let styles = {
+        color: color.dark,
+        borderColor: color.dark,
+    };
+    let classes = 'max-w-sm px-4 py-2 cursor-pointer flex flex-row max-width-1/6 border-0 hover:bg-gray-50';
+    if (isActive) {
+        classes += ' border-b-2 font-bold';
+    }
 
     return (
         <>
-        {!isDeleted &&
-        <div onClick={handleSelect} className="border-2 border-b-0 max-w-sm px-4 py-2 cursor-pointer flex flex-row max-width-1/6" style={styles}>
-            <div className="flex-grow truncate ...">{label}</div>
-            { !suppressClose && <div className="flex-none ml-2" onClick={handleClose}>X</div> }
-        </div>
-        }
+            {!isDeleted && (
+                <div onClick={handleSelect} className={classes} style={styles}>
+                    <div className="flex-grow truncate ...">{label}</div>
+                    {!suppressClose && (
+                        <div
+                            className="flex-none ml-2 px-2 py-0 border border-gray-200 hover:border-opacity-100 hover:border-red-200 hover:bg-red-100"
+                            onClick={handleClose}
+                        >
+                            &times;
+                        </div>
+                    )}
+                </div>
+            )}
         </>
     );
 };

@@ -1,9 +1,10 @@
 import randomColor from 'randomcolor';
 const MAX_COLORS = 1000;
+const COLOR_SEED = 5;
 
 export interface Color {
-    dark: string,
-    light: string
+    dark: string;
+    light: string;
 }
 
 export default class ColorProvider {
@@ -14,14 +15,14 @@ export default class ColorProvider {
     constructor() {
         this.index = 0;
         this.lightColors = randomColor({
-            seed: 0,
+            seed: COLOR_SEED,
             count: MAX_COLORS,
-            luminosity: 'light'
+            luminosity: 'light',
         });
         this.darkColors = randomColor({
-            seed: 0,
+            seed: COLOR_SEED,
             count: MAX_COLORS,
-            luminosity: 'dark'
+            luminosity: 'dark',
         });
     }
 
@@ -36,7 +37,9 @@ export default class ColorProvider {
 
     atIndex(index: number): Color {
         if (index < 0 || index >= MAX_COLORS) {
-            console.warn(`Unable to fetch colour, Requested index ${index} isn't in the valid range: 0 - ${MAX_COLORS - 1}.`);
+            console.warn(
+                `Unable to fetch colour, Requested index ${index} isn't in the valid range: 0 - ${MAX_COLORS - 1}.`
+            );
             index = 0;
         }
 

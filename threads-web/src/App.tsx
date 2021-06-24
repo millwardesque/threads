@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
+import {
+    DataPlotDefinition,
+    DataSourceDefinition,
+    DataSourceMap,
+    FiltersAndValues,
+    GetFilterResults,
+    LineDefinition,
+    QueryRequest,
+    QueryResults,
+} from './models/DataSourceDefinition';
 import { SourceSelect } from './components/SourceSelect';
 import { PlotSelect } from './components/PlotSelect';
 import { Throbber } from './components/Throbber';
@@ -14,8 +23,8 @@ import { LoadingStatus, Thread } from './types';
 
 function App() {
     const isReady = () => {
-        return (Object.keys(sources).length && activeThread !== undefined);
-    }
+        return Object.keys(sources).length && activeThread !== undefined;
+    };
 
     const makeNewThread = () => {
         if (Object.keys(sources).length === 0) {
@@ -33,7 +42,7 @@ function App() {
             activeFilters: {},
         };
         updateActiveThread(newThread);
-    }
+    };
 
     const onSourceChange = (selectedSource: DataSourceDefinition): void => {
         const plot = Object.values(selectedSource.plots)[0];
@@ -49,7 +58,7 @@ function App() {
     const onPlotChange = (plot: DataPlotDefinition): void => {
         const newActiveThread: Thread = {
             ...activeThread!,
-            plot
+            plot,
         };
         updateActiveThread(newActiveThread);
     };
@@ -57,21 +66,21 @@ function App() {
     const onFilterChange = (dimension: string, selected: string[]): void => {
         const newActiveFilters = {
             ...activeThread!.activeFilters,
-            [dimension]: selected
-        }
+            [dimension]: selected,
+        };
 
         const newActiveThread: Thread = {
             ...activeThread!,
-            activeFilters: newActiveFilters
+            activeFilters: newActiveFilters,
         };
         updateActiveThread(newActiveThread);
-    }
+    };
 
     const updateActiveThread = (newActiveThread: Thread) => {
         setThreads((oldThreads) => {
             return {
                 ...oldThreads,
-                [newActiveThread.id]: newActiveThread
+                [newActiveThread.id]: newActiveThread,
             };
         });
         setActiveThread(newActiveThread);
@@ -84,30 +93,30 @@ function App() {
         let newActiveThread: Thread | undefined = undefined;
         if (threadIndex < threadList.length - 1) {
             newActiveThread = threadList[threadIndex + 1];
-        }
-        else if (threadIndex > 0) {
+        } else if (threadIndex > 0) {
             newActiveThread = threadList[threadIndex - 1];
-        }
-        else {
+        } else {
             // This code is likely unreachable because of the restrictions around closing the final tab, but just in case...
-            throw new Error(`Attemting to close tab that shouldn't be closed. Thread ID ${thread.id}, Tab # ${threadIndex}.`);
+            throw new Error(
+                `Attemting to close tab that shouldn't be closed. Thread ID ${thread.id}, Tab # ${threadIndex}.`
+            );
         }
 
         setActiveThread(newActiveThread);
         setThreads((oldThreads) => {
             delete oldThreads[thread.id];
             return {
-                ...oldThreads
+                ...oldThreads,
             };
         });
 
         setLineMap((oldMap) => {
             delete oldMap[thread.id];
             return {
-                ...oldMap
+                ...oldMap,
             };
         });
-    }
+    };
 
     const query = (thread?: Thread): void => {
         if (thread === undefined || thread.plot === undefined) {
@@ -117,42 +126,42 @@ function App() {
         setLineMap((oldMap) => {
             return {
                 ...oldMap,
-                [thread.id]: []
+                [thread.id]: [],
             };
         });
 
         const query: QueryRequest = {
             plotId: thread.plot.id,
-            dimensionFilters: thread.activeFilters
+            dimensionFilters: thread.activeFilters,
         };
-        axios.post(`http://localhost:2999/api/datasource/${thread.source.id}/query`, query)
-        .then((response) => {
-            const payload = response.data as QueryResults;
-            if (payload.hasError) {
-                console.log("Error querying data", payload.error);
-            }
-            else {
-                const lineData = Object.values(payload.data);
-                let newLines: LineDefinition[] = [];
-                for (let line of lineData) {
-                    newLines.push({
-                        plot: thread.plot!,
-                        data: line
-                    });
-                }
+        axios
+            .post(`http://localhost:2999/api/datasource/${thread.source.id}/query`, query)
+            .then((response) => {
+                const payload = response.data as QueryResults;
+                if (payload.hasError) {
+                    console.log('Error querying data', payload.error);
+                } else {
+                    const lineData = Object.values(payload.data);
+                    let newLines: LineDefinition[] = [];
+                    for (let line of lineData) {
+                        newLines.push({
+                            plot: thread.plot!,
+                            data: line,
+                        });
+                    }
 
-                setLineMap((oldMap) => {
-                    return {
-                        ...oldMap,
-                        [thread.id]: newLines
-                    };
-                });
-                console.log("Query results", payload, newLines);
-            }
-        })
-        .catch((error) => {
-            console.log("Error querying data", error);
-        });
+                    setLineMap((oldMap) => {
+                        return {
+                            ...oldMap,
+                            [thread.id]: newLines,
+                        };
+                    });
+                    console.log('Query results', payload, newLines);
+                }
+            })
+            .catch((error) => {
+                console.log('Error querying data', error);
+            });
     };
 
     const loadSourceFilters = (source: DataSourceDefinition): void => {
@@ -160,51 +169,52 @@ function App() {
             setSourceFilters((oldSourceFilters) => {
                 return {
                     ...oldSourceFilters,
-                    [source.id]: {}
+                    [source.id]: {},
                 };
             });
             setFilterLoadingStatus('loading');
 
-            axios.get(`http://localhost:2999/api/datasource/${source.id}/filters`)
-            .then((response) => {
-                const payload = response.data as GetFilterResults;
-                if (payload.hasError) {
-                    console.log("Error fetching filter values", payload.error);
-                }
-                else {
-                    setSourceFilters((oldSourceFilters) => {
-                        return {
-                            ...oldSourceFilters,
-                            [source.id]: payload.filters,
-                        };
-                    });
-                    console.log("Filters retrieved", payload);
-                }
-            })
-            .catch((error) => {
-                console.log("Error retrieving filters", error);
-            })
-            .finally(() => {
-                setFilterLoadingStatus('loaded');
-            });
+            axios
+                .get(`http://localhost:2999/api/datasource/${source.id}/filters`)
+                .then((response) => {
+                    const payload = response.data as GetFilterResults;
+                    if (payload.hasError) {
+                        console.log('Error fetching filter values', payload.error);
+                    } else {
+                        setSourceFilters((oldSourceFilters) => {
+                            return {
+                                ...oldSourceFilters,
+                                [source.id]: payload.filters,
+                            };
+                        });
+                        console.log('Filters retrieved', payload);
+                    }
+                })
+                .catch((error) => {
+                    console.log('Error retrieving filters', error);
+                })
+                .finally(() => {
+                    setFilterLoadingStatus('loaded');
+                });
         }
-    }
+    };
 
     const switchThread = (thread: Thread) => {
         setActiveThread(thread);
     };
 
-    const [lineMap, setLineMap] = useState<{[id: string]: LineDefinition[]}>({});
-    const [threads, setThreads] = useState<{[id: string]: Thread}>({});
-    const [activeThread, setActiveThread] = useState<Thread|undefined>(undefined);
+    const [lineMap, setLineMap] = useState<{ [id: string]: LineDefinition[] }>({});
+    const [threads, setThreads] = useState<{ [id: string]: Thread }>({});
+    const [activeThread, setActiveThread] = useState<Thread | undefined>(undefined);
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
-    const [sourceFilters, setSourceFilters] = useState<{[source: string]: FiltersAndValues}>({});
+    const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
 
     if (sourceStatus === 'not-started') {
         setSourceStatus('loading');
-        axios.get('http://localhost:2999/api/datasource')
+        axios
+            .get('http://localhost:2999/api/datasource')
             .then((response) => {
                 const { data: sources } = response;
                 setSourceStatus('loaded');
@@ -241,22 +251,42 @@ function App() {
                 </div>
                 <div className="flex flex-row w-full h-full">
                     <div className="graph-area w-full h-full p-4">
-                        <ThreadsChart id="chart" lines={allLines}/>
+                        <ThreadsChart id="chart" lines={allLines} />
                     </div>
                 </div>
             </div>
             <div className="row flex flex-col h-1/4">
                 <div className="tabs-area flex flex-row">
-                    <ThreadTabs threads={threads} onSelectTab={switchThread} onCloseTab={onTabClose} onNewTab={makeNewThread} />
+                    <ThreadTabs
+                        threads={threads}
+                        activeThread={activeThread!}
+                        onSelectTab={switchThread}
+                        onCloseTab={onTabClose}
+                        onNewTab={makeNewThread}
+                    />
                 </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-100">
-                    <div className="flex flex-col p-6 w-1/3 h-full border border-gray-300">
-                        { isReady() && <SourceSelect sources={sources} selectedSource={activeThread!.source} onSourceChange={onSourceChange} /> }
-                        { isReady() && <PlotSelect thread={activeThread!} onPlotChange={onPlotChange} /> }
-                        { !isReady() && <Throbber /> }
+                    <div className="flex flex-col p-6 w-1/3 h-full border-0 border-r border-gray-300">
+                        {isReady() && (
+                            <SourceSelect
+                                sources={sources}
+                                selectedSource={activeThread!.source}
+                                onSourceChange={onSourceChange}
+                            />
+                        )}
+                        {isReady() && <PlotSelect thread={activeThread!} onPlotChange={onPlotChange} />}
+                        {!isReady() && <Throbber />}
                     </div>
                     <div className="flex flex-row p-6 w-2/3 h-full">
-                        { activeThread && filterLoadingStatus === "loaded" ? <FilterSet thread={activeThread} filters={sourceFilters[activeThread.source.id]} onFilterChange={onFilterChange} /> : <Throbber /> }
+                        {activeThread && filterLoadingStatus === 'loaded' ? (
+                            <FilterSet
+                                thread={activeThread}
+                                filters={sourceFilters[activeThread.source.id]}
+                                onFilterChange={onFilterChange}
+                            />
+                        ) : (
+                            <Throbber />
+                        )}
                     </div>
                 </div>
             </div>
