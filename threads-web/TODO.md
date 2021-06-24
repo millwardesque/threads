@@ -16,7 +16,6 @@ Tabs
 
 Axis
 * Format axis values with commas
-* Merge axes of same unit together
 
 Thread Config
 * Undo
@@ -39,6 +38,7 @@ Explode
 Persistent URLs
 Title
 Description / notes
+Money formatting
 Annotation lines
 Historical lines
 Adhoc lines
