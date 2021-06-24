@@ -1,27 +1,43 @@
+# NEXT
+* Finish config appearance styling
+* Tab order should be deterministic and not change based on which tabs are present in the dictionary
+* Styling Close-tab button
+* max-width w/ text truncation based on number of tabs
+* Scroll through tabs list
+* Active tab has more prominence no bottom border
+
+# TODO
+
 Refactor
 * Data-loading hooks?
 
 Bug: Select All on FilterSelect unhighlights everything
 
 Tabs
-* Tab order should be deterministic and not change based on which tabs are present in the dictionary
-* Styling Close-tab button
-* max-width w/ text truncation based on number of tabs
-* Scroll through tabs list
-* Rename tabs
-* Active tab has more prominence no bottom border
+* Don't requery when switching threads
 
-Format axis values with commas
+Axis
+* Format axis values with commas
+* Merge axes of same unit together
 
-Bug: ChartJS doesn't normalize the date range like it should when there's a massive gap between ranges in datasources
-Don't requery when switching tabs
-  * Make activeThread into a string ID to simplify updates
+Thread Config
+* Undo
+* Rename
 
-Undo
-Loading page while loading sources
-Axis: Merge axes of same unit together
+General UI
+* Loading page while loading sources
+
+Filter selector
+* Value search
+* Collapsed by default
+* Grouped values
+
+Lines:
+* Tooltips
+
+Page
 Explode
-Tooltip
+
 Persistent URLs
 Title
 Description / notes
@@ -43,3 +59,4 @@ Source maker
 Line up axes on left side?
 Check all threads' active filters after source filters change
 Hide config bar
+Common shared filters
