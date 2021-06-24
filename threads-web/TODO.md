@@ -1,14 +1,9 @@
 # NEXT
-* Tab order should be deterministic and not change based on which tabs are present in the dictionary
 * max-width w/ text truncation based on number of tabs
 
-# TODO
-Bug: Lines don't disappear when closing the non-last tab?
-
+# BACKLOG
 Refactor
 * Data-loading hooks?
-
-Bug: Select All on FilterSelect unhighlights everything
 
 Tabs
 * Don't requery when switching tabs
@@ -58,3 +53,6 @@ Line up axes on left side?
 Check all threads' active filters after source filters change
 Hide config bar
 Common shared filters
+
+Defensive (i.e. stuff I haven't observed but could be possible)
+* Tab order should be deterministic and not change based on which tabs are present in the dictionary

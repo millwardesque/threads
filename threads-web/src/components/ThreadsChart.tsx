@@ -23,8 +23,6 @@ const makeAxis = (id: string, showAxis: boolean, drawGrid: boolean, units: strin
                 if (!showAxis) {
                     return '';
                 }
-
-                console.log(units);
                 switch (units) {
                     case '$':
                         return units + value;
@@ -70,7 +68,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         const shownAxes: {
             [units: string]: string;
         } = {};
-        console.log('Rendering');
         for (let index in lines) {
             const line = lines[index];
             const axisId = `y${index}`;
@@ -82,7 +79,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             if (createAxis) {
                 axes[axisId] = makeAxis(axisId, true, index === '0', line.plot.units);
                 shownAxes[line.plot.units] = axisId;
-                console.log(shownAxes, line.plot.units);
             }
 
             const dataset = {
@@ -102,8 +98,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
             datasets.push(dataset);
         }
-
-        console.log(Object.values(axes));
 
         const data = {
             labels: dates,
