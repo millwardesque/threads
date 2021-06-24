@@ -9,6 +9,7 @@ Tabs
 * max-width w/ text truncation based on number of tabs
 * Scroll through tabs list
 * Rename tabs
+* Active tab has more prominence no bottom border
 
 Format axis values with commas
 
@@ -16,6 +17,7 @@ Bug: ChartJS doesn't normalize the date range like it should when there's a mass
 Don't requery when switching tabs
   * Make activeThread into a string ID to simplify updates
 
+Undo
 Loading page while loading sources
 Axis: Merge axes of same unit together
 Explode
@@ -40,3 +42,4 @@ Source groups
 Source maker
 Line up axes on left side?
 Check all threads' active filters after source filters change
+Hide config bar

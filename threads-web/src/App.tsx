@@ -235,7 +235,7 @@ function App() {
 
     return (
         <div className="App h-screen">
-            <div className="row flex h-5/6 flex-col">
+            <div className="row flex h-3/4 flex-col">
                 <div id="header" className="flex w-full h-12 p-6 bg-green-500 items-center">
                     <h1 className="text-2xl font-bold text-white">Threads</h1>
                 </div>
@@ -245,12 +245,12 @@ function App() {
                     </div>
                 </div>
             </div>
-            <div className="row flex flex-col h-1/6">
-                <div className="tabs-area flex flex-row bg-red-100">
+            <div className="row flex flex-col h-1/4">
+                <div className="tabs-area flex flex-row">
                     <ThreadTabs threads={threads} onSelectTab={switchThread} onCloseTab={onTabClose} onNewTab={makeNewThread} />
                 </div>
-                <div className="config-area flex flex-row flex-auto bg-gray-200">
-                    <div className="flex flex-col p-6 w-1/3 h-full">
+                <div className="config-area flex flex-row flex-auto bg-gray-100">
+                    <div className="flex flex-col p-6 w-1/3 h-full border border-gray-300">
                         { isReady() && <SourceSelect sources={sources} selectedSource={activeThread!.source} onSourceChange={onSourceChange} /> }
                         { isReady() && <PlotSelect thread={activeThread!} onPlotChange={onPlotChange} /> }
                         { !isReady() && <Throbber /> }
