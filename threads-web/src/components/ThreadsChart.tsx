@@ -25,10 +25,10 @@ const makeAxis = (id: string, showAxis: boolean, drawGrid: boolean, units: strin
                 }
                 switch (units) {
                     case '$':
-                        return units + value;
+                        return units + value.toLocaleString();
                     case '%':
                     default:
-                        return value + units;
+                        return value.toLocaleString() + units;
                 }
             },
         },

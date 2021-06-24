@@ -31,7 +31,6 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOptionElements = event.target.selectedOptions;
         let selectedOptions: string[] = [];
-        console.log('Inbound', selectedOptionElements);
 
         if (selectedOptionElements.length === 1 && selectedOptionElements.item(0)!.value === ALL_VALUE) {
             selectedOptions = options.map((o) => o.value);
@@ -43,14 +42,11 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
                 }
             }
         }
-        console.log('Outbound', selectedOptions);
 
         if (onChange) {
             onChange(selectedOptions);
         }
     };
-
-    console.log('Rendering', options);
 
     return (
         <div className="flex flex-col pb-2">

@@ -1,5 +1,4 @@
 # NEXT
-* max-width w/ text truncation based on number of tabs
 
 # BACKLOG
 Refactor
@@ -7,10 +6,6 @@ Refactor
 
 Tabs
 * Don't requery when switching tabs
-* Tooltip containing title / source / plot on hover
-
-Axis
-* Format axis values with commas
 
 Thread Config
 * Undo
@@ -53,6 +48,7 @@ Line up axes on left side?
 Check all threads' active filters after source filters change
 Hide config bar
 Common shared filters
+max-width w/ text truncation based on number of tabs
 
 Defensive (i.e. stuff I haven't observed but could be possible)
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary

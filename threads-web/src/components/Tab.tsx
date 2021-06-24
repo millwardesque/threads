@@ -43,7 +43,7 @@ export const Tab: React.FC<TabProps> = ({ id, label, onSelect, onClose, suppress
     return (
         <>
             {!isDeleted && (
-                <div onClick={handleSelect} className={classes} style={styles}>
+                <div title={label} onClick={handleSelect} className={classes} style={styles}>
                     <div className="flex-grow truncate ...">{label}</div>
                     {!suppressClose && (
                         <div
