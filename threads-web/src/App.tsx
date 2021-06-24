@@ -4,7 +4,6 @@ import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, FiltersAndValu
 import { SourceSelect } from './components/SourceSelect';
 import { PlotSelect } from './components/PlotSelect';
 import { Throbber } from './components/Throbber';
-import { SelectOption } from './components/Select';
 import { FilterSet } from './components/FilterSet';
 import { ThreadsChart } from './components/ThreadsChart';
 import { useEffect } from 'react';
@@ -196,14 +195,12 @@ function App() {
     };
 
     const [lineMap, setLineMap] = useState<{[id: string]: LineDefinition[]}>({});
-
     const [threads, setThreads] = useState<{[id: string]: Thread}>({});
     const [activeThread, setActiveThread] = useState<Thread|undefined>(undefined);
     const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
     const [sources, setSources] = useState<DataSourceMap>({});
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{[source: string]: FiltersAndValues}>({});
-    const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
 
     if (sourceStatus === 'not-started') {
         setSourceStatus('loading');
@@ -219,7 +216,7 @@ function App() {
             });
     }
 
-    if (sourceOptions.length > 0 && activeThread === undefined) {
+    if (Object.keys(sources).length > 0 && activeThread === undefined) {
         makeNewThread();
     }
 
