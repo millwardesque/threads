@@ -68,9 +68,9 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
     };
 
     return (
-        <div className="flex">
-            {tabElements}
+        <div className="flex w-full overflow-x-auto">
             <Tab id="tabNew" label="+ Thread" onSelect={handleNewTab} suppressClose={true} color={greyTab} />
+            {tabElements}
         </div>
     );
 };

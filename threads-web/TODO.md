@@ -1,9 +1,9 @@
 # NEXT
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary
 * max-width w/ text truncation based on number of tabs
-* Scroll through tabs list
 
 # TODO
+Bug: Lines don't disappear when closing the non-last tab?
 
 Refactor
 * Data-loading hooks?
@@ -11,7 +11,8 @@ Refactor
 Bug: Select All on FilterSelect unhighlights everything
 
 Tabs
-* Don't requery when switching threads
+* Don't requery when switching tabs
+* Tooltip containing title / source / plot on hover
 
 Axis
 * Format axis values with commas
