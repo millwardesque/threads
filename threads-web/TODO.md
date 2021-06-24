@@ -31,12 +31,14 @@ Historical lines
 Adhoc lines
 Bug: Why does Axios get called twice? I think it's a setState / re-render on the loading state
 Bug?: Switching to a new source with a default plot that has the same ID as the current plot. Will this refresh the line properly?
-Auto-number sources?
+Auto-number sources
 Share types between server and client (central shared lib?)
 tsconfig to match work
 axios fail error states
 Short labels for plots and sources
 Nicer filter selector
+Megaselect for searching sources / plots by name)
+Source / plot tags
 Source groups
 Source maker
 Line up axes on left side?

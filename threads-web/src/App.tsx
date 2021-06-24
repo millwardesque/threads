@@ -30,7 +30,7 @@ function App() {
             id: uuidv4(),
             source,
             plot,
-            activeFilters: undefined,
+            activeFilters: {},
         };
         updateActiveThread(newThread);
     }
@@ -41,7 +41,7 @@ function App() {
             id: activeThread!.id,
             source: selectedSource,
             plot,
-            activeFilters: undefined,
+            activeFilters: {},
         };
         updateActiveThread(newActiveThread);
     };

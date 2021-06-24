@@ -4,7 +4,7 @@ export interface Thread {
     id: string,
     source: DataSourceDefinition,
     plot: DataPlotDefinition,
-    activeFilters?: FiltersAndValues,
+    activeFilters: FiltersAndValues,
 };
 
 export type LoadingStatus = 'not-started' | 'loading' | 'loaded';
