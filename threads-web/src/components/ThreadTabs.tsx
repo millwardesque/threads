@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Color } from '../models/ColorProvider';
+import useColorProvider from '../hooks/useColorProvider';
 import { Thread } from '../types';
 import { Tab } from './Tab';
 
@@ -48,12 +50,17 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({threads, onSelectTab, onC
         };
     });
 
-    const tabElements = tabs.map((t, index) => <Tab id={t.id} label={t.label} onSelect={handleSelectTab} onClose={handleCloseTab} suppressClose={index === 0 && tabs.length === 1}></Tab>);
+    const colors = useColorProvider();
+    const tabElements = tabs.map((t, index) => <Tab id={t.id} label={t.label} color={colors.atIndex(index)} onSelect={handleSelectTab} onClose={handleCloseTab} suppressClose={index === 0 && tabs.length === 1}></Tab>);
+    const greyTab: Color = {
+        light: '#ddd',
+        dark: '#999'
+    };
 
     return (
         <div className="flex">
             {tabElements}
-            <Tab id="tabNew" label="+" onSelect={handleNewTab} suppressClose={true} />
+            <Tab id="tabNew" label="+" onSelect={handleNewTab} suppressClose={true} color={greyTab}/>
         </div>
     );
 }

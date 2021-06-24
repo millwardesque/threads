@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import {LineDefinition} from '../models/DataSourceDefinition';
-import ColorProvider from '../models/ColorProvider';
+import useColorProvider from '../hooks/useColorProvider';
 
 interface ThreadsChartProps {
     id: string,
@@ -37,6 +37,7 @@ const makeAxis = (showAxis: boolean, drawGrid: boolean, units: string) => {
     };
 }
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
+    const colors = useColorProvider();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
 
@@ -51,7 +52,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     }, [isRebuildingCanvas]);
 
     useEffect(() => {
-        const colors = new ColorProvider();
         let lineUnits: string = '';
         let axes: ChartAxes = {};
 
@@ -70,7 +70,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             const axisId = `y${index}`;
             const lineLabel = line.plot.label;
             const lineData: number[] = dates.map(d => line.data[d]);
-            const color = colors.next();
+            const color = colors.atIndex(parseInt(index));
             axes[axisId] = makeAxis(lineData.length > 0, index === '0', line.plot.units);
 
             datasets.push(
@@ -120,7 +120,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         return () => {
             chartInstance.destroy();
         }
-    }, [lines, isRebuildingCanvas]);
+    }, [lines, isRebuildingCanvas, colors]);
 
     return (
         <>

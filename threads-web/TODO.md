@@ -1,12 +1,7 @@
 Refactor
 * Data-loading hooks?
-* Active Filters can't be undefined, use empty map instead
 
 Bug: Select All on FilterSelect unhighlights everything
-
-Thread colours
-  * Tabs have separate instance for rendering
-  * https://randomcolor.lllllllllllllllll.com/
 
 Tabs
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary
@@ -14,6 +9,8 @@ Tabs
 * max-width w/ text truncation based on number of tabs
 * Scroll through tabs list
 * Rename tabs
+
+Format axis values with commas
 
 Bug: ChartJS doesn't normalize the date range like it should when there's a massive gap between ranges in datasources
 Don't requery when switching tabs

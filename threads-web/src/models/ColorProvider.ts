@@ -33,4 +33,16 @@ export default class ColorProvider {
         this.index = (this.index + 1) % MAX_COLORS;
         return color;
     }
+
+    atIndex(index: number): Color {
+        if (index < 0 || index >= MAX_COLORS) {
+            console.warn(`Unable to fetch colour, Requested index ${index} isn't in the valid range: 0 - ${MAX_COLORS - 1}.`);
+            index = 0;
+        }
+
+        return {
+            light: this.lightColors[index],
+            dark: this.darkColors[index],
+        };
+    }
 }
