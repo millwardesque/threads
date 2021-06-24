@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
+import { DataPlotDefinition, DataSourceDefinition, DataSourceMap, FiltersAndValues, GetFilterResults, LineDefinition, QueryRequest, QueryResults } from './models/DataSourceDefinition';
 import { SourceSelect } from './components/SourceSelect';
+import { PlotSelect } from './components/PlotSelect';
 import { Throbber } from './components/Throbber';
-import { SelectOption, Select } from './components/Select';
+import { SelectOption } from './components/Select';
 import { FilterSet } from './components/FilterSet';
 import { ThreadsChart } from './components/ThreadsChart';
 import { useEffect } from 'react';
@@ -11,19 +12,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { ThreadTabs } from './components/ThreadTabs';
 
 import { LoadingStatus, Thread } from './types';
-
-// @TODO Coloured line definition
-const getPlotOptions = (source?: DataSourceDefinition) => {
-    if (!source) {
-        return [];
-    }
-
-    return Object.values(source.plots)
-        .map(p => {
-            return { label: p.label, value: p.id };
-        }
-    );
-}
 
 function App() {
     const isReady = () => {
@@ -59,20 +47,12 @@ function App() {
         updateActiveThread(newActiveThread);
     };
 
-    const onPlotChange = (selected: string): void => {
-        if (activeThread?.source && Object.keys(activeThread.source.plots).includes(selected)) {
-            const plot = activeThread.source.plots[selected];
-
-            console.log(`Updating plot: ${activeThread.source.id}.${plot.id}`);
-            const newActiveThread: Thread = {
-                ...activeThread!,
-                plot
-            };
-            updateActiveThread(newActiveThread);
-        }
-        else {
-            console.log(`Unable to select plot '${selected}'.  No source selected, or plot doesn't exist in selected source ${activeThread?.source.id}.`);
-        }
+    const onPlotChange = (plot: DataPlotDefinition): void => {
+        const newActiveThread: Thread = {
+            ...activeThread!,
+            plot
+        };
+        updateActiveThread(newActiveThread);
     };
 
     const onFilterChange = (dimension: string, selected: string[]): void => {
@@ -224,7 +204,6 @@ function App() {
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{[source: string]: FiltersAndValues}>({});
     const sourceOptions: SelectOption[] = Object.values(sources).map(s => { return { label: s.label, value: s.id } });
-    const plotOptions: SelectOption[] = getPlotOptions(activeThread?.source);
 
     if (sourceStatus === 'not-started') {
         setSourceStatus('loading');
@@ -276,7 +255,7 @@ function App() {
                 <div className="config-area flex flex-row flex-auto bg-gray-200">
                     <div className="flex flex-col p-6 w-1/3 h-full">
                         { isReady() && <SourceSelect sources={sources} selectedSource={activeThread!.source} onSourceChange={onSourceChange} /> }
-                        { isReady() && <Select id="plotSelector" label="Plot" options={plotOptions} selected={activeThread?.plot?.id} onChange={onPlotChange}></Select> }
+                        { isReady() && <PlotSelect thread={activeThread!} onPlotChange={onPlotChange} /> }
                         { !isReady() && <Throbber /> }
                     </div>
                     <div className="flex flex-row p-6 w-2/3 h-full">

@@ -1,6 +1,6 @@
 Refactor
-* Plot selector
 * Data-loading hooks?
+* Active Filters can't be undefined, use empty map instead
 
 Bug: Select All on FilterSelect unhighlights everything
 

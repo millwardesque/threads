@@ -3,7 +3,7 @@ import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from './mo
 export interface Thread {
     id: string,
     source: DataSourceDefinition,
-    plot?: DataPlotDefinition,
+    plot: DataPlotDefinition,
     activeFilters?: FiltersAndValues,
 };
 
