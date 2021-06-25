@@ -1,4 +1,5 @@
 # NEXT
+Bug: Doesn't appear on initial view
 
 # BACKLOG
 Refactor
