@@ -27,7 +27,6 @@ interface LoadedThreadsAppProps {
 
 export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) => {
     const makeNewThread = (): Thread => {
-        console.log(sources);
         const source = Object.values(sources)[0];
         const plot = Object.values(source.plots)[0];
 
@@ -202,7 +201,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
 
     const [lineMap, setLineMap] = useState<{ [id: string]: LineDefinition[] }>({});
     const [threads, setThreads] = useState<{ [id: string]: Thread }>({});
-    const [activeThread, setActiveThread] = useState<Thread>(makeNewThread());
+    const [activeThread, setActiveThread] = useState<Thread>(makeNewThread);
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
 
