@@ -1,5 +1,5 @@
 # NEXT
-Bug: Doesn't appear on initial view
+Bug: Tab doesn't appear on initial view
 
 # BACKLOG
 Refactor
@@ -12,9 +12,6 @@ Thread Config
 * Undo
 * Rename
 
-General UI
-* Loading page while loading sources
-
 Filter selector
 * Value search
 * Collapsed by default
@@ -23,13 +20,11 @@ Filter selector
 Lines:
 * Tooltips
 
-Page
-Explode
-
+Explode filter
 Persistent URLs
-Title
-Description / notes
-Money formatting
+Custom thread title
+Per-thread description / notes
+Money formatting in axis
 Annotation lines
 Historical lines
 Adhoc lines

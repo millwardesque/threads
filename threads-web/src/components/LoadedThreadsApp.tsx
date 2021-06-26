@@ -201,7 +201,16 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
 
     const [lineMap, setLineMap] = useState<{ [id: string]: LineDefinition[] }>({});
     const [threads, setThreads] = useState<{ [id: string]: Thread }>({});
-    const [activeThread, setActiveThread] = useState<Thread>(makeNewThread);
+    const [activeThread, setActiveThread] = useState<Thread>(() => {
+        const firstThread = makeNewThread();
+        setThreads((oldThreads) => {
+            return {
+                ...oldThreads,
+                firstThread,
+            };
+        });
+        return firstThread;
+    });
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
 
