@@ -1,7 +1,9 @@
 # NEXT
-Bug: Tab doesn't appear on initial view
+Redux for state
 
 # BACKLOG
+
+## Waiting on Redux
 Refactor
 * Data-loading hooks?
 
@@ -11,19 +13,20 @@ Tabs
 Thread Config
 * Undo
 * Rename
+* Custom title
+* Per-thread description / notes
 
+## Unblocked
 Filter selector
 * Value search
 * Collapsed by default
 * Grouped values
+* Explode filter
 
 Lines:
 * Tooltips
 
-Explode filter
-Persistent URLs
-Custom thread title
-Per-thread description / notes
+Persistent URLs / config loading from server
 Money formatting in axis
 Annotation lines
 Historical lines

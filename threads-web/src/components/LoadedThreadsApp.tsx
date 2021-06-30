@@ -19,7 +19,7 @@ import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { ThreadTabs } from './ThreadTabs';
 
-import { LoadingStatus, Thread } from '../types';
+import { LineMap, LoadingStatus, Thread } from '../types';
 
 interface LoadedThreadsAppProps {
     sources: DataSourceMap;
@@ -199,7 +199,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         setActiveThread(thread);
     };
 
-    const [lineMap, setLineMap] = useState<{ [id: string]: LineDefinition[] }>({});
+    const [lineMap, setLineMap] = useState<LineMap>({});
     const [threads, setThreads] = useState<{ [id: string]: Thread }>({});
     const [activeThread, setActiveThread] = useState<Thread>(() => {
         const firstThread = makeNewThread();
