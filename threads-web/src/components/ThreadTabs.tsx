@@ -19,7 +19,7 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
     const handleSelectTab = (tabId: string) => {
         console.log('Requesting tab select', tabId);
         if (!(tabId in threads)) {
-            console.warn(`Unable to select tab with ID '${tabId}': No thread with that ID exists.`);
+            console.warn(`Unable to select tab with ID '${tabId}': No thread with that ID exists.`, threads);
         } else if (onSelectTab) {
             onSelectTab(threads[tabId]);
         }

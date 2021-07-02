@@ -19,7 +19,9 @@ import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { ThreadTabs } from './ThreadTabs';
 
-import { LineMap, LoadingStatus, Thread } from '../types';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { deleteThreadLines, updateThreadLines, SelectAllLines } from '../redux/linesSlice';
+import { LoadingStatus, Thread } from '../types';
 
 interface LoadedThreadsAppProps {
     sources: DataSourceMap;
@@ -106,12 +108,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             };
         });
 
-        setLineMap((oldMap) => {
-            delete oldMap[thread.id];
-            return {
-                ...oldMap,
-            };
-        });
+        dispatch(deleteThreadLines(thread.id));
     };
 
     const query = (thread?: Thread): void => {
@@ -119,12 +116,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             return;
         }
 
-        setLineMap((oldMap) => {
-            return {
-                ...oldMap,
-                [thread.id]: [],
-            };
-        });
+        dispatch(deleteThreadLines(thread.id));
 
         const query: QueryRequest = {
             plotId: thread.plot.id,
@@ -146,12 +138,11 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                         });
                     }
 
-                    setLineMap((oldMap) => {
-                        return {
-                            ...oldMap,
+                    dispatch(
+                        updateThreadLines({
                             [thread.id]: newLines,
-                        };
-                    });
+                        })
+                    );
                     console.log('Query results', payload, newLines);
                 }
             })
@@ -199,14 +190,14 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         setActiveThread(thread);
     };
 
-    const [lineMap, setLineMap] = useState<LineMap>({});
+    const dispatch = useAppDispatch();
     const [threads, setThreads] = useState<{ [id: string]: Thread }>({});
     const [activeThread, setActiveThread] = useState<Thread>(() => {
         const firstThread = makeNewThread();
         setThreads((oldThreads) => {
             return {
                 ...oldThreads,
-                firstThread,
+                [firstThread.id]: firstThread,
             };
         });
         return firstThread;
@@ -222,8 +213,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         query(activeThread);
     }, [activeThread]);
 
+    const lines = useAppSelector(SelectAllLines);
     let allLines: LineDefinition[] = [];
-    Object.values(lineMap).forEach((threadLines) => {
+    Object.values(lines).forEach((threadLines) => {
         allLines = allLines.concat(threadLines);
     });
 
