@@ -1,5 +1,6 @@
 # NEXT
-
+Make active-thread an index internally to simplify state operations, expose active-thread index and active-thread as selectors
+Create plot, source, and filter-change, update-thread actions to redux
 
 # BACKLOG
 
@@ -19,7 +20,7 @@ Undo
 Tabs:
 * Tab order switches when changing tabs
 * Bug: Don't lines redraw when switching tabs
-*
+
 Filter selector
 * Value search
 * Collapsed by default

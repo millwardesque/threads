@@ -191,18 +191,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     useEffect(() => {
         if (!threads.length) {
             const firstThread = makeNewThread();
-
-            /* @DEBUG
-            dispatch(setThread(firstThread));
-            dispatch(setActiveThread(firstThread));
-            */
             updateActiveThread(firstThread);
         }
     }, []);
-
-    /* useEffect(() => {
-        query(activeThread);
-    }, [activeThread]);*/
 
     if (activeThread && !(activeThread.source.id in sourceFilters)) {
         loadSourceFilters(activeThread.source);
