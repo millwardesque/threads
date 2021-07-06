@@ -21,6 +21,7 @@ import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { deleteThreadLines, updateThreadLines, SelectAllLines } from '../redux/linesSlice';
+import { setThread, deleteThread, setActiveThread, selectActiveThread, selectAllThreads } from '../redux/threadsSlice';
 import { LoadingStatus, Thread } from '../types';
 
 interface LoadedThreadsAppProps {
@@ -75,13 +76,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     };
 
     const updateActiveThread = (newActiveThread: Thread) => {
-        setThreads((oldThreads) => {
-            return {
-                ...oldThreads,
-                [newActiveThread.id]: newActiveThread,
-            };
-        });
-        setActiveThread(newActiveThread);
+        dispatch(setThread(newActiveThread));
+        dispatch(setActiveThread(newActiveThread));
+        query(newActiveThread);
     };
 
     const onTabClose = (thread: Thread) => {
@@ -100,14 +97,8 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             );
         }
 
-        setActiveThread(newActiveThread);
-        setThreads((oldThreads) => {
-            delete oldThreads[thread.id];
-            return {
-                ...oldThreads,
-            };
-        });
-
+        dispatch(setActiveThread(newActiveThread));
+        dispatch(deleteThread(thread.id));
         dispatch(deleteThreadLines(thread.id));
     };
 
@@ -187,31 +178,35 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     };
 
     const switchThread = (thread: Thread) => {
-        setActiveThread(thread);
+        dispatch(setActiveThread(thread));
     };
 
     const dispatch = useAppDispatch();
-    const [threads, setThreads] = useState<{ [id: string]: Thread }>({});
-    const [activeThread, setActiveThread] = useState<Thread>(() => {
-        const firstThread = makeNewThread();
-        setThreads((oldThreads) => {
-            return {
-                ...oldThreads,
-                [firstThread.id]: firstThread,
-            };
-        });
-        return firstThread;
-    });
+    const threads = useAppSelector(selectAllThreads);
+    const activeThread = useAppSelector(selectActiveThread);
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
 
-    if (!(activeThread.source.id in sourceFilters)) {
+    // On mount
+    useEffect(() => {
+        if (!threads.length) {
+            const firstThread = makeNewThread();
+
+            /* @DEBUG
+            dispatch(setThread(firstThread));
+            dispatch(setActiveThread(firstThread));
+            */
+            updateActiveThread(firstThread);
+        }
+    }, []);
+
+    /* useEffect(() => {
+        query(activeThread);
+    }, [activeThread]);*/
+
+    if (activeThread && !(activeThread.source.id in sourceFilters)) {
         loadSourceFilters(activeThread.source);
     }
-
-    useEffect(() => {
-        query(activeThread);
-    }, [activeThread]);
 
     const lines = useAppSelector(SelectAllLines);
     let allLines: LineDefinition[] = [];
@@ -219,7 +214,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         allLines = allLines.concat(threadLines);
     });
 
-    return (
+    return !activeThread ? (
+        <Throbber />
+    ) : (
         <>
             <div className="row flex h-3/4 flex-col">
                 <div className="flex flex-row w-full h-full">

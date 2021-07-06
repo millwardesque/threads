@@ -1,5 +1,5 @@
 # NEXT
-Redux for state
+
 
 # BACKLOG
 
@@ -7,16 +7,19 @@ Redux for state
 Refactor
 * Data-loading hooks?
 
-Tabs
-* Don't requery when switching tabs
-
 Thread Config
-* Undo
 * Rename
 * Custom title
 * Per-thread description / notes
 
+Redux source filters
+Undo
+
 ## Unblocked
+Tabs:
+* Tab order switches when changing tabs
+* Bug: Don't lines redraw when switching tabs
+*
 Filter selector
 * Value search
 * Collapsed by default
@@ -26,6 +29,7 @@ Filter selector
 Lines:
 * Tooltips
 
+Simplify active-thread andt thread interactions
 Persistent URLs / config loading from server
 Money formatting in axis
 Annotation lines

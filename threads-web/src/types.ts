@@ -17,6 +17,10 @@ export interface Thread {
     activeFilters: FiltersAndValues;
 }
 
+export interface ThreadMap {
+    [id: string]: Thread;
+}
+
 export type LoadingStatus = 'not-started' | 'loading' | 'loaded';
 
 export interface ApplicationState {

@@ -43,6 +43,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
 
     useEffect(() => {
+        console.log('Rebuilding');
         setIsRebuildingCanvas(true);
     }, [lines]);
 
@@ -122,6 +123,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             return;
         }
 
+        console.log('Creating chart instance');
         const chartInstance = new Chart(canvasRef.current, {
             type: 'line',
             data,
@@ -129,6 +131,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         });
 
         return () => {
+            console.log('Destroying chart');
             chartInstance.destroy();
         };
     }, [lines, isRebuildingCanvas, colors]);
