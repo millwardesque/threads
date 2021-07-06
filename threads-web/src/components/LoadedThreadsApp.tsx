@@ -29,7 +29,33 @@ interface LoadedThreadsAppProps {
 }
 
 export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) => {
-    const makeNewThread = (): Thread => {
+    const updateThread = (newActiveThread: Thread) => {
+        dispatch(setThread(newActiveThread));
+        query(newActiveThread);
+    };
+
+    const switchThread = (thread: Thread) => {
+        dispatch(setActiveThread(thread));
+    };
+
+    const removeThread = (thread: Thread) => {
+        dispatch(deleteThread(thread.id));
+        dispatch(deleteThreadLines(thread.id));
+    };
+
+    const clearThreadLines = (thread: Thread) => {
+        dispatch(deleteThreadLines(thread.id));
+    };
+
+    const replaceThreadLines = (thread: Thread, lines: LineDefinition[]) => {
+        dispatch(
+            updateThreadLines({
+                [thread.id]: lines,
+            })
+        );
+    };
+
+    const makeNewThread = () => {
         const source = Object.values(sources)[0];
         const plot = Object.values(source.plots)[0];
 
@@ -40,7 +66,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             plot,
             activeFilters: {},
         };
-        return newThread;
+
+        updateThread(newThread);
+        switchThread(newThread);
     };
 
     const onSourceChange = (selectedSource: DataSourceDefinition): void => {
@@ -51,7 +79,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             plot,
             activeFilters: {},
         };
-        updateActiveThread(newActiveThread);
+        updateThread(newActiveThread);
     };
 
     const onPlotChange = (plot: DataPlotDefinition): void => {
@@ -59,7 +87,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             ...activeThread!,
             plot,
         };
-        updateActiveThread(newActiveThread);
+        updateThread(newActiveThread);
     };
 
     const onFilterChange = (dimension: string, selected: string[]): void => {
@@ -72,13 +100,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             ...activeThread!,
             activeFilters: newActiveFilters,
         };
-        updateActiveThread(newActiveThread);
-    };
-
-    const updateActiveThread = (newActiveThread: Thread) => {
-        dispatch(setThread(newActiveThread));
-        dispatch(setActiveThread(newActiveThread));
-        query(newActiveThread);
+        updateThread(newActiveThread);
     };
 
     const onTabClose = (thread: Thread) => {
@@ -97,9 +119,8 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             );
         }
 
-        dispatch(setActiveThread(newActiveThread));
-        dispatch(deleteThread(thread.id));
-        dispatch(deleteThreadLines(thread.id));
+        switchThread(newActiveThread);
+        removeThread(thread);
     };
 
     const query = (thread?: Thread): void => {
@@ -107,7 +128,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             return;
         }
 
-        dispatch(deleteThreadLines(thread.id));
+        clearThreadLines(thread);
 
         const query: QueryRequest = {
             plotId: thread.plot.id,
@@ -129,11 +150,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                         });
                     }
 
-                    dispatch(
-                        updateThreadLines({
-                            [thread.id]: newLines,
-                        })
-                    );
+                    replaceThreadLines(thread, newLines);
                     console.log('Query results', payload, newLines);
                 }
             })
@@ -177,10 +194,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         }
     };
 
-    const switchThread = (thread: Thread) => {
-        dispatch(setActiveThread(thread));
-    };
-
     const dispatch = useAppDispatch();
     const threads = useAppSelector(selectAllThreads);
     const activeThread = useAppSelector(selectActiveThread);
@@ -190,8 +203,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     // On mount
     useEffect(() => {
         if (!threads.length) {
-            const firstThread = makeNewThread();
-            updateActiveThread(firstThread);
+            makeNewThread();
         }
     }, []);
 
@@ -223,9 +235,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                         activeThread={activeThread}
                         onSelectTab={switchThread}
                         onCloseTab={onTabClose}
-                        onNewTab={() => {
-                            updateActiveThread(makeNewThread());
-                        }}
+                        onNewTab={makeNewThread}
                     />
                 </div>
                 <div className="config-area flex flex-row flex-auto bg-gray-100">

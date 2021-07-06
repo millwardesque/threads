@@ -53,6 +53,7 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
     const colors = useColorProvider();
     const tabElements = tabs.map((t, index) => (
         <Tab
+            key={t.id}
             id={t.id}
             label={t.label}
             isActive={t.isActive}
@@ -69,7 +70,14 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
 
     return (
         <div className="flex w-full overflow-x-auto">
-            <Tab id="tabNew" label="+ Thread" onSelect={handleNewTab} suppressClose={true} color={greyTab} />
+            <Tab
+                key="tabNew"
+                id="tabNew"
+                label="+ Thread"
+                onSelect={handleNewTab}
+                suppressClose={true}
+                color={greyTab}
+            />
             {tabElements}
         </div>
     );

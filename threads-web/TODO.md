@@ -1,5 +1,4 @@
 # NEXT
-Make active-thread an index internally to simplify state operations, expose active-thread index and active-thread as selectors
 Create plot, source, and filter-change, update-thread actions to redux
 
 # BACKLOG

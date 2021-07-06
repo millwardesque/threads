@@ -4,12 +4,12 @@ import { Thread, ThreadMap } from '../types';
 
 interface ThreadsState {
     threads: ThreadMap;
-    activeThread: Thread | undefined;
+    activeThreadKey: string | undefined;
 }
 
 const initialState = {
     threads: {} as ThreadMap,
-    activeThread: undefined as Thread | undefined,
+    activeThreadKey: undefined as string | undefined,
 } as ThreadsState;
 
 const threadsSlice = createSlice({
@@ -23,15 +23,24 @@ const threadsSlice = createSlice({
         deleteThread(state, action: PayloadAction<string>) {
             const threadId = action.payload;
             delete state.threads[threadId];
+
+            if (threadId === state.activeThreadKey) {
+                state.activeThreadKey = undefined;
+            }
         },
         setActiveThread(state, action: PayloadAction<Thread>) {
-            state.activeThread = action.payload;
+            if (action.payload.id in state.threads) {
+                state.activeThreadKey = action.payload.id;
+            }
         },
     },
 });
 
 export const { setThread, deleteThread, setActiveThread } = threadsSlice.actions;
 export const selectAllThreads = (state: RootState) => state.threads.threads;
-export const selectActiveThread = (state: RootState) => state.threads.activeThread;
+export const selectActiveThreadKey = (state: RootState) => state.threads.activeThreadKey;
+export const selectActiveThread = (state: RootState): Thread | undefined => {
+    return state.threads.activeThreadKey ? state.threads.threads[state.threads.activeThreadKey] : undefined;
+};
 
 export default threadsSlice.reducer;
