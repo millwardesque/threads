@@ -21,7 +21,15 @@ import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { deleteThreadLines, updateThreadLines, SelectAllLines } from '../redux/linesSlice';
-import { setThread, deleteThread, setActiveThread, selectActiveThread, selectAllThreads } from '../redux/threadsSlice';
+import {
+    setThread,
+    deleteThread,
+    setActiveThread,
+    setActiveThreadSource,
+    setActiveThreadPlot,
+    selectActiveThread,
+    selectAllThreads,
+} from '../redux/threadsSlice';
 import { LoadingStatus, Thread } from '../types';
 
 interface LoadedThreadsAppProps {
@@ -38,13 +46,13 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         dispatch(setActiveThread(thread));
     };
 
-    const removeThread = (thread: Thread) => {
-        dispatch(deleteThread(thread.id));
+    const clearThreadLines = (thread: Thread) => {
         dispatch(deleteThreadLines(thread.id));
     };
 
-    const clearThreadLines = (thread: Thread) => {
-        dispatch(deleteThreadLines(thread.id));
+    const removeThread = (thread: Thread) => {
+        clearThreadLines(thread);
+        dispatch(deleteThread(thread.id));
     };
 
     const replaceThreadLines = (thread: Thread, lines: LineDefinition[]) => {
@@ -72,22 +80,11 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     };
 
     const onSourceChange = (selectedSource: DataSourceDefinition): void => {
-        const plot = Object.values(selectedSource.plots)[0];
-        const newActiveThread: Thread = {
-            id: activeThread!.id,
-            source: selectedSource,
-            plot,
-            activeFilters: {},
-        };
-        updateThread(newActiveThread);
+        dispatch(setActiveThreadSource(selectedSource));
     };
 
     const onPlotChange = (plot: DataPlotDefinition): void => {
-        const newActiveThread: Thread = {
-            ...activeThread!,
-            plot,
-        };
-        updateThread(newActiveThread);
+        dispatch(setActiveThreadPlot(plot));
     };
 
     const onFilterChange = (dimension: string, selected: string[]): void => {
@@ -197,6 +194,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const dispatch = useAppDispatch();
     const threads = useAppSelector(selectAllThreads);
     const activeThread = useAppSelector(selectActiveThread);
+    const lines = useAppSelector(SelectAllLines);
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
 
@@ -211,7 +209,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         loadSourceFilters(activeThread.source);
     }
 
-    const lines = useAppSelector(SelectAllLines);
     let allLines: LineDefinition[] = [];
     Object.values(lines).forEach((threadLines) => {
         allLines = allLines.concat(threadLines);

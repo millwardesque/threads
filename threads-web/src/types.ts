@@ -21,7 +21,7 @@ export interface ThreadMap {
     [id: string]: Thread;
 }
 
-export type LoadingStatus = 'not-started' | 'loading' | 'loaded';
+export type LoadingStatus = 'not-started' | 'loading' | 'loaded' | 'error';
 
 export interface ApplicationState {
     sources: DataSourceMap;

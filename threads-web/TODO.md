@@ -1,5 +1,5 @@
 # NEXT
-Create plot, source, and filter-change, update-thread actions to redux
+Create source, and filter-change, update-thread actions to redux
 
 # BACKLOG
 
