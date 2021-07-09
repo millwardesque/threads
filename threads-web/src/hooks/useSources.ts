@@ -4,39 +4,28 @@ import { LoadingStatus } from '../types';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { replaceAll, selectAllSources } from '../redux/sourcesSlice';
 
-import { DataSourceMap } from '../models/DataSourceDefinition';
-
-export interface Sources {
-    error: string;
-    isLoaded: boolean;
-    sources: DataSourceMap;
-}
-
-export const useSources = (): Sources => {
+export const useSources = () => {
     const dispatch = useAppDispatch();
     const sources = useAppSelector(selectAllSources);
-    const [sourceStatus, setSourceStatus] = useState<LoadingStatus>('not-started');
-    let error = '';
+    const [loading, setLoading] = useState<LoadingStatus>('not-started');
 
-    if (sourceStatus === 'not-started') {
-        setSourceStatus('loading');
+    if (loading === 'not-started') {
+        setLoading('loading');
         axios
             .get('http://localhost:2999/api/datasource')
             .then((response) => {
                 const { data: sources } = response;
-                setSourceStatus('loaded');
+                console.log('Got our sources!');
+                setLoading('loaded');
                 dispatch(replaceAll(sources));
             })
-            .catch((e) => {
-                setSourceStatus('error');
-                error = e.toString();
+            .catch((error) => {
+                setLoading('error');
             });
     }
 
     return {
-        error,
-        isLoaded: sourceStatus === 'loaded',
-        isReady: isLoaded && !error;
         sources,
+        loading,
     };
 };
