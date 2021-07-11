@@ -1,5 +1,4 @@
 # NEXT
-Refactor page title into Editable Text component and actual functionality
 Move page-title extraction from redux into a hook
 
 # BACKLOG
@@ -10,8 +9,7 @@ Refactor
 * Data-loading hooks?
 
 Thread Config
-* Rename
-* Custom title
+* Per-thread name
 * Per-thread description / notes
 
 Redux source filters
