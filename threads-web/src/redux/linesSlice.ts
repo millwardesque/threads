@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
-import { LineMap } from '../types';
+import { LineMap, Thread } from '../types';
 
 interface LinesState {
     lines: LineMap;
@@ -27,5 +27,7 @@ const linesSlice = createSlice({
 });
 
 export const { deleteThreadLines, updateThreadLines } = linesSlice.actions;
-export const SelectAllLines = (state: RootState) => state.lines.lines;
+export const selectAllLines = (state: RootState) => state.lines.lines;
+export const selectThreadLines = (state: RootState, thread: Thread) => state.lines.lines[thread.id];
+
 export default linesSlice.reducer;

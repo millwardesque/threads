@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     DataPlotDefinition,
@@ -14,13 +14,13 @@ import { SourceSelect } from './SourceSelect';
 import { PlotSelect } from './PlotSelect';
 import { Throbber } from './Throbber';
 import { FilterSet } from './FilterSet';
+import { PageTitle } from './PageTitle';
 import { ThreadsChart } from './ThreadsChart';
-import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { deleteThreadLines, updateThreadLines, SelectAllLines } from '../redux/linesSlice';
+import { deleteThreadLines, updateThreadLines, selectAllLines } from '../redux/linesSlice';
 import {
     setThread,
     deleteThread,
@@ -194,7 +194,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const dispatch = useAppDispatch();
     const threads = useAppSelector(selectAllThreads);
     const activeThread = useAppSelector(selectActiveThread);
-    const lines = useAppSelector(SelectAllLines);
+    const lines = useAppSelector(selectAllLines);
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
 
@@ -218,42 +218,47 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         <Throbber />
     ) : (
         <>
-            <div className="row flex h-3/4 flex-col">
-                <div className="flex flex-row w-full h-full">
-                    <div className="graph-area w-full h-full p-4">
-                        <ThreadsChart id="chart" lines={allLines} />
-                    </div>
-                </div>
+            <div className="flex h-12">
+                <PageTitle />
             </div>
-            <div className="row flex flex-col h-1/4">
-                <div className="tabs-area flex flex-row">
-                    <ThreadTabs
-                        threads={threads}
-                        activeThread={activeThread}
-                        onSelectTab={switchThread}
-                        onCloseTab={onTabClose}
-                        onNewTab={makeNewThread}
-                    />
-                </div>
-                <div className="config-area flex flex-row flex-auto bg-gray-100">
-                    <div className="flex flex-col p-6 w-1/3 h-full border-0 border-r border-gray-300">
-                        <SourceSelect
-                            sources={sources}
-                            selectedSource={activeThread.source}
-                            onSourceChange={onSourceChange}
-                        />
-                        <PlotSelect thread={activeThread} onPlotChange={onPlotChange} />
+            <div className="flex flex-col h-full width-full">
+                <div className="row flex h-3/4 flex-col">
+                    <div className="flex flex-row w-full h-full">
+                        <div className="graph-area w-full h-full p-4">
+                            <ThreadsChart id="chart" lines={allLines} />
+                        </div>
                     </div>
-                    <div className="flex flex-row p-6 w-2/3 h-full">
-                        {activeThread && filterLoadingStatus === 'loaded' ? (
-                            <FilterSet
-                                thread={activeThread}
-                                filters={sourceFilters[activeThread.source.id]}
-                                onFilterChange={onFilterChange}
+                </div>
+                <div className="row flex flex-col h-1/4">
+                    <div className="tabs-area flex flex-row">
+                        <ThreadTabs
+                            threads={threads}
+                            activeThread={activeThread}
+                            onSelectTab={switchThread}
+                            onCloseTab={onTabClose}
+                            onNewTab={makeNewThread}
+                        />
+                    </div>
+                    <div className="config-area flex flex-row flex-auto bg-gray-100">
+                        <div className="flex flex-col p-6 w-1/3 h-full border-0 border-r border-gray-300">
+                            <SourceSelect
+                                sources={sources}
+                                selectedSource={activeThread.source}
+                                onSourceChange={onSourceChange}
                             />
-                        ) : (
-                            <Throbber />
-                        )}
+                            <PlotSelect thread={activeThread} onPlotChange={onPlotChange} />
+                        </div>
+                        <div className="flex flex-row p-6 w-2/3 h-full">
+                            {activeThread && filterLoadingStatus === 'loaded' ? (
+                                <FilterSet
+                                    thread={activeThread}
+                                    filters={sourceFilters[activeThread.source.id]}
+                                    onFilterChange={onFilterChange}
+                                />
+                            ) : (
+                                <Throbber />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

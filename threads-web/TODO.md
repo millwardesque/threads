@@ -1,9 +1,10 @@
 # NEXT
-Create source, and filter-change, update-thread actions to redux
+Page title
 
 # BACKLOG
 
-## Waiting on Redux
+Create source, and filter-change, update-thread actions to redux
+
 Refactor
 * Data-loading hooks?
 
