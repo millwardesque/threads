@@ -1,4 +1,5 @@
 # NEXT
+Refactor escape / enter functionality
 Refactor page title into Editable Text component and actual functionality
 Move page-title extraction from redux into a hook
 

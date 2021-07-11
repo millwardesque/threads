@@ -23,6 +23,17 @@ export const PageTitle: React.FC = () => {
         setUserTitle(event.target.value);
     };
 
+    const onKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter' && inputElement.current) {
+            setUserTitle(inputElement.current.value);
+            dispatch(setTitle(inputElement.current.value));
+            setIsEditing(false);
+        } else if (event.key === 'Escape') {
+            setUserTitle(title);
+            setIsEditing(false);
+        }
+    };
+
     useLayoutEffect(() => {
         if (isEditing && inputElement.current !== null) {
             inputElement.current.focus();
@@ -37,6 +48,7 @@ export const PageTitle: React.FC = () => {
                     type="text"
                     value={userTitle}
                     onChange={onChange}
+                    onKeyDown={onKeyDown}
                     onBlur={stopEditing}
                 ></input>
             )}
