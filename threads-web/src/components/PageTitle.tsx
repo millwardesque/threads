@@ -14,7 +14,12 @@ export const PageTitle: React.FC = () => {
         setIsEditing(true);
     };
 
-    const stopEditing = () => {
+    const cancelEditing = () => {
+        setUserTitle(title);
+        setIsEditing(false);
+    };
+
+    const completeEditing = () => {
         dispatch(setTitle(userTitle));
         setIsEditing(false);
     };
@@ -24,13 +29,10 @@ export const PageTitle: React.FC = () => {
     };
 
     const onKeyDown = (event: React.KeyboardEvent) => {
-        if (event.key === 'Enter' && inputElement.current) {
-            setUserTitle(inputElement.current.value);
-            dispatch(setTitle(inputElement.current.value));
-            setIsEditing(false);
+        if (event.key === 'Enter') {
+            completeEditing();
         } else if (event.key === 'Escape') {
-            setUserTitle(title);
-            setIsEditing(false);
+            cancelEditing();
         }
     };
 
@@ -47,9 +49,9 @@ export const PageTitle: React.FC = () => {
                     ref={inputElement}
                     type="text"
                     value={userTitle}
+                    onBlur={completeEditing}
                     onChange={onChange}
                     onKeyDown={onKeyDown}
-                    onBlur={stopEditing}
                 ></input>
             )}
             {!isEditing && (
