@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LoadingStatus } from '../types';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
@@ -9,20 +9,23 @@ export const useSources = () => {
     const sources = useAppSelector(selectAllSources);
     const [loading, setLoading] = useState<LoadingStatus>('not-started');
 
-    if (loading === 'not-started') {
-        setLoading('loading');
-        axios
-            .get('http://localhost:2999/api/datasource')
-            .then((response) => {
-                const { data: sources } = response;
-                console.log('Got our sources!');
+    useEffect(() => {
+        const loadSources = async () => {
+            setLoading('loading');
+
+            try {
+                const result = await axios('http://localhost:2999/api/datasource');
+                dispatch(replaceAll(result.data));
+                console.log('Sources loaded');
                 setLoading('loaded');
-                dispatch(replaceAll(sources));
-            })
-            .catch((error) => {
+            } catch (error) {
+                console.error('Error loading sources', error);
                 setLoading('error');
-            });
-    }
+            }
+        };
+
+        loadSources();
+    }, [dispatch]);
 
     return {
         sources,
