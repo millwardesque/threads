@@ -1,8 +1,6 @@
 # NEXT
-* Bug: Filter doesn't requery
-* Bug: Thread name setting should increment version but NOT trigger requery
-* Tab styling
-* Tab click only renames tab if active
+* Bug: Thread name setting should increment version but NOT trigger requery. Maybe break up config data-config (plot, source, filters) and meta-config (name, description) and have separate versions for each
+* Don't worry about fitting EditableString into Tab, create RenamableTab with onRename callback instead
 
 # BACKLOG
 Create source, and filter-change, update-thread actions to redux

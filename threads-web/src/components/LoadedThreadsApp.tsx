@@ -24,6 +24,7 @@ import {
     setActiveThread,
     setActiveThreadSource,
     setActiveThreadPlot,
+    setActiveThreadFilters,
     selectActiveThread,
     selectAllThreads,
 } from '../redux/threadsSlice';
@@ -35,10 +36,6 @@ interface LoadedThreadsAppProps {
 }
 
 export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) => {
-    const updateThread = (newActiveThread: Thread) => {
-        dispatch(setThread(newActiveThread));
-    };
-
     const switchThread = (thread: Thread) => {
         dispatch(setActiveThread(thread));
     };
@@ -65,7 +62,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             version: 0,
         };
 
-        updateThread(newThread);
+        dispatch(setThread(newThread));
         switchThread(newThread);
     };
 
@@ -83,11 +80,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             [dimension]: selected,
         };
 
-        const newActiveThread: Thread = {
-            ...activeThread!,
-            activeFilters: newActiveFilters,
-        };
-        updateThread(newActiveThread);
+        dispatch(setActiveThreadFilters(newActiveFilters));
     };
 
     const onTabClose = (thread: Thread) => {

@@ -47,11 +47,14 @@ export const Tab: React.FC<TabProps> = ({
         borderColor: color.dark,
     };
     let classes = 'max-w-sm px-4 py-2 cursor-pointer flex flex-row max-width-1/6 border-0 hover:bg-gray-50';
+    let labelToRender = <div className="flex-grow truncate ...">{label}</div>;
     if (isActive) {
         classes += ' border-b-2 font-bold';
-    }
 
-    const labelToRender = labelElement || <div className="flex-grow truncate ...">{label}</div>;
+        if (labelElement) {
+            labelToRender = labelElement;
+        }
+    }
 
     return (
         <>

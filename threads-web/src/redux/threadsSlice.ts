@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 import { Thread, ThreadMap } from '../types';
-import { DataPlotDefinition, DataSourceDefinition } from '../models/DataSourceDefinition';
+import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
 
 interface ThreadsState {
     threads: ThreadMap;
@@ -65,6 +65,13 @@ const threadsSlice = createSlice({
                 updateThreadVersion(activeThread);
             }
         },
+        setActiveThreadFilters(state, action: PayloadAction<FiltersAndValues>) {
+            const activeThread = getActiveThread(state);
+            if (activeThread) {
+                activeThread.activeFilters = action.payload;
+                updateThreadVersion(activeThread);
+            }
+        },
         setThreadLabel(state, action: PayloadAction<ThreadLabelArgs>) {
             const { threadId, label } = action.payload;
             if (threadId in state.threads) {
@@ -87,6 +94,7 @@ export const {
     setActiveThread,
     setActiveThreadSource,
     setActiveThreadPlot,
+    setActiveThreadFilters,
     setThreadLabel,
     clearThreadLabel,
 } = threadsSlice.actions;
