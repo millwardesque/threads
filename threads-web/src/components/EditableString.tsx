@@ -47,7 +47,7 @@ export const EditableString: React.FC<EditableStringProps> = ({ initialValue, on
     }, [isEditing]);
 
     return (
-        <div className="flex w-full h-12 bg-green-400 items-center justify-center">
+        <>
             {isEditing && (
                 <input
                     ref={inputElement}
@@ -63,6 +63,6 @@ export const EditableString: React.FC<EditableStringProps> = ({ initialValue, on
                     {initialValue}
                 </h2>
             )}
-        </div>
+        </>
     );
 };

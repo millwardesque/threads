@@ -14,6 +14,19 @@ const linesSlice = createSlice({
     name: 'lines',
     initialState,
     reducers: {
+        initThreadLines(state, action: PayloadAction<Thread>) {
+            const { id: threadId, version: threadVersion } = action.payload as Thread;
+
+            if (threadId in state.lines) {
+                state.lines[threadId].lines = [];
+                state.lines[threadId].threadVersion = threadVersion;
+            } else {
+                state.lines[threadId] = {
+                    lines: [],
+                    threadVersion,
+                };
+            }
+        },
         deleteThreadLines(state, action: PayloadAction<string>) {
             delete state.lines[action.payload];
         },
@@ -26,7 +39,7 @@ const linesSlice = createSlice({
     },
 });
 
-export const { deleteThreadLines, updateThreadLines } = linesSlice.actions;
+export const { deleteThreadLines, initThreadLines, updateThreadLines } = linesSlice.actions;
 export const selectAllLines = (state: RootState) => state.lines.lines;
 export const selectThreadLines = (state: RootState, thread: Thread) => state.lines.lines[thread.id];
 

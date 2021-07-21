@@ -6,9 +6,6 @@ import {
     DataSourceMap,
     FiltersAndValues,
     GetFilterResults,
-    LineDefinition,
-    QueryRequest,
-    QueryResults,
 } from '../models/DataSourceDefinition';
 import { SourceSelect } from './SourceSelect';
 import { PlotSelect } from './PlotSelect';
@@ -20,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { deleteThreadLines, updateThreadLines, selectAllLines } from '../redux/linesSlice';
+import { deleteThreadLines } from '../redux/linesSlice';
 import {
     setThread,
     deleteThread,
@@ -31,6 +28,7 @@ import {
     selectAllThreads,
 } from '../redux/threadsSlice';
 import { LoadingStatus, Thread } from '../types';
+import { useLinesList } from '../hooks/useLines';
 
 interface LoadedThreadsAppProps {
     sources: DataSourceMap;
@@ -39,7 +37,6 @@ interface LoadedThreadsAppProps {
 export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) => {
     const updateThread = (newActiveThread: Thread) => {
         dispatch(setThread(newActiveThread));
-        query(newActiveThread);
     };
 
     const switchThread = (thread: Thread) => {
@@ -55,14 +52,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         dispatch(deleteThread(thread.id));
     };
 
-    const replaceThreadLines = (thread: Thread, lines: LineDefinition[]) => {
-        dispatch(
-            updateThreadLines({
-                [thread.id]: lines,
-            })
-        );
-    };
-
     const makeNewThread = () => {
         const source = Object.values(sources)[0];
         const plot = Object.values(source.plots)[0];
@@ -73,6 +62,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             source,
             plot,
             activeFilters: {},
+            version: 0,
         };
 
         updateThread(newThread);
@@ -120,42 +110,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         removeThread(thread);
     };
 
-    const query = (thread?: Thread): void => {
-        if (thread === undefined || thread.plot === undefined) {
-            return;
-        }
-
-        clearThreadLines(thread);
-
-        const query: QueryRequest = {
-            plotId: thread.plot.id,
-            dimensionFilters: thread.activeFilters,
-        };
-        axios
-            .post(`http://localhost:2999/api/datasource/${thread.source.id}/query`, query)
-            .then((response) => {
-                const payload = response.data as QueryResults;
-                if (payload.hasError) {
-                    console.log('Error querying data', payload.error);
-                } else {
-                    const lineData = Object.values(payload.data);
-                    let newLines: LineDefinition[] = [];
-                    for (let line of lineData) {
-                        newLines.push({
-                            plot: thread.plot!,
-                            data: line,
-                        });
-                    }
-
-                    replaceThreadLines(thread, newLines);
-                    console.log('Query results', payload, newLines);
-                }
-            })
-            .catch((error) => {
-                console.log('Error querying data', error);
-            });
-    };
-
     const loadSourceFilters = (source: DataSourceDefinition): void => {
         if (source !== undefined) {
             setSourceFilters((oldSourceFilters) => {
@@ -194,9 +148,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const dispatch = useAppDispatch();
     const threads = useAppSelector(selectAllThreads);
     const activeThread = useAppSelector(selectActiveThread);
-    const lines = useAppSelector(selectAllLines);
     const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
     const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
+    const allLines = useLinesList();
 
     // On mount
     useEffect(() => {
@@ -208,11 +162,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     if (activeThread && !(activeThread.source.id in sourceFilters)) {
         loadSourceFilters(activeThread.source);
     }
-
-    let allLines: LineDefinition[] = [];
-    Object.values(lines).forEach((threadLines) => {
-        allLines = allLines.concat(threadLines);
-    });
 
     return !activeThread ? (
         <Throbber />

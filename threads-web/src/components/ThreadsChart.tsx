@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-import { LineDefinition } from '../models/DataSourceDefinition';
+import { LineDefinition } from '../types';
 import useColorProvider from '../hooks/useColorProvider';
+import { useAppSelector } from '../redux/hooks';
+import { selectAllThreads } from '../redux/threadsSlice';
 
 interface ThreadsChartProps {
     id: string;
@@ -40,10 +42,10 @@ const makeAxis = (id: string, showAxis: boolean, drawGrid: boolean, units: strin
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const colors = useColorProvider();
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const threads = useAppSelector(selectAllThreads);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
 
     useEffect(() => {
-        console.log('Rebuilding');
         setIsRebuildingCanvas(true);
     }, [lines]);
 
@@ -71,19 +73,21 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         } = {};
         for (let index in lines) {
             const line = lines[index];
+            const thread = threads[line.threadId];
             const axisId = `y${index}`;
-            const lineLabel = line.plot.label;
+            const label = thread.label ?? thread.plot.label;
+            const units = thread.plot.units;
             const lineData: number[] = dates.map((d) => line.data[d]);
             const color = colors.atIndex(parseInt(index));
 
-            const createAxis = !(line.plot.units in shownAxes) && lineData.length > 0;
+            const createAxis = !(units in shownAxes) && lineData.length > 0;
             if (createAxis) {
-                axes[axisId] = makeAxis(axisId, true, index === '0', line.plot.units);
-                shownAxes[line.plot.units] = axisId;
+                axes[axisId] = makeAxis(axisId, true, index === '0', units);
+                shownAxes[units] = axisId;
             }
 
             const dataset = {
-                label: lineLabel,
+                label,
                 data: lineData,
                 fill: false,
                 borderColor: color.dark,
@@ -94,7 +98,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 pointBorderWidth: 2,
                 pointHoverBorderWidth: 1,
                 pointHoverRadius: 5,
-                yAxisID: shownAxes[line.plot.units],
+                yAxisID: shownAxes[units],
             };
 
             datasets.push(dataset);
@@ -123,7 +127,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             return;
         }
 
-        console.log('Creating chart instance');
         const chartInstance = new Chart(canvasRef.current, {
             type: 'line',
             data,
@@ -131,10 +134,9 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         });
 
         return () => {
-            console.log('Destroying chart');
             chartInstance.destroy();
         };
-    }, [lines, isRebuildingCanvas, colors]);
+    }, [lines, threads, isRebuildingCanvas, colors]);
 
     return <>{isRebuildingCanvas ? undefined : <canvas id={id} ref={canvasRef} />}</>;
 };

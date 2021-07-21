@@ -1,9 +1,11 @@
 import React from 'react';
+import { ReactElement } from 'react';
 import { Color } from '../models/ColorProvider';
 
 interface TabProps {
     id: string;
     label: string;
+    labelElement?: ReactElement;
     onSelect?: (selectedTab: string) => void;
     onClose?: (selectedTab: string) => void;
     suppressClose: boolean;
@@ -11,7 +13,16 @@ interface TabProps {
     isActive?: boolean;
 }
 
-export const Tab: React.FC<TabProps> = ({ id, label, onSelect, onClose, suppressClose, color, isActive = false }) => {
+export const Tab: React.FC<TabProps> = ({
+    id,
+    label,
+    labelElement,
+    onSelect,
+    onClose,
+    suppressClose,
+    color,
+    isActive = false,
+}) => {
     let isDeleted = false;
 
     const handleSelect = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -40,11 +51,13 @@ export const Tab: React.FC<TabProps> = ({ id, label, onSelect, onClose, suppress
         classes += ' border-b-2 font-bold';
     }
 
+    const labelToRender = labelElement || <div className="flex-grow truncate ...">{label}</div>;
+
     return (
         <>
             {!isDeleted && (
                 <div title={label} onClick={handleSelect} className={classes} style={styles}>
-                    <div className="flex-grow truncate ...">{label}</div>
+                    {labelToRender}
                     {!suppressClose && (
                         <div
                             className="flex-none ml-2 px-2 py-0 border border-gray-200 hover:border-opacity-100 hover:border-red-200 hover:bg-red-100"

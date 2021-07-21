@@ -1,15 +1,16 @@
 # NEXT
-Move page-title extraction from redux into a hook
+* Bug: Filter doesn't requery
+* Bug: Thread name setting should increment version but NOT trigger requery
+* Tab styling
+* Tab click only renames tab if active
 
 # BACKLOG
-
 Create source, and filter-change, update-thread actions to redux
 
 Refactor
 * Data-loading hooks?
 
 Thread Config
-* Per-thread name
 * Per-thread description / notes
 
 Redux source filters
@@ -18,7 +19,6 @@ Undo
 ## Unblocked
 Tabs:
 * Tab order switches when changing tabs
-* Bug: Don't lines redraw when switching tabs
 
 Filter selector
 * Value search
@@ -35,7 +35,6 @@ Money formatting in axis
 Annotation lines
 Historical lines
 Adhoc lines
-Bug: Why does Axios get called twice? I think it's a setState / re-render on the loading state
 Bug?: Switching to a new source with a default plot that has the same ID as the current plot. Will this refresh the line properly?
 Auto-number sources
 Share types between server and client (central shared lib?)

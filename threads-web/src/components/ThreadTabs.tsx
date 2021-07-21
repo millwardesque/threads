@@ -4,6 +4,9 @@ import { Color } from '../models/ColorProvider';
 import useColorProvider from '../hooks/useColorProvider';
 import { Thread } from '../types';
 import { Tab } from './Tab';
+import { EditableString } from './EditableString';
+import { useAppDispatch } from '../redux/hooks';
+import { setThreadLabel } from '../redux/threadsSlice';
 
 interface ThreadTabsProps {
     threads: {
@@ -44,25 +47,37 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
     const tabs = Object.values(threads).map((thread) => {
         return {
             id: thread.id,
-            label: `${thread.source?.label}: ${thread.plot?.label}`,
+            label: thread.label || `${thread.source?.label}: ${thread.plot?.label}`,
             isActive: thread === activeThread,
             thread,
         };
     });
 
+    const dispatch = useAppDispatch();
     const colors = useColorProvider();
-    const tabElements = tabs.map((t, index) => (
-        <Tab
-            key={t.id}
-            id={t.id}
-            label={t.label}
-            isActive={t.isActive}
-            color={colors.atIndex(index)}
-            onSelect={handleSelectTab}
-            onClose={handleCloseTab}
-            suppressClose={index === 0 && tabs.length === 1}
-        ></Tab>
-    ));
+    const tabElements = tabs.map((t, index) => {
+        const editableTabLabel = (
+            <EditableString
+                initialValue={t.label}
+                onComplete={(newValue) => {
+                    dispatch(setThreadLabel({ threadId: t.id, label: newValue }));
+                }}
+            />
+        );
+        return (
+            <Tab
+                key={t.id}
+                id={t.id}
+                labelElement={editableTabLabel}
+                label={t.label}
+                isActive={t.isActive}
+                color={colors.atIndex(index)}
+                onSelect={handleSelectTab}
+                onClose={handleCloseTab}
+                suppressClose={index === 0 && tabs.length === 1}
+            ></Tab>
+        );
+    });
     const greyTab: Color = {
         light: '#ddd',
         dark: '#999',

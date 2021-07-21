@@ -8,6 +8,11 @@ interface ThreadsState {
     activeThreadKey: string | undefined;
 }
 
+interface ThreadLabelArgs {
+    threadId: string;
+    label: string;
+}
+
 const initialState = {
     threads: {} as ThreadMap,
     activeThreadKey: undefined as string | undefined,
@@ -15,6 +20,10 @@ const initialState = {
 
 const getActiveThread = (state: ThreadsState): Thread | undefined => {
     return state.activeThreadKey ? state.threads[state.activeThreadKey] : undefined;
+};
+
+const updateThreadVersion = (thread: Thread) => {
+    thread.version += 1;
 };
 
 const threadsSlice = createSlice({
@@ -46,19 +55,41 @@ const threadsSlice = createSlice({
                 activeThread.source = source;
                 activeThread.plot = plot;
                 activeThread.activeFilters = {};
+                updateThreadVersion(activeThread);
             }
         },
         setActiveThreadPlot(state, action: PayloadAction<DataPlotDefinition>) {
             const activeThread = getActiveThread(state);
             if (activeThread) {
                 activeThread.plot = action.payload;
+                updateThreadVersion(activeThread);
+            }
+        },
+        setThreadLabel(state, action: PayloadAction<ThreadLabelArgs>) {
+            const { threadId, label } = action.payload;
+            if (threadId in state.threads) {
+                console.log('Updating thread label', action.payload);
+                state.threads[threadId].label = label;
+            }
+        },
+        clearThreadLabel(state, action: PayloadAction<string>) {
+            const threadId = action.payload;
+            if (threadId in state.threads) {
+                state.threads[threadId].label = undefined;
             }
         },
     },
 });
 
-export const { setThread, deleteThread, setActiveThread, setActiveThreadSource, setActiveThreadPlot } =
-    threadsSlice.actions;
+export const {
+    setThread,
+    deleteThread,
+    setActiveThread,
+    setActiveThreadSource,
+    setActiveThreadPlot,
+    setThreadLabel,
+    clearThreadLabel,
+} = threadsSlice.actions;
 export const selectAllThreads = (state: RootState) => state.threads.threads;
 export const selectActiveThreadKey = (state: RootState) => state.threads.activeThreadKey;
 export const selectActiveThread = (state: RootState): Thread | undefined => {

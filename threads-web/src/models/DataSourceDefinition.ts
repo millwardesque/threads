@@ -1,79 +1,75 @@
 import fs from 'fs';
 
-export type DataSourceType = "csv" | "tsv";
+export type DataSourceType = 'csv' | 'tsv';
 
-export type DateFormatType = "yyyy-MM-dd";
+export type DateFormatType = 'yyyy-MM-dd';
 
-export type MeasureAggregator = "sum" | "count" | "average";
+export type MeasureAggregator = 'sum' | 'count' | 'average';
 
 export interface DataDimensionDefinition {
-    id: string,
-    label: string
-};
+    id: string;
+    label: string;
+}
 
 export interface DataMeasureDefinition {
-    id: string,
-    label: string
-};
+    id: string;
+    label: string;
+}
 
 export interface DataPlotDefinition {
-    aggregator: MeasureAggregator
-    id: string,
-    label: string,
-    measureId: string,
-    units: string
+    aggregator: MeasureAggregator;
+    id: string;
+    label: string;
+    measureId: string;
+    units: string;
 }
 
 export interface DataSourceDefinition {
     id: string;
     label: string;
     type: DataSourceType;
-    file?: string
+    file?: string;
     dateField: string;
     dateFormat: DateFormatType;
-    dimensions: {[id: string]: DataDimensionDefinition};
-    measures: {[id: string]: DataMeasureDefinition};
-    plots: {[id: string]: DataPlotDefinition};
-};
+    dimensions: { [id: string]: DataDimensionDefinition };
+    measures: { [id: string]: DataMeasureDefinition };
+    plots: { [id: string]: DataPlotDefinition };
+}
 
 export type DataSourceMap = { [id: string]: DataSourceDefinition };
 
 export interface FiltersAndValues {
-    [dimensionId: string]: string[]
+    [dimensionId: string]: string[];
 }
 
 export interface GetFilterResults {
-    hasError: boolean,
-    error?: string,
-    filters: FiltersAndValues
+    hasError: boolean;
+    error?: string;
+    filters: FiltersAndValues;
 }
 
-export type LoadSourcesReturn = { hasError: boolean, sources?: DataSourceMap, error?: string };
+export type LoadSourcesReturn = { hasError: boolean; sources?: DataSourceMap; error?: string };
 
 export interface QueryFilter {
-    [dimensionId: string]: string[]
+    [dimensionId: string]: string[];
 }
 
 export interface QueryRequest {
-    plotId: string,
-    dimensionFilters?: QueryFilter,
-    dimensionExploder?: string
+    plotId: string;
+    dimensionFilters?: QueryFilter;
+    dimensionExploder?: string;
 }
 
 export interface LineData {
-    [date: string]: number
-}
-export interface LineDefinition {
-    plot: DataPlotDefinition,
-    data: LineData
+    [date: string]: number;
 }
 
 export interface QueryResults {
-    hasError: boolean,
-    error?: string,
+    hasError: boolean;
+    error?: string;
     data: {
-        [dimension: string]: LineData
-    }
+        [dimension: string]: LineData;
+    };
 }
 
 export const loadSourcesFromJson = (filename: string): LoadSourcesReturn => {
@@ -82,7 +78,7 @@ export const loadSourcesFromJson = (filename: string): LoadSourcesReturn => {
     if (!fs.existsSync(filename)) {
         return { hasError: true, error: `File ${filename} not found` };
     }
-    const rawData: string = fs.readFileSync(filename, {encoding: 'utf8'});
+    const rawData: string = fs.readFileSync(filename, { encoding: 'utf8' });
     if (rawData.length === 0) {
         return { hasError: true, error: `File ${filename} is empty` };
     }
@@ -90,8 +86,7 @@ export const loadSourcesFromJson = (filename: string): LoadSourcesReturn => {
     let sources: any;
     try {
         sources = JSON.parse(rawData);
-    }
-    catch (error) {
+    } catch (error) {
         return { hasError: true, error: `JSON error parsing ${filename}: ${error}` };
     }
 
