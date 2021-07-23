@@ -8,11 +8,11 @@ import {
 
 export interface Thread {
     id: string;
+    label?: string;
     source: DataSourceDefinition;
     plot: DataPlotDefinition;
     activeFilters: FiltersAndValues;
-    label?: string;
-    version: number;
+    dataVersion: number;
 }
 
 export interface ThreadMap {

@@ -22,8 +22,8 @@ const getActiveThread = (state: ThreadsState): Thread | undefined => {
     return state.activeThreadKey ? state.threads[state.activeThreadKey] : undefined;
 };
 
-const updateThreadVersion = (thread: Thread) => {
-    thread.version += 1;
+const updateThreadDataVersion = (thread: Thread) => {
+    thread.dataVersion += 1;
 };
 
 const threadsSlice = createSlice({
@@ -55,21 +55,21 @@ const threadsSlice = createSlice({
                 activeThread.source = source;
                 activeThread.plot = plot;
                 activeThread.activeFilters = {};
-                updateThreadVersion(activeThread);
+                updateThreadDataVersion(activeThread);
             }
         },
         setActiveThreadPlot(state, action: PayloadAction<DataPlotDefinition>) {
             const activeThread = getActiveThread(state);
             if (activeThread) {
                 activeThread.plot = action.payload;
-                updateThreadVersion(activeThread);
+                updateThreadDataVersion(activeThread);
             }
         },
         setActiveThreadFilters(state, action: PayloadAction<FiltersAndValues>) {
             const activeThread = getActiveThread(state);
             if (activeThread) {
                 activeThread.activeFilters = action.payload;
-                updateThreadVersion(activeThread);
+                updateThreadDataVersion(activeThread);
             }
         },
         setThreadLabel(state, action: PayloadAction<ThreadLabelArgs>) {

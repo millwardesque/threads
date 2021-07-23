@@ -59,7 +59,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             source,
             plot,
             activeFilters: {},
-            version: 0,
+            dataVersion: 0,
         };
 
         dispatch(setThread(newThread));

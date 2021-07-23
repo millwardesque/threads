@@ -36,7 +36,7 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
                     updateThreadLines({
                         [thread.id]: {
                             lines: newLines,
-                            threadVersion: thread.version,
+                            threadVersion: thread.dataVersion,
                         },
                     })
                 );
@@ -55,7 +55,7 @@ export const useLines = (): LineMap => {
 
     const lineMap: LineMap = {};
     Object.values(threads).forEach((thread) => {
-        if (!(thread.id in lines) || thread.version !== lines[thread.id].threadVersion) {
+        if (!(thread.id in lines) || thread.dataVersion !== lines[thread.id].threadVersion) {
             queryLineData(dispatch, thread);
         } else {
             lineMap[thread.id] = lines[thread.id];

@@ -6,7 +6,7 @@ interface PageConfigState {
 }
 
 const initialState = {
-    title: 'Threads',
+    title: 'My Threads',
 } as PageConfigState;
 
 const pageConfigSlice = createSlice({

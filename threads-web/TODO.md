@@ -1,12 +1,14 @@
 # NEXT
-* Bug: Thread name setting should increment version but NOT trigger requery. Maybe break up config data-config (plot, source, filters) and meta-config (name, description) and have separate versions for each
 * Don't worry about fitting EditableString into Tab, create RenamableTab with onRename callback instead
+* Move makeNewThread to redux reducer
 
 # BACKLOG
 Create source, and filter-change, update-thread actions to redux
 
 Refactor
 * Data-loading hooks?
+
+State when waiting for sources
 
 Thread Config
 * Per-thread description / notes
@@ -18,6 +20,8 @@ Undo
 Tabs:
 * Tab order switches when changing tabs
 
+Update graph rather than redrawing it
+
 Filter selector
 * Value search
 * Collapsed by default
@@ -27,7 +31,7 @@ Filter selector
 Lines:
 * Tooltips
 
-Simplify active-thread andt thread interactions
+Simplify active-thread and thread interactions
 Persistent URLs / config loading from server
 Money formatting in axis
 Annotation lines

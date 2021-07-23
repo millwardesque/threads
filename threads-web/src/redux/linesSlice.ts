@@ -15,7 +15,7 @@ const linesSlice = createSlice({
     initialState,
     reducers: {
         initThreadLines(state, action: PayloadAction<Thread>) {
-            const { id: threadId, version: threadVersion } = action.payload as Thread;
+            const { id: threadId, dataVersion: threadVersion } = action.payload as Thread;
 
             if (threadId in state.lines) {
                 state.lines[threadId].lines = [];
