@@ -1,4 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import type { RootState } from './store';
 import { Thread, ThreadMap } from '../types';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
@@ -30,6 +32,21 @@ const threadsSlice = createSlice({
     name: 'threads',
     initialState,
     reducers: {
+        newThread(state, action: PayloadAction<DataSourceDefinition>) {
+            const source = action.payload as DataSourceDefinition;
+            const plot = Object.values(source.plots)[0];
+
+            console.log(`Creating new source and plot: ${source.id}.${plot.id}`);
+            const thread: Thread = {
+                id: uuidv4(),
+                source,
+                plot,
+                activeFilters: {},
+                dataVersion: 0,
+            };
+            state.threads[thread.id] = thread;
+            state.activeThreadKey = action.payload.id;
+        },
         setThread(state, action: PayloadAction<Thread>) {
             const thread = action.payload;
             state.threads[thread.id] = thread;
@@ -89,12 +106,13 @@ const threadsSlice = createSlice({
 });
 
 export const {
-    setThread,
     deleteThread,
+    newThread,
     setActiveThread,
     setActiveThreadSource,
     setActiveThreadPlot,
     setActiveThreadFilters,
+    setThread,
     setThreadLabel,
     clearThreadLabel,
 } = threadsSlice.actions;

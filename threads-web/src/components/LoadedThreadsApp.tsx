@@ -13,13 +13,12 @@ import { Throbber } from './Throbber';
 import { FilterSet } from './FilterSet';
 import { PageTitle } from './PageTitle';
 import { ThreadsChart } from './ThreadsChart';
-import { v4 as uuidv4 } from 'uuid';
 import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { deleteThreadLines } from '../redux/linesSlice';
 import {
-    setThread,
+    newThread,
     deleteThread,
     setActiveThread,
     setActiveThreadSource,
@@ -47,23 +46,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const removeThread = (thread: Thread) => {
         clearThreadLines(thread);
         dispatch(deleteThread(thread.id));
-    };
-
-    const makeNewThread = () => {
-        const source = Object.values(sources)[0];
-        const plot = Object.values(source.plots)[0];
-
-        console.log(`Creating new source and plot: ${source.id}.${plot.id}`);
-        const newThread: Thread = {
-            id: uuidv4(),
-            source,
-            plot,
-            activeFilters: {},
-            dataVersion: 0,
-        };
-
-        dispatch(setThread(newThread));
-        switchThread(newThread);
     };
 
     const onSourceChange = (selectedSource: DataSourceDefinition): void => {
@@ -147,10 +129,16 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
 
     // On mount
     useEffect(() => {
-        if (!threads.length) {
-            makeNewThread();
+        if (Object.keys(threads).length === 0) {
+            dispatch(newThread(Object.values(sources)[0]));
         }
-    }, []);
+    }, [sources, dispatch, threads]);
+
+    useEffect(() => {
+        if (!activeThread && Object.values(threads).length > 0) {
+            dispatch(setActiveThread(Object.values(threads)[0]));
+        }
+    }, [threads, activeThread, dispatch]);
 
     if (activeThread && !(activeThread.source.id in sourceFilters)) {
         loadSourceFilters(activeThread.source);
@@ -178,7 +166,9 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                             activeThread={activeThread}
                             onSelectTab={switchThread}
                             onCloseTab={onTabClose}
-                            onNewTab={makeNewThread}
+                            onNewTab={() => {
+                                dispatch(newThread(Object.values(sources)[0]));
+                            }}
                         />
                     </div>
                     <div className="config-area flex flex-row flex-auto bg-gray-100">

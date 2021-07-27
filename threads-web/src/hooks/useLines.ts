@@ -8,8 +8,6 @@ import { LineDefinition, LineMap, Thread } from '../types';
 import { QueryRequest, QueryResults } from '../models/DataSourceDefinition';
 
 const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
-    console.log('Querying lines for thread', thread);
-
     dispatch(initThreadLines(thread));
 
     const query: QueryRequest = {
@@ -55,7 +53,15 @@ export const useLines = (): LineMap => {
 
     const lineMap: LineMap = {};
     Object.values(threads).forEach((thread) => {
-        if (!(thread.id in lines) || thread.dataVersion !== lines[thread.id].threadVersion) {
+        if (!(thread.id in lines)) {
+            console.log('Thread ID not in lines. Querying', thread.id, lines);
+            queryLineData(dispatch, thread);
+        } else if (thread.dataVersion !== lines[thread.id].threadVersion) {
+            console.log(
+                "Thread version doesn't match lines. Querying",
+                thread.dataVersion,
+                lines[thread.id].threadVersion
+            );
             queryLineData(dispatch, thread);
         } else {
             lineMap[thread.id] = lines[thread.id];
