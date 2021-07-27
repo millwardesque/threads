@@ -1,12 +1,5 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import {
-    DataPlotDefinition,
-    DataSourceDefinition,
-    DataSourceMap,
-    FiltersAndValues,
-    GetFilterResults,
-} from '../models/DataSourceDefinition';
+import { useEffect } from 'react';
+import { DataPlotDefinition, DataSourceDefinition, DataSourceMap } from '../models/DataSourceDefinition';
 import { SourceSelect } from './SourceSelect';
 import { PlotSelect } from './PlotSelect';
 import { Throbber } from './Throbber';
@@ -27,24 +20,25 @@ import {
     selectActiveThread,
     selectAllThreads,
 } from '../redux/threadsSlice';
-import { LoadingStatus, Thread } from '../types';
+import { Thread } from '../types';
 import { useLinesList } from '../hooks/useLines';
+import { useSourceFilters } from '../hooks/useSourceFilters';
 
 interface LoadedThreadsAppProps {
     sources: DataSourceMap;
 }
 
 export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) => {
+    const makeNewThread = () => {
+        dispatch(newThread(Object.values(sources)[0]));
+    };
+
     const switchThread = (thread: Thread) => {
         dispatch(setActiveThread(thread));
     };
 
-    const clearThreadLines = (thread: Thread) => {
-        dispatch(deleteThreadLines(thread.id));
-    };
-
     const removeThread = (thread: Thread) => {
-        clearThreadLines(thread);
+        dispatch(deleteThreadLines(thread.id));
         dispatch(deleteThread(thread.id));
     };
 
@@ -85,49 +79,12 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         removeThread(thread);
     };
 
-    const loadSourceFilters = (source: DataSourceDefinition): void => {
-        if (source !== undefined) {
-            setSourceFilters((oldSourceFilters) => {
-                return {
-                    ...oldSourceFilters,
-                    [source.id]: {},
-                };
-            });
-            setFilterLoadingStatus('loading');
-
-            axios
-                .get(`http://localhost:2999/api/datasource/${source.id}/filters`)
-                .then((response) => {
-                    const payload = response.data as GetFilterResults;
-                    if (payload.hasError) {
-                        console.log('Error fetching filter values', payload.error);
-                    } else {
-                        setSourceFilters((oldSourceFilters) => {
-                            return {
-                                ...oldSourceFilters,
-                                [source.id]: payload.filters,
-                            };
-                        });
-                        console.log('Filters retrieved', payload);
-                    }
-                })
-                .catch((error) => {
-                    console.log('Error retrieving filters', error);
-                })
-                .finally(() => {
-                    setFilterLoadingStatus('loaded');
-                });
-        }
-    };
-
     const dispatch = useAppDispatch();
     const threads = useAppSelector(selectAllThreads);
     const activeThread = useAppSelector(selectActiveThread);
-    const [filterLoadingStatus, setFilterLoadingStatus] = useState<LoadingStatus>('not-started');
-    const [sourceFilters, setSourceFilters] = useState<{ [source: string]: FiltersAndValues }>({});
+    const sourceFilters = useSourceFilters(activeThread);
     const allLines = useLinesList();
 
-    // On mount
     useEffect(() => {
         if (Object.keys(threads).length === 0) {
             dispatch(newThread(Object.values(sources)[0]));
@@ -139,10 +96,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             dispatch(setActiveThread(Object.values(threads)[0]));
         }
     }, [threads, activeThread, dispatch]);
-
-    if (activeThread && !(activeThread.source.id in sourceFilters)) {
-        loadSourceFilters(activeThread.source);
-    }
 
     return !activeThread ? (
         <Throbber />
@@ -166,9 +119,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                             activeThread={activeThread}
                             onSelectTab={switchThread}
                             onCloseTab={onTabClose}
-                            onNewTab={() => {
-                                dispatch(newThread(Object.values(sources)[0]));
-                            }}
+                            onNewTab={makeNewThread}
                         />
                     </div>
                     <div className="config-area flex flex-row flex-auto bg-gray-100">
@@ -181,7 +132,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                             <PlotSelect thread={activeThread} onPlotChange={onPlotChange} />
                         </div>
                         <div className="flex flex-row p-6 w-2/3 h-full">
-                            {activeThread && filterLoadingStatus === 'loaded' ? (
+                            {activeThread && activeThread.source.id in sourceFilters ? (
                                 <FilterSet
                                     thread={activeThread}
                                     filters={sourceFilters[activeThread.source.id]}

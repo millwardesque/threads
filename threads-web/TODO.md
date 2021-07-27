@@ -1,6 +1,6 @@
 # NEXT
+* Move loadSourceFilters to a hook
 * Don't worry about fitting EditableString into Tab, create RenamableTab with onRename callback instead
-* Move makeNewThread to redux reducer
 
 # BACKLOG
 Create source, and filter-change, update-thread actions to redux
@@ -16,7 +16,6 @@ Thread Config
 Redux source filters
 Undo
 
-## Unblocked
 Tabs:
 * Tab order switches when changing tabs
 

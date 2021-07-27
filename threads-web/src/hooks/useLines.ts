@@ -38,7 +38,6 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
                         },
                     })
                 );
-                console.log('Query results', payload, newLines);
             }
         })
         .catch((error) => {
@@ -54,14 +53,9 @@ export const useLines = (): LineMap => {
     const lineMap: LineMap = {};
     Object.values(threads).forEach((thread) => {
         if (!(thread.id in lines)) {
-            console.log('Thread ID not in lines. Querying', thread.id, lines);
             queryLineData(dispatch, thread);
         } else if (thread.dataVersion !== lines[thread.id].threadVersion) {
-            console.log(
-                "Thread version doesn't match lines. Querying",
-                thread.dataVersion,
-                lines[thread.id].threadVersion
-            );
+            console.log(thread.dataVersion, lines[thread.id].threadVersion);
             queryLineData(dispatch, thread);
         } else {
             lineMap[thread.id] = lines[thread.id];
