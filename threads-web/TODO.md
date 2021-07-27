@@ -1,5 +1,4 @@
 # NEXT
-* Move loadSourceFilters to a hook
 * Don't worry about fitting EditableString into Tab, create RenamableTab with onRename callback instead
 
 # BACKLOG
