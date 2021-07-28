@@ -4,7 +4,6 @@ import { Color } from '../models/ColorProvider';
 import useColorProvider from '../hooks/useColorProvider';
 import { Thread } from '../types';
 import { Tab } from './Tab';
-import { EditableString } from './EditableString';
 import { useAppDispatch } from '../redux/hooks';
 import { setThreadLabel } from '../redux/threadsSlice';
 
@@ -56,25 +55,19 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
     const dispatch = useAppDispatch();
     const colors = useColorProvider();
     const tabElements = tabs.map((t, index) => {
-        const editableTabLabel = (
-            <EditableString
-                initialValue={t.label}
-                onComplete={(newValue) => {
-                    dispatch(setThreadLabel({ threadId: t.id, label: newValue }));
-                }}
-            />
-        );
         return (
             <Tab
                 key={t.id}
                 id={t.id}
-                labelElement={editableTabLabel}
                 label={t.label}
                 isActive={t.isActive}
                 color={colors.atIndex(index)}
                 onSelect={handleSelectTab}
                 onClose={handleCloseTab}
                 suppressClose={index === 0 && tabs.length === 1}
+                onRename={(_tabId, newName) => {
+                    dispatch(setThreadLabel({ threadId: t.id, label: newName }));
+                }}
             ></Tab>
         );
     });

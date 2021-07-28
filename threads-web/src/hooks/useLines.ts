@@ -55,7 +55,6 @@ export const useLines = (): LineMap => {
         if (!(thread.id in lines)) {
             queryLineData(dispatch, thread);
         } else if (thread.dataVersion !== lines[thread.id].threadVersion) {
-            console.log(thread.dataVersion, lines[thread.id].threadVersion);
             queryLineData(dispatch, thread);
         } else {
             lineMap[thread.id] = lines[thread.id];

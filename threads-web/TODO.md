@@ -1,5 +1,4 @@
 # NEXT
-* Don't worry about fitting EditableString into Tab, create RenamableTab with onRename callback instead
 
 # BACKLOG
 Thread Config
@@ -7,6 +6,7 @@ Thread Config
 
 Tabs:
 * Tab order switches when changing tabs
+* Bug: Flicker on tab change
 
 Filter selector
 * Option search
@@ -42,6 +42,7 @@ Check all threads' active filters after source filters change
 Hide config bar
 Common shared filters
 max-width w/ text truncation based on number of tabs
+I hate the duplication of functionality between EditableString and Tab
 
 Defensive (i.e. stuff I haven't observed but could be possible)
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary
