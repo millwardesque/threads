@@ -4,9 +4,10 @@ import { useLayoutEffect } from 'react';
 interface EditableStringProps {
     initialValue: string;
     onComplete?: (newValue: string) => void;
+    placeholder?: string;
 }
 
-export const EditableString: React.FC<EditableStringProps> = ({ initialValue, onComplete }) => {
+export const EditableString: React.FC<EditableStringProps> = ({ initialValue, onComplete, placeholder }) => {
     const inputElement = useRef<HTMLInputElement>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>(initialValue);
@@ -53,6 +54,7 @@ export const EditableString: React.FC<EditableStringProps> = ({ initialValue, on
                     ref={inputElement}
                     type="text"
                     value={userInput}
+                    placeholder={placeholder}
                     onBlur={completeEditing}
                     onChange={onChange}
                     onKeyDown={onKeyDown}

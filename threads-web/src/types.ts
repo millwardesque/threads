@@ -9,6 +9,7 @@ import {
 export interface Thread {
     id: string;
     label?: string;
+    description: string;
     source: DataSourceDefinition;
     plot: DataPlotDefinition;
     activeFilters: FiltersAndValues;

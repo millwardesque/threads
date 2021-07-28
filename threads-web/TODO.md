@@ -1,12 +1,12 @@
 # NEXT
 
 # BACKLOG
-Thread Config
-* Per-thread description / notes
-
 Tabs:
 * Tab order switches when changing tabs
 * Bug: Flicker on tab change
+
+Refactoring:
+* Use Thunks
 
 Filter selector
 * Option search

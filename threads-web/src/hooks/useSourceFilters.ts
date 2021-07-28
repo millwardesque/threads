@@ -20,14 +20,13 @@ const loadSourceFilters = (dispatch: AppDispatch, source: DataSourceDefinition):
             .then((response) => {
                 const payload = response.data as GetFilterResults;
                 if (payload.hasError) {
-                    console.log('Error fetching filter values', payload.error);
+                    console.error('Error fetching filter values', payload.error);
                 } else {
-                    console.log('Filters retrieved', payload);
                     dispatch(setSourceFilters({ [source.id]: payload.filters }));
                 }
             })
             .catch((error) => {
-                console.log('Error retrieving filters', error);
+                console.error('Error retrieving filters', error);
             });
     }
 };

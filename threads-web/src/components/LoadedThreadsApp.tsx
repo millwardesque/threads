@@ -6,6 +6,7 @@ import { Throbber } from './Throbber';
 import { FilterSet } from './FilterSet';
 import { PageTitle } from './PageTitle';
 import { ThreadsChart } from './ThreadsChart';
+import { ThreadDescription } from './ThreadDescription';
 import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
@@ -19,6 +20,7 @@ import {
     setActiveThreadFilters,
     selectActiveThread,
     selectAllThreads,
+    setThreadDescription,
 } from '../redux/threadsSlice';
 import { Thread } from '../types';
 import { useLinesList } from '../hooks/useLines';
@@ -57,6 +59,10 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         };
 
         dispatch(setActiveThreadFilters(newActiveFilters));
+    };
+
+    const onDescriptionChange = (newDescription: string) => {
+        dispatch(setThreadDescription({ threadId: activeThread!.id, description: newDescription }));
     };
 
     const onTabClose = (thread: Thread) => {
@@ -130,6 +136,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                                 onSourceChange={onSourceChange}
                             />
                             <PlotSelect thread={activeThread} onPlotChange={onPlotChange} />
+                            <ThreadDescription thread={activeThread} onDescriptionChange={onDescriptionChange} />
                         </div>
                         <div className="flex flex-row p-6 w-2/3 h-full">
                             {activeThread && activeThread.source.id in sourceFilters ? (

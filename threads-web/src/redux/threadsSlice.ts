@@ -15,6 +15,11 @@ interface ThreadLabelArgs {
     label: string;
 }
 
+interface ThreadDescriptionArgs {
+    threadId: string;
+    description: string;
+}
+
 const initialState = {
     threads: {} as ThreadMap,
     activeThreadKey: undefined as string | undefined,
@@ -39,6 +44,7 @@ const threadsSlice = createSlice({
             console.log(`Creating new source and plot: ${source.id}.${plot.id}`);
             const thread: Thread = {
                 id: uuidv4(),
+                description: '',
                 source,
                 plot,
                 activeFilters: {},
@@ -102,6 +108,13 @@ const threadsSlice = createSlice({
                 state.threads[threadId].label = undefined;
             }
         },
+        setThreadDescription(state, action: PayloadAction<ThreadDescriptionArgs>) {
+            const { threadId, description } = action.payload;
+            if (threadId in state.threads) {
+                console.log('Updating thread description', action.payload);
+                state.threads[threadId].description = description;
+            }
+        },
     },
 });
 
@@ -113,6 +126,7 @@ export const {
     setActiveThreadPlot,
     setActiveThreadFilters,
     setThread,
+    setThreadDescription,
     setThreadLabel,
     clearThreadLabel,
 } = threadsSlice.actions;
