@@ -2,34 +2,25 @@
 * Don't worry about fitting EditableString into Tab, create RenamableTab with onRename callback instead
 
 # BACKLOG
-Create source, and filter-change, update-thread actions to redux
-
-Refactor
-* Data-loading hooks?
-
-State when waiting for sources
-
 Thread Config
 * Per-thread description / notes
-
-Redux source filters
-Undo
 
 Tabs:
 * Tab order switches when changing tabs
 
-Update graph rather than redrawing it
-
 Filter selector
-* Value search
+* Option search
 * Collapsed by default
-* Grouped values
+* Grouped options
 * Explode filter
 
 Lines:
 * Tooltips
 
-Simplify active-thread and thread interactions
+Refactor axios into reusable async hook
+State when waiting for sources
+Undo
+Update graph rather than redrawing it
 Persistent URLs / config loading from server
 Money formatting in axis
 Annotation lines

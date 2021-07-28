@@ -45,7 +45,7 @@ const threadsSlice = createSlice({
                 dataVersion: 0,
             };
             state.threads[thread.id] = thread;
-            state.activeThreadKey = action.payload.id;
+            state.activeThreadKey = thread.id;
         },
         setThread(state, action: PayloadAction<Thread>) {
             const thread = action.payload;
