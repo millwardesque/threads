@@ -32,6 +32,7 @@ Money formatting in axis
 Equator lines
 Annotation lines
 Historical lines
+Trailing average, etc.
 Adhoc lines
 Bug?: Switching to a new source with a default plot that has the same ID as the current plot. Will this refresh the line properly?
 Auto-number sources
@@ -52,6 +53,7 @@ Common shared filters
 max-width w/ text truncation based on number of tabs
 I hate the duplication of functionality between EditableString and Tab
 Support stacked and stacked-100% charts for exploded threads
+Date range selector (default to trailing year)
 
 Defensive (i.e. stuff I haven't observed but could be possible)
 * Tab order should be deterministic and not change based on which tabs are present in the dictionary
