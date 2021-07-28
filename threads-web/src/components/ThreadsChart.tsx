@@ -94,10 +94,10 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 backgroundColor: color.light,
                 pointBorderColor: color.dark,
                 pointBackgroundColor: color.light,
-                pointRadius: 4,
-                pointBorderWidth: 2,
-                pointHoverBorderWidth: 1,
+                pointRadius: 3,
+                pointBorderWidth: 1,
                 pointHoverRadius: 5,
+                pointHoverBorderWidth: 1,
                 yAxisID: shownAxes[units],
             };
 
