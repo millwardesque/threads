@@ -67,7 +67,8 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     };
 
     const onExploderChange = (dimension: string): void => {
-        dispatch(setThreadExploder({ threadId: activeThread!.id, exploderDimension: dimension }));
+        const newDimension = activeThread!.exploderDimension === dimension ? undefined : dimension;
+        dispatch(setThreadExploder({ threadId: activeThread!.id, exploderDimension: newDimension }));
     };
 
     const onTabClose = (thread: Thread) => {
