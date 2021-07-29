@@ -22,12 +22,12 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
             if (payload.hasError) {
                 console.log('Error querying data', payload.error);
             } else {
-                const lineData = Object.values(payload.data);
                 let newLines: LineDefinition[] = [];
-                for (let line of lineData) {
+                for (let [dimension, lineData] of Object.entries(payload.data)) {
                     newLines.push({
                         threadId: thread.id,
-                        data: line,
+                        label: dimension !== '*' ? dimension : undefined,
+                        data: lineData,
                     });
                 }
 

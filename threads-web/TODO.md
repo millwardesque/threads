@@ -1,10 +1,8 @@
 # NEXT
 Explode filter
-* QueryResults should return optional dimension / dimension-value in QueryResults
 * Update ThreadsChart to work off LineMap instead of LineDefinition[]
 * Indicator for active exploder button
 * Group sub-lines in legend
-* Set sub-line name to filter value
 * Make sure sub-lines get colours *after* all the top-level threads to legend colours match tab colours
 
 # BACKLOG

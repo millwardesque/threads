@@ -75,7 +75,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             const line = lines[index];
             const thread = threads[line.threadId];
             const axisId = `y${index}`;
-            const label = thread.label || thread.plot.label;
+            const label = line.label || thread.label || thread.plot.label;
             const units = thread.plot.units;
             const lineData: number[] = dates.map((d) => line.data[d]);
             const color = colors.atIndex(parseInt(index));
