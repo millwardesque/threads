@@ -13,6 +13,7 @@ export interface Thread {
     source: DataSourceDefinition;
     plot: DataPlotDefinition;
     activeFilters: FiltersAndValues;
+    exploderDimension?: string;
     dataVersion: number;
 }
 

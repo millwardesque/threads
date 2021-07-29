@@ -8,9 +8,10 @@ interface FilterSetProps {
     thread: Thread;
     filters: FiltersAndValues;
     onFilterChange?: (dimension: string, selected: string[]) => void;
+    onExploderChange?: (dimension: string) => void;
 }
 
-export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterChange }) => {
+export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterChange, onExploderChange }) => {
     const getFilterSelects = (
         source?: DataSourceDefinition,
         filters?: FiltersAndValues,
@@ -30,6 +31,7 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
                     values={filters[dimension]}
                     selected={selected}
                     onFilterChange={onFilterChange}
+                    onExploderChange={onExploderChange}
                 ></FilterSelect>
             );
             filterSelects.push(select);

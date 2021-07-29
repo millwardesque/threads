@@ -20,6 +20,11 @@ interface ThreadDescriptionArgs {
     description: string;
 }
 
+interface ThreadExploderArgs {
+    threadId: string;
+    exploderDimension: string | undefined;
+}
+
 const initialState = {
     threads: {} as ThreadMap,
     activeThreadKey: undefined as string | undefined,
@@ -48,6 +53,7 @@ const threadsSlice = createSlice({
                 source,
                 plot,
                 activeFilters: {},
+                exploderDimension: undefined,
                 dataVersion: 0,
             };
             state.threads[thread.id] = thread;
@@ -111,8 +117,18 @@ const threadsSlice = createSlice({
         setThreadDescription(state, action: PayloadAction<ThreadDescriptionArgs>) {
             const { threadId, description } = action.payload;
             if (threadId in state.threads) {
-                console.log('Updating thread description', action.payload);
+                console.log('Updating thread description', description);
                 state.threads[threadId].description = description;
+            }
+        },
+        setThreadExploder(state, action: PayloadAction<ThreadExploderArgs>) {
+            const { threadId, exploderDimension } = action.payload;
+            if (threadId in state.threads) {
+                console.log('Updating thread exploder dimension', exploderDimension);
+
+                const thread = state.threads[threadId];
+                state.threads[threadId].exploderDimension = exploderDimension;
+                updateThreadDataVersion(thread);
             }
         },
     },
@@ -127,6 +143,7 @@ export const {
     setActiveThreadFilters,
     setThread,
     setThreadDescription,
+    setThreadExploder,
     setThreadLabel,
     clearThreadLabel,
 } = threadsSlice.actions;

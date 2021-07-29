@@ -21,6 +21,7 @@ import {
     selectActiveThread,
     selectAllThreads,
     setThreadDescription,
+    setThreadExploder,
 } from '../redux/threadsSlice';
 import { Thread } from '../types';
 import { useLinesList } from '../hooks/useLines';
@@ -63,6 +64,10 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
 
     const onDescriptionChange = (newDescription: string) => {
         dispatch(setThreadDescription({ threadId: activeThread!.id, description: newDescription }));
+    };
+
+    const onExploderChange = (dimension: string): void => {
+        dispatch(setThreadExploder({ threadId: activeThread!.id, exploderDimension: dimension }));
     };
 
     const onTabClose = (thread: Thread) => {
@@ -144,6 +149,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                                     thread={activeThread}
                                     filters={sourceFilters[activeThread.source.id]}
                                     onFilterChange={onFilterChange}
+                                    onExploderChange={onExploderChange}
                                 />
                             ) : (
                                 <Throbber />

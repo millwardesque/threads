@@ -13,6 +13,7 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
     const query: QueryRequest = {
         plotId: thread.plot.id,
         dimensionFilters: thread.activeFilters,
+        dimensionExploder: thread.exploderDimension,
     };
     axios
         .post(`http://localhost:2999/api/datasource/${thread.source.id}/query`, query)
