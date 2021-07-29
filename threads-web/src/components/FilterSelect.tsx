@@ -46,7 +46,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
                 <div className="flex flex-row content-center justify-end">
                     <span className="text-sm mr-1">Explode:</span>
                     <input
-                        className="cursor-pointer bg-gray-200 hover:bg-gray-300 border-gray-500 border text-gray-700 text-xs font-bold py-1 px-2 rounded-full"
+                        className="cursor-pointer bg-gray-200 hover:bg-gray-300 border-gray-500 border text-gray-700 text-xs font-bold py-1 px-2 rounded"
                         type="button"
                         value="Lines"
                         onClick={onExploderClick}

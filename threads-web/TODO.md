@@ -11,6 +11,7 @@ Tabs:
 
 Refactoring:
 * Use Thunks
+* Button component
 
 Filter selector
 * Option search
