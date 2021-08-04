@@ -24,7 +24,7 @@ import {
     setThreadExploder,
 } from '../redux/threadsSlice';
 import { Thread } from '../types';
-import { useLinesList } from '../hooks/useLines';
+import { useLines } from '../hooks/useLines';
 import { useSourceFilters } from '../hooks/useSourceFilters';
 
 interface LoadedThreadsAppProps {
@@ -95,7 +95,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const threads = useAppSelector(selectAllThreads);
     const activeThread = useAppSelector(selectActiveThread);
     const sourceFilters = useSourceFilters(activeThread);
-    const allLines = useLinesList();
+    const allLines = useLines();
 
     useEffect(() => {
         if (Object.keys(threads).length === 0) {

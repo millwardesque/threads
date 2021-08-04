@@ -24,6 +24,7 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
         let filterSelects = [];
         for (const dimension of Object.keys(filters)) {
             const selected: string[] = activeFilters && dimension in activeFilters ? activeFilters[dimension] : [];
+            const isActiveExploder = thread.exploderDimension === dimension;
             const select = (
                 <FilterSelect
                     key={dimension}
@@ -32,6 +33,7 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
                     selected={selected}
                     onFilterChange={onFilterChange}
                     onExploderChange={onExploderChange}
+                    isActiveExploder={isActiveExploder}
                 ></FilterSelect>
             );
             filterSelects.push(select);

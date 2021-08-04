@@ -1,9 +1,7 @@
 # NEXT
 Explode filter
-* Update ThreadsChart to work off LineMap instead of LineDefinition[]
-* Indicator for active exploder button
-* Group sub-lines in legend
-* Make sure sub-lines get colours *after* all the top-level threads to legend colours match tab colours
+* Custom legend for grouping sub-lines in legend
+* Move chart data extraction to hook
 
 # BACKLOG
 Tabs:

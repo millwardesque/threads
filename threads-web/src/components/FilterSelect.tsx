@@ -9,6 +9,7 @@ interface FilterSelectProps {
     selected: string[];
     onFilterChange?: (dimension: string, selected: string[]) => void;
     onExploderChange?: (dimension: string) => void;
+    isActiveExploder: boolean;
 }
 
 export const FilterSelect: React.FC<FilterSelectProps> = ({
@@ -17,6 +18,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
     selected,
     onFilterChange,
     onExploderChange,
+    isActiveExploder,
 }) => {
     const onChange = (newSelection: string[]) => {
         if (onFilterChange) {
@@ -34,6 +36,13 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
         }
     };
 
+    let buttonClasses = 'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
+    if (isActiveExploder) {
+        buttonClasses += ' border-red-500 text-red-700';
+    } else {
+        buttonClasses += ' border-gray-500 text-gray-700';
+    }
+
     return (
         <>
             <div className="flex flex-col">
@@ -45,12 +54,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
                 ></MultiSelect>
                 <div className="flex flex-row content-center justify-end">
                     <span className="text-sm mr-1">Explode:</span>
-                    <input
-                        className="cursor-pointer bg-gray-200 hover:bg-gray-300 border-gray-500 border text-gray-700 text-xs font-bold py-1 px-2 rounded"
-                        type="button"
-                        value="Lines"
-                        onClick={onExploderClick}
-                    />
+                    <input className={buttonClasses} type="button" value="Lines" onClick={onExploderClick} />
                 </div>
             </div>
         </>

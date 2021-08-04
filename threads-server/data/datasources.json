@@ -107,5 +107,49 @@
                 "units": "$"
             }
         }
+    },
+    {
+        "id": "owid_covid_data",
+        "label": "OWID COVID-19 Data",
+        "type": "csv",
+        "file": "../data/owid-covid-data.csv",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
+        "dimensions": {
+            "continent": {
+                "id": "continent",
+                "label": "Continent"
+            },
+            "location": {
+                "id": "location",
+                "label": "Country"
+            }
+        },
+        "measures": {
+            "total_cases": {
+                "id": "total_cases",
+                "label": "Total cases"
+            },
+            "new_cases": {
+                "id": "new_cases",
+                "label": "New cases"
+            }
+        },
+        "plots": {
+            "sum_total_cases": {
+                "id": "sum_total_cases",
+                "measureId": "total_cases",
+                "aggregator": "sum",
+                "label": "Sum of Total Cases",
+                "units": ""
+            },
+            "sum_new_cases": {
+                "id": "sum_new_cases",
+                "measureId": "new_cases",
+                "aggregator": "sum",
+                "label": "Sum of new cases",
+                "units": ""
+            }
+        }
     }
 ]

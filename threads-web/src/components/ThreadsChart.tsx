@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-import { LineDefinition } from '../types';
+import { LineMap, LineDefinition } from '../types';
 import useColorProvider from '../hooks/useColorProvider';
 import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';
 
 interface ThreadsChartProps {
     id: string;
-    lines: LineDefinition[];
+    lines: LineMap;
 }
 
 interface ChartAxes {
@@ -57,10 +57,14 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
     useEffect(() => {
         let axes: ChartAxes = {};
+        let linesAsArray: LineDefinition[] = [];
+        Object.values(lines).forEach((threadLines) => {
+            linesAsArray = linesAsArray.concat(threadLines.lines);
+        });
 
         // First pass: Collect, merge, and sort all the dates from all the lines to get the true date range.
         const dateSet = new Set<string>();
-        for (let line of lines) {
+        for (let line of linesAsArray) {
             const lineDates = Object.keys(line?.data ?? {});
             lineDates.forEach((item) => dateSet.add(item));
         }
@@ -71,38 +75,55 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         const shownAxes: {
             [units: string]: string;
         } = {};
-        for (let index in lines) {
-            const line = lines[index];
-            const thread = threads[line.threadId];
-            const axisId = `y${index}`;
-            const label = line.label || thread.label || thread.plot.label;
-            const units = thread.plot.units;
-            const lineData: number[] = dates.map((d) => line.data[d]);
-            const color = colors.atIndex(parseInt(index));
+        const threadColourOffset = Object.keys(threads).length;
 
-            const createAxis = !(units in shownAxes) && lineData.length > 0;
+        let threadsProcessed = 0;
+        let explodedLinesProcessed = 0;
+        for (const threadId of Object.keys(lines)) {
+            const thread = threads[threadId];
+            const threadLines = lines[threadId].lines;
+            const axisId = `y-${threadId}`;
+            const units = thread.plot.units;
+            const isExploded = threadLines.length > 1;
+
+            const createAxis = !(units in shownAxes);
             if (createAxis) {
-                axes[axisId] = makeAxis(axisId, true, index === '0', units);
+                const isFirstAxis = Object.keys(axes).length === 0;
+                axes[axisId] = makeAxis(axisId, true, isFirstAxis, units);
                 shownAxes[units] = axisId;
             }
 
-            const dataset = {
-                label,
-                data: lineData,
-                fill: false,
-                borderColor: color.dark,
-                borderWidth: 2,
-                backgroundColor: color.light,
-                pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-                pointBorderColor: 'rgba(0, 0, 0, 0)',
-                pointHoverBackgroundColor: color.light,
-                pointHoverBorderColor: color.dark,
-                pointRadius: 5,
-                pointHoverBorderWidth: 1,
-                yAxisID: shownAxes[units],
-            };
+            for (const line of threadLines) {
+                const label = line.label || thread.label || thread.plot.label;
+                const units = thread.plot.units;
+                const lineData: number[] = dates.map((d) => line.data[d]);
+                const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
+                const color = colors.atIndex(colorIndex);
 
-            datasets.push(dataset);
+                const dataset = {
+                    label,
+                    data: lineData,
+                    fill: false,
+                    borderColor: color.dark,
+                    borderWidth: 2,
+                    backgroundColor: color.light,
+                    pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+                    pointBorderColor: 'rgba(0, 0, 0, 0)',
+                    pointHoverBackgroundColor: color.light,
+                    pointHoverBorderColor: color.dark,
+                    pointRadius: 5,
+                    pointHoverBorderWidth: 1,
+                    yAxisID: shownAxes[units],
+                };
+
+                datasets.push(dataset);
+
+                if (isExploded) {
+                    explodedLinesProcessed += 1;
+                }
+            }
+
+            threadsProcessed += 1;
         }
 
         const data = {
