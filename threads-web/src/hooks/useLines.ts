@@ -3,11 +3,11 @@ import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AppDispatch } from '../redux/store';
 import { initThreadLines, selectAllLines, updateThreadLines } from '../redux/linesSlice';
-import { selectAllThreads } from '../redux/threadsSlice';
+import { selectOrderedThreads } from '../redux/threadsSlice';
 import { LineDefinition, LineMap, Thread } from '../types';
 import { QueryRequest, QueryResults } from '../models/DataSourceDefinition';
 
-const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
+const queryLineData = (dispatch: AppDispatch, thread: Thread, threadIndex: number) => {
     dispatch(initThreadLines(thread));
 
     const query: QueryRequest = {
@@ -26,6 +26,7 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
                 for (let [dimension, lineData] of Object.entries(payload.data)) {
                     newLines.push({
                         threadId: thread.id,
+                        threadIndex: threadIndex + 1,
                         label: dimension !== '*' ? dimension : undefined,
                         data: lineData,
                     });
@@ -48,15 +49,15 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
 
 export const useLines = (): LineMap => {
     const dispatch = useAppDispatch();
-    const threads = useAppSelector(selectAllThreads);
     const lines = useAppSelector(selectAllLines);
+    const orderedThreads = useAppSelector(selectOrderedThreads);
 
     const lineMap: LineMap = {};
-    Object.values(threads).forEach((thread) => {
+    orderedThreads.forEach((thread, threadIndex) => {
         if (!(thread.id in lines)) {
-            queryLineData(dispatch, thread);
+            queryLineData(dispatch, thread, threadIndex);
         } else if (thread.dataVersion !== lines[thread.id].threadVersion) {
-            queryLineData(dispatch, thread);
+            queryLineData(dispatch, thread, threadIndex);
         } else {
             lineMap[thread.id] = lines[thread.id];
         }

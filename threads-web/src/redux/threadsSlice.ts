@@ -7,6 +7,7 @@ import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../m
 
 interface ThreadsState {
     threads: ThreadMap;
+    orderedThreadIds: Array<string>;
     activeThreadKey: string | undefined;
 }
 
@@ -27,6 +28,7 @@ interface ThreadExploderArgs {
 
 const initialState = {
     threads: {} as ThreadMap,
+    orderedThreadIds: [] as Array<string>,
     activeThreadKey: undefined as string | undefined,
 } as ThreadsState;
 
@@ -58,6 +60,7 @@ const threadsSlice = createSlice({
             };
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
+            state.orderedThreadIds.push(thread.id);
         },
         setThread(state, action: PayloadAction<Thread>) {
             const thread = action.payload;
@@ -66,6 +69,11 @@ const threadsSlice = createSlice({
         deleteThread(state, action: PayloadAction<string>) {
             const threadId = action.payload;
             delete state.threads[threadId];
+
+            const threadIndex = state.orderedThreadIds.findIndex((id) => id === threadId);
+            if (threadIndex !== -1) {
+                state.orderedThreadIds.splice(threadIndex, 1);
+            }
 
             if (threadId === state.activeThreadKey) {
                 state.activeThreadKey = undefined;
@@ -148,6 +156,9 @@ export const {
     clearThreadLabel,
 } = threadsSlice.actions;
 export const selectAllThreads = (state: RootState) => state.threads.threads;
+export const selectOrderedThreads = (state: RootState): Array<Thread> => {
+    return state.threads.orderedThreadIds.map((id) => state.threads.threads[id]);
+};
 export const selectActiveThreadKey = (state: RootState) => state.threads.activeThreadKey;
 export const selectActiveThread = (state: RootState): Thread | undefined => {
     return getActiveThread(state.threads);

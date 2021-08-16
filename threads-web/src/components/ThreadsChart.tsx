@@ -93,8 +93,9 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 shownAxes[units] = axisId;
             }
 
-            for (const line of threadLines) {
-                const label = line.label || thread.label || thread.plot.label;
+            for (const [index, line] of Object.entries(threadLines)) {
+                const subIndex = isExploded ? `.${parseInt(index) + 1}` : '';
+                const label = `${line.threadIndex}${subIndex}. ${line.label || thread.label || thread.plot.label}`;
                 const units = thread.plot.units;
                 const lineData: number[] = dates.map((d) => line.data[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;

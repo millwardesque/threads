@@ -22,6 +22,7 @@ import {
     selectAllThreads,
     setThreadDescription,
     setThreadExploder,
+    selectOrderedThreads,
 } from '../redux/threadsSlice';
 import { Thread } from '../types';
 import { useLines } from '../hooks/useLines';
@@ -93,6 +94,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
 
     const dispatch = useAppDispatch();
     const threads = useAppSelector(selectAllThreads);
+    const orderedThreads = useAppSelector(selectOrderedThreads);
     const activeThread = useAppSelector(selectActiveThread);
     const sourceFilters = useSourceFilters(activeThread);
     const allLines = useLines();
@@ -128,6 +130,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                     <div className="tabs-area flex flex-row">
                         <ThreadTabs
                             threads={threads}
+                            orderedThreads={orderedThreads}
                             activeThread={activeThread}
                             onSelectTab={switchThread}
                             onCloseTab={onTabClose}

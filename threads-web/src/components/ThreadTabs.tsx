@@ -11,13 +11,21 @@ interface ThreadTabsProps {
     threads: {
         [id: string]: Thread;
     };
+    orderedThreads: Array<Thread>;
     activeThread: Thread;
     onSelectTab: (thread: Thread) => void;
     onCloseTab: (thread: Thread) => void;
     onNewTab: () => void;
 }
 
-export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, onSelectTab, onCloseTab, onNewTab }) => {
+export const ThreadTabs: React.FC<ThreadTabsProps> = ({
+    threads,
+    orderedThreads,
+    activeThread,
+    onSelectTab,
+    onCloseTab,
+    onNewTab,
+}) => {
     const handleSelectTab = (tabId: string) => {
         console.log('Requesting tab select', tabId);
         if (!(tabId in threads)) {
@@ -43,10 +51,12 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({ threads, activeThread, o
         }
     };
 
-    const tabs = Object.values(threads).map((thread) => {
+    const tabs = orderedThreads.map((thread, index) => {
+        const label = thread.label || `${thread.source?.label}: ${thread.plot?.label}`;
         return {
             id: thread.id,
-            label: thread.label || `${thread.source?.label}: ${thread.plot?.label}`,
+            index,
+            label: `${index + 1}. ${label}`,
             isActive: thread === activeThread,
             thread,
         };

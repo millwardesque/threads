@@ -23,6 +23,7 @@ export interface ThreadMap {
 
 export interface LineDefinition {
     threadId: string;
+    threadIndex: number;
     label?: string;
     data: LineData;
 }

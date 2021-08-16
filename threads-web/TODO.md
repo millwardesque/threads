@@ -1,7 +1,5 @@
 # NEXT
-Explode filter
-* Custom legend for grouping sub-lines in legend
-* Move chart data extraction to hook
+Bug: Lines don't redraw when indexes change
 
 # BACKLOG
 Tabs:
@@ -10,6 +8,7 @@ Tabs:
 Refactoring:
 * Use Thunks
 * Button component
+* Move chart data extraction to hook
 
 Filter selector
 * Option search
@@ -20,6 +19,8 @@ Filter selector
 Lines:
 * Tooltips
 
+
+Custom legend for grouping sub-lines in legend
 Refactor axios into reusable async hook or thunks
 Clone / duplicate tab
 State when waiting for sources
