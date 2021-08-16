@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-import { LineMap, LineDefinition } from '../types';
+import { LineMap, LineDefinition, VersionedLines } from '../types';
 import useColorProvider from '../hooks/useColorProvider';
 import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';
 
 interface ThreadsChartProps {
     id: string;
-    lines: LineMap;
+    lines: VersionedLines[];
 }
 
 interface ChartAxes {
@@ -58,7 +58,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     useEffect(() => {
         let axes: ChartAxes = {};
         let linesAsArray: LineDefinition[] = [];
-        Object.values(lines).forEach((threadLines) => {
+        lines.forEach((threadLines) => {
             linesAsArray = linesAsArray.concat(threadLines.lines);
         });
 
@@ -71,7 +71,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         const dates: string[] = Array.from(dateSet).sort();
 
         // Second pass, create datasets based on available date range
-        const datasets = [];
+        const datasets: Array<any> = [];
         const shownAxes: {
             [units: string]: string;
         } = {};
@@ -79,12 +79,16 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
         let threadsProcessed = 0;
         let explodedLinesProcessed = 0;
-        for (const threadId of Object.keys(lines)) {
+        lines.forEach((threadLines, threadIndex) => {
+            if (threadLines.lines.length === 0) {
+                return;
+            }
+
+            const threadId = threadLines.lines[0].threadId;
             const thread = threads[threadId];
-            const threadLines = lines[threadId].lines;
             const axisId = `y-${threadId}`;
             const units = thread.plot.units;
-            const isExploded = threadLines.length > 1;
+            const isExploded = threadLines.lines.length > 1;
 
             const createAxis = !(units in shownAxes);
             if (createAxis) {
@@ -93,9 +97,9 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 shownAxes[units] = axisId;
             }
 
-            for (const [index, line] of Object.entries(threadLines)) {
-                const subIndex = isExploded ? `.${parseInt(index) + 1}` : '';
-                const label = `${line.threadIndex}${subIndex}. ${line.label || thread.label || thread.plot.label}`;
+            threadLines.lines.forEach((line, index) => {
+                const subIndex = isExploded ? `.${index + 1}` : '';
+                const label = `${threadIndex + 1}${subIndex}. ${line.label || thread.label || thread.plot.label}`;
                 const units = thread.plot.units;
                 const lineData: number[] = dates.map((d) => line.data[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
@@ -122,10 +126,10 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 if (isExploded) {
                     explodedLinesProcessed += 1;
                 }
-            }
+            });
 
             threadsProcessed += 1;
-        }
+        });
 
         const data = {
             labels: dates,

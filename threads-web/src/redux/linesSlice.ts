@@ -41,6 +41,9 @@ const linesSlice = createSlice({
 
 export const { deleteThreadLines, initThreadLines, updateThreadLines } = linesSlice.actions;
 export const selectAllLines = (state: RootState) => state.lines.lines;
+export const selectOrderedLines = (state: RootState) => {
+    return state.threads.orderedThreadIds.map((id) => state.lines.lines[id]);
+};
 export const selectThreadLines = (state: RootState, thread: Thread) => state.lines.lines[thread.id];
 
 export default linesSlice.reducer;

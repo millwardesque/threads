@@ -23,16 +23,16 @@ export interface ThreadMap {
 
 export interface LineDefinition {
     threadId: string;
-    threadIndex: number;
     label?: string;
     data: LineData;
 }
+export interface VersionedLines {
+    lines: LineDefinition[];
+    threadVersion: number;
+}
 
 export interface LineMap {
-    [threadId: string]: {
-        lines: LineDefinition[];
-        threadVersion: number;
-    };
+    [threadId: string]: VersionedLines;
 }
 
 export type LoadingStatus = 'not-started' | 'loading' | 'loaded' | 'error';

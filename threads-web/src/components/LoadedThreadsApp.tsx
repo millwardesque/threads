@@ -25,7 +25,7 @@ import {
     selectOrderedThreads,
 } from '../redux/threadsSlice';
 import { Thread } from '../types';
-import { useLines } from '../hooks/useLines';
+import { useOrderedLines } from '../hooks/useLines';
 import { useSourceFilters } from '../hooks/useSourceFilters';
 
 interface LoadedThreadsAppProps {
@@ -97,7 +97,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const orderedThreads = useAppSelector(selectOrderedThreads);
     const activeThread = useAppSelector(selectActiveThread);
     const sourceFilters = useSourceFilters(activeThread);
-    const allLines = useLines();
+    const lines = useOrderedLines();
 
     useEffect(() => {
         if (Object.keys(threads).length === 0) {
@@ -122,7 +122,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                 <div className="row flex h-3/4 flex-col">
                     <div className="flex flex-row w-full h-full">
                         <div className="graph-area w-full h-full p-4">
-                            <ThreadsChart id="chart" lines={allLines} />
+                            <ThreadsChart id="chart" lines={lines} />
                         </div>
                     </div>
                 </div>

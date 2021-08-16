@@ -2,12 +2,12 @@ import axios from 'axios';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AppDispatch } from '../redux/store';
-import { initThreadLines, selectAllLines, updateThreadLines } from '../redux/linesSlice';
-import { selectOrderedThreads } from '../redux/threadsSlice';
-import { LineDefinition, LineMap, Thread } from '../types';
+import { initThreadLines, selectAllLines, selectOrderedLines, updateThreadLines } from '../redux/linesSlice';
+import { selectAllThreads, selectOrderedThreads } from '../redux/threadsSlice';
+import { LineDefinition, LineMap, Thread, VersionedLines } from '../types';
 import { QueryRequest, QueryResults } from '../models/DataSourceDefinition';
 
-const queryLineData = (dispatch: AppDispatch, thread: Thread, threadIndex: number) => {
+const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
     dispatch(initThreadLines(thread));
 
     const query: QueryRequest = {
@@ -26,7 +26,6 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread, threadIndex: numbe
                 for (let [dimension, lineData] of Object.entries(payload.data)) {
                     newLines.push({
                         threadId: thread.id,
-                        threadIndex: threadIndex + 1,
                         label: dimension !== '*' ? dimension : undefined,
                         data: lineData,
                     });
@@ -49,15 +48,16 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread, threadIndex: numbe
 
 export const useLines = (): LineMap => {
     const dispatch = useAppDispatch();
+    const threads = useAppSelector(selectAllThreads);
     const lines = useAppSelector(selectAllLines);
     const orderedThreads = useAppSelector(selectOrderedThreads);
 
     const lineMap: LineMap = {};
-    orderedThreads.forEach((thread, threadIndex) => {
+    orderedThreads.forEach((thread, index) => {
         if (!(thread.id in lines)) {
-            queryLineData(dispatch, thread, threadIndex);
+            queryLineData(dispatch, thread);
         } else if (thread.dataVersion !== lines[thread.id].threadVersion) {
-            queryLineData(dispatch, thread, threadIndex);
+            queryLineData(dispatch, thread);
         } else {
             lineMap[thread.id] = lines[thread.id];
         }
@@ -66,12 +66,7 @@ export const useLines = (): LineMap => {
     return lineMap;
 };
 
-export const useLinesList = (): LineDefinition[] => {
-    const lines = useLines();
-    let allLines: LineDefinition[] = [];
-    Object.values(lines).forEach((threadLines) => {
-        allLines = allLines.concat(threadLines.lines);
-    });
-
-    return allLines;
+export const useOrderedLines = (): VersionedLines[] => {
+    useLines();
+    return useAppSelector(selectOrderedLines);
 };
