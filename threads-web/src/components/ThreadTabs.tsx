@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Color } from '../models/ColorProvider';
 import useColorProvider from '../hooks/useColorProvider';
-import { Thread, ThreadType } from '../types';
+import { Thread } from '../models/Thread';
+import { ThreadType } from '../types';
 import { Tab } from './Tab';
 import { useAppDispatch } from '../redux/hooks';
 import { setThreadLabel } from '../redux/threadsSlice';
@@ -59,11 +60,10 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
     };
 
     const tabs = orderedThreads.map((thread, index) => {
-        const label = thread.label || `${thread.source?.label}: ${thread.plot?.label}`;
         return {
             id: thread.id,
             index,
-            label: `${index + 1}. ${label}`,
+            label: `${index + 1}. ${thread.getLabel()}`,
             isActive: thread === activeThread,
             thread,
         };

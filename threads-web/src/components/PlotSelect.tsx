@@ -1,10 +1,10 @@
 import React from 'react';
 import { DataPlotDefinition } from '../models/DataSourceDefinition';
-import { Thread } from '../types';
+import { SimpleThread } from '../models/Thread';
 import { Select } from './Select';
 
 interface PlotSelectProps {
-    thread: Thread;
+    thread: SimpleThread;
     onPlotChange?: (plot: DataPlotDefinition) => void;
 }
 

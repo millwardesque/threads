@@ -17,7 +17,8 @@ import {
     selectAllThreads,
     selectOrderedThreads,
 } from '../redux/threadsSlice';
-import { Thread, ThreadType } from '../types';
+import { ThreadType } from '../types';
+import { Thread } from '../models/Thread';
 import { useOrderedLines } from '../hooks/useLines';
 
 interface LoadedThreadsAppProps {

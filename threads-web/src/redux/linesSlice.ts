@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
-import { LineMap, Thread } from '../types';
+import { LineMap } from '../types';
+import { Thread } from '../models/Thread';
 
 interface LinesState {
     lines: LineMap;

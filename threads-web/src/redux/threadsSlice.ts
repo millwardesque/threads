@@ -2,7 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from './store';
-import { Thread, ThreadMap } from '../types';
+import { ThreadMap } from '../types';
+import { SimpleThread, Thread } from '../models/Thread';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
 
 interface ThreadsState {
@@ -49,16 +50,7 @@ const threadsSlice = createSlice({
             const plot = Object.values(source.plots)[0];
 
             console.log(`Creating new simple thread and plot: ${source.id}.${plot.id}`);
-            const thread: Thread = {
-                id: uuidv4(),
-                type: 'simple',
-                description: '',
-                source,
-                plot,
-                activeFilters: {},
-                exploderDimension: undefined,
-                dataVersion: 0,
-            };
+            const thread = new SimpleThread(uuidv4(), 'simple', undefined, '', 0, source, plot, {}, undefined);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -92,24 +84,27 @@ const threadsSlice = createSlice({
             const source = action.payload;
             const plot = Object.values(source.plots)[0];
             const activeThread = getActiveThread(state);
-            if (activeThread) {
-                activeThread.source = source;
-                activeThread.plot = plot;
-                activeThread.activeFilters = {};
+            if (activeThread && activeThread.type === 'simple') {
+                let activeSimpleThread = activeThread as SimpleThread;
+                activeSimpleThread.source = source;
+                activeSimpleThread.plot = plot;
+                activeSimpleThread.activeFilters = {};
                 updateThreadDataVersion(activeThread);
             }
         },
         setActiveThreadPlot(state, action: PayloadAction<DataPlotDefinition>) {
             const activeThread = getActiveThread(state);
             if (activeThread) {
-                activeThread.plot = action.payload;
+                let activeSimpleThread = activeThread as SimpleThread;
+                activeSimpleThread.plot = action.payload;
                 updateThreadDataVersion(activeThread);
             }
         },
         setActiveThreadFilters(state, action: PayloadAction<FiltersAndValues>) {
             const activeThread = getActiveThread(state);
             if (activeThread) {
-                activeThread.activeFilters = action.payload;
+                let activeSimpleThread = activeThread as SimpleThread;
+                activeSimpleThread.activeFilters = action.payload;
                 updateThreadDataVersion(activeThread);
             }
         },
@@ -117,13 +112,13 @@ const threadsSlice = createSlice({
             const { threadId, label } = action.payload;
             if (threadId in state.threads) {
                 console.log('Updating thread label', action.payload);
-                state.threads[threadId].label = label;
+                state.threads[threadId].customLabel = label;
             }
         },
         clearThreadLabel(state, action: PayloadAction<string>) {
             const threadId = action.payload;
             if (threadId in state.threads) {
-                state.threads[threadId].label = undefined;
+                state.threads[threadId].customLabel = undefined;
             }
         },
         setThreadDescription(state, action: PayloadAction<ThreadDescriptionArgs>) {
@@ -135,11 +130,11 @@ const threadsSlice = createSlice({
         },
         setThreadExploder(state, action: PayloadAction<ThreadExploderArgs>) {
             const { threadId, exploderDimension } = action.payload;
-            if (threadId in state.threads) {
+            if (threadId in state.threads && state.threads[threadId].type === 'simple') {
                 console.log('Updating thread exploder dimension', exploderDimension);
 
-                const thread = state.threads[threadId];
-                state.threads[threadId].exploderDimension = exploderDimension;
+                const thread = state.threads[threadId] as SimpleThread;
+                thread.exploderDimension = exploderDimension;
                 updateThreadDataVersion(thread);
             }
         },

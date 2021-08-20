@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { AppDispatch } from '../redux/store';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { Thread } from '../types';
+import { SimpleThread } from '../models/Thread';
 import { FiltersAndValues } from '../models/DataSourceDefinition';
 import { selectAllSourceFilters, setSourceFilters } from '../redux/sourcesSlice';
 import { DataSourceDefinition, GetFilterResults } from '../models/DataSourceDefinition';
@@ -31,7 +31,7 @@ const loadSourceFilters = (dispatch: AppDispatch, source: DataSourceDefinition):
     }
 };
 
-export const useSourceFilters = (activeThread: Thread | undefined): SourceFiltersMap => {
+export const useSourceFilters = (activeThread: SimpleThread | undefined): SourceFiltersMap => {
     const dispatch = useAppDispatch();
     const sourceFilters = useAppSelector(selectAllSourceFilters);
 

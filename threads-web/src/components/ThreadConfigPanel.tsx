@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Thread } from '../types';
+import { SimpleThread, Thread } from '../models/Thread';
 import { SimpleThreadConfigPanel } from './SimpleThreadConfigPanel';
 import { AdhocThreadConfigPanel } from './AdhocThreadConfigPanel';
 
@@ -12,7 +12,7 @@ export const ThreadConfigPanel: React.FC<ThreadConfigPanelProps> = ({ thread }) 
     return (
         <>
             {thread.type === 'adhoc' && <AdhocThreadConfigPanel thread={thread} />}
-            {thread.type === 'simple' && <SimpleThreadConfigPanel thread={thread} />}
+            {thread.type === 'simple' && <SimpleThreadConfigPanel thread={thread as SimpleThread} />}
         </>
     );
 };

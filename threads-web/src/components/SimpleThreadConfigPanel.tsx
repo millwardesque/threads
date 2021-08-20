@@ -7,7 +7,7 @@ import { DataPlotDefinition, DataSourceDefinition } from '../models/DataSourceDe
 import { setActiveThreadFilters, setThreadExploder } from '../redux/threadsSlice';
 import { SourceSelect } from './SourceSelect';
 import { PlotSelect } from './PlotSelect';
-import { Thread } from '../types';
+import { SimpleThread } from '../models/Thread';
 import { ThreadDescription } from './ThreadDescription';
 import { FilterSet } from './FilterSet';
 import { Throbber } from './Throbber';
@@ -15,7 +15,7 @@ import { Throbber } from './Throbber';
 import { setActiveThreadSource, setActiveThreadPlot, setThreadDescription } from '../redux/threadsSlice';
 
 interface SimpleThreadConfigPanelProps {
-    thread: Thread;
+    thread: SimpleThread;
 }
 
 export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = ({ thread }) => {

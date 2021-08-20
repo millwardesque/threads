@@ -2,10 +2,10 @@ import React from 'react';
 
 import { DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
 import { FilterSelect } from './FilterSelect';
-import { Thread } from '../types';
+import { SimpleThread } from '../models/Thread';
 
 interface FilterSetProps {
-    thread: Thread;
+    thread: SimpleThread;
     filters: FiltersAndValues;
     onFilterChange?: (dimension: string, selected: string[]) => void;
     onExploderChange?: (dimension: string) => void;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Thread } from '../types';
+import { Thread } from '../models/Thread';
 import { StandaloneInput } from './StandaloneInput';
 
 interface ThreadDescriptionProps {

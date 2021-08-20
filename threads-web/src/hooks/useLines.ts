@@ -4,10 +4,17 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AppDispatch } from '../redux/store';
 import { initThreadLines, selectAllLines, selectOrderedLines, updateThreadLines } from '../redux/linesSlice';
 import { selectOrderedThreads } from '../redux/threadsSlice';
-import { LineDefinition, LineMap, Thread, VersionedLines } from '../types';
+import { SimpleThread, Thread } from '../models/Thread';
+import { LineDefinition, LineMap, VersionedLines } from '../types';
 import { QueryRequest, QueryResults } from '../models/DataSourceDefinition';
 
-const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
+const refreshLineData = (dispatch: AppDispatch, thread: Thread) => {
+    if (thread.type === 'simple') {
+        queryLineData(dispatch, thread as SimpleThread);
+    }
+};
+
+const queryLineData = (dispatch: AppDispatch, thread: SimpleThread) => {
     dispatch(initThreadLines(thread));
 
     const query: QueryRequest = {
@@ -54,9 +61,9 @@ export const useLines = (): LineMap => {
     const lineMap: LineMap = {};
     orderedThreads.forEach((thread, index) => {
         if (!(thread.id in lines)) {
-            queryLineData(dispatch, thread);
+            refreshLineData(dispatch, thread);
         } else if (thread.dataVersion !== lines[thread.id].threadVersion) {
-            queryLineData(dispatch, thread);
+            refreshLineData(dispatch, thread);
         } else {
             lineMap[thread.id] = lines[thread.id];
         }
