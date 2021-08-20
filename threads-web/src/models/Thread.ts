@@ -31,6 +31,33 @@ export abstract class Thread {
     abstract getFallbackLabel(): string;
 }
 
+export class AdhocThread extends Thread {
+    adhocData: string[];
+    units: string;
+
+    constructor(
+        id: string,
+        type: ThreadType,
+        customLabel: string | undefined,
+        description: string,
+        dataVersion: number,
+        units: string,
+        adhocData: string[]
+    ) {
+        super(id, type, customLabel, description, dataVersion);
+        this.units = units;
+        this.adhocData = adhocData;
+    }
+
+    getUnits(): string {
+        return this.units;
+    }
+
+    getFallbackLabel(): string {
+        return 'Adhoc line';
+    }
+}
+
 export class SimpleThread extends Thread {
     source: DataSourceDefinition;
     plot: DataPlotDefinition;

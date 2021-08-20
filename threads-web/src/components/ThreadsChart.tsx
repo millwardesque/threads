@@ -58,6 +58,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     useEffect(() => {
         let axes: ChartAxes = {};
         let linesAsArray: LineDefinition[] = [];
+        console.log(lines);
         lines.forEach((threadLines) => {
             linesAsArray = linesAsArray.concat(threadLines.lines);
         });

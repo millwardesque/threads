@@ -4,19 +4,49 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AppDispatch } from '../redux/store';
 import { initThreadLines, selectAllLines, selectOrderedLines, updateThreadLines } from '../redux/linesSlice';
 import { selectOrderedThreads } from '../redux/threadsSlice';
-import { SimpleThread, Thread } from '../models/Thread';
+import { AdhocThread, SimpleThread, Thread } from '../models/Thread';
 import { LineDefinition, LineMap, VersionedLines } from '../types';
-import { QueryRequest, QueryResults } from '../models/DataSourceDefinition';
+import { LineData, QueryRequest, QueryResults } from '../models/DataSourceDefinition';
 
 const refreshLineData = (dispatch: AppDispatch, thread: Thread) => {
+    dispatch(initThreadLines(thread));
+
     if (thread.type === 'simple') {
-        queryLineData(dispatch, thread as SimpleThread);
+        refreshSimpleThreadLines(dispatch, thread as SimpleThread);
+    } else if (thread.type === 'adhoc') {
+        refreshAdhocThreadLines(dispatch, thread as AdhocThread);
     }
 };
 
-const queryLineData = (dispatch: AppDispatch, thread: SimpleThread) => {
-    dispatch(initThreadLines(thread));
+const dispatchUpdatedLines = (dispatch: AppDispatch, thread: Thread, lines: LineDefinition[]) => {
+    dispatch(
+        updateThreadLines({
+            [thread.id]: {
+                lines: lines,
+                threadVersion: thread.dataVersion,
+            },
+        })
+    );
+};
 
+const refreshAdhocThreadLines = (dispatch: AppDispatch, thread: AdhocThread) => {
+    const lineData: LineData = {};
+    thread.adhocData.forEach((l) => {
+        const [date, value] = l.split(',');
+        lineData[date] = Number(value);
+    });
+
+    const newLines = [
+        {
+            threadId: thread.id,
+            label: undefined,
+            data: lineData,
+        },
+    ];
+    dispatchUpdatedLines(dispatch, thread, newLines);
+};
+
+const refreshSimpleThreadLines = (dispatch: AppDispatch, thread: SimpleThread) => {
     const query: QueryRequest = {
         plotId: thread.plot.id,
         dimensionFilters: thread.activeFilters,
@@ -38,14 +68,7 @@ const queryLineData = (dispatch: AppDispatch, thread: SimpleThread) => {
                     });
                 }
 
-                dispatch(
-                    updateThreadLines({
-                        [thread.id]: {
-                            lines: newLines,
-                            threadVersion: thread.dataVersion,
-                        },
-                    })
-                );
+                dispatchUpdatedLines(dispatch, thread, newLines);
             }
         })
         .catch((error) => {

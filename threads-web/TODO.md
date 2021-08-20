@@ -1,12 +1,11 @@
 # NEXT
 Adhoc lines
-* Refactor Thread into Thread and SimpleThread extension
-* Implement adhoc config panel and '+ Adhoc' button function
-* Data input box
-* Convert to Line in redux
+* Validate input data
 
 # BACKLOG
 Bug: Reset sub-numbering in tabs and legend when unexploding
+
+Bug: Clearing name in tab doesn't reset to use fallback
 
 Tabs:
 * Bug: Chart redraws on tab change

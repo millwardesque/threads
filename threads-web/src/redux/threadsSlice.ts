@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from './store';
 import { ThreadMap } from '../types';
-import { SimpleThread, Thread } from '../models/Thread';
+import { AdhocThread, SimpleThread, Thread } from '../models/Thread';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
 
 interface ThreadsState {
@@ -17,9 +17,19 @@ interface ThreadLabelArgs {
     label: string;
 }
 
+interface AdhocThreadDataDescriptionArgs {
+    threadId: string;
+    data: string[];
+}
+
 interface ThreadDescriptionArgs {
     threadId: string;
     description: string;
+}
+
+interface ThreadUnitsArgs {
+    threadId: string;
+    units: string;
 }
 
 interface ThreadExploderArgs {
@@ -56,7 +66,13 @@ const threadsSlice = createSlice({
             state.orderedThreadIds.push(thread.id);
         },
         newAdhocThread(state) {
+            const defaultUnits = '';
+
             console.log(`Creating new adhoc thread`);
+            const thread = new AdhocThread(uuidv4(), 'adhoc', undefined, '', 0, defaultUnits, []);
+            state.threads[thread.id] = thread;
+            state.activeThreadKey = thread.id;
+            state.orderedThreadIds.push(thread.id);
         },
         setThread(state, action: PayloadAction<Thread>) {
             const thread = action.payload;
@@ -121,6 +137,15 @@ const threadsSlice = createSlice({
                 state.threads[threadId].customLabel = undefined;
             }
         },
+        setAdhocThreadData(state, action: PayloadAction<AdhocThreadDataDescriptionArgs>) {
+            const { threadId, data } = action.payload;
+            if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
+                console.log('Updating adhoc thread data', data);
+                const thread = state.threads[threadId] as AdhocThread;
+                thread.adhocData = data;
+                updateThreadDataVersion(thread);
+            }
+        },
         setThreadDescription(state, action: PayloadAction<ThreadDescriptionArgs>) {
             const { threadId, description } = action.payload;
             if (threadId in state.threads) {
@@ -138,6 +163,14 @@ const threadsSlice = createSlice({
                 updateThreadDataVersion(thread);
             }
         },
+        setThreadUnits(state, action: PayloadAction<ThreadUnitsArgs>) {
+            const { threadId, units } = action.payload;
+            if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
+                console.log('Updating thread units', units);
+                const thread = state.threads[threadId] as AdhocThread;
+                thread.units = units;
+            }
+        },
     },
 });
 
@@ -149,10 +182,12 @@ export const {
     setActiveThreadSource,
     setActiveThreadPlot,
     setActiveThreadFilters,
+    setAdhocThreadData,
     setThread,
     setThreadDescription,
     setThreadExploder,
     setThreadLabel,
+    setThreadUnits,
     clearThreadLabel,
 } = threadsSlice.actions;
 export const selectAllThreads = (state: RootState) => state.threads.threads;
