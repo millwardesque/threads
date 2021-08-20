@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-import { LineMap, LineDefinition, VersionedLines } from '../types';
+import { LineDefinition, VersionedLines } from '../types';
 import useColorProvider from '../hooks/useColorProvider';
 import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';

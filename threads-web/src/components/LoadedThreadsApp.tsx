@@ -1,40 +1,38 @@
 import { useEffect } from 'react';
-import { DataPlotDefinition, DataSourceDefinition, DataSourceMap } from '../models/DataSourceDefinition';
-import { SourceSelect } from './SourceSelect';
-import { PlotSelect } from './PlotSelect';
+import { DataSourceMap } from '../models/DataSourceDefinition';
 import { Throbber } from './Throbber';
-import { FilterSet } from './FilterSet';
 import { PageTitle } from './PageTitle';
 import { ThreadsChart } from './ThreadsChart';
-import { ThreadDescription } from './ThreadDescription';
+import { ThreadConfigPanel } from './ThreadConfigPanel';
 import { ThreadTabs } from './ThreadTabs';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { deleteThreadLines } from '../redux/linesSlice';
 import {
-    newThread,
+    newSimpleThread,
+    newAdhocThread,
     deleteThread,
     setActiveThread,
-    setActiveThreadSource,
-    setActiveThreadPlot,
-    setActiveThreadFilters,
     selectActiveThread,
     selectAllThreads,
-    setThreadDescription,
-    setThreadExploder,
     selectOrderedThreads,
 } from '../redux/threadsSlice';
-import { Thread } from '../types';
+import { Thread, ThreadType } from '../types';
 import { useOrderedLines } from '../hooks/useLines';
-import { useSourceFilters } from '../hooks/useSourceFilters';
 
 interface LoadedThreadsAppProps {
     sources: DataSourceMap;
 }
 
 export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) => {
-    const makeNewThread = () => {
-        dispatch(newThread(Object.values(sources)[0]));
+    const makeNewThread = (type: ThreadType) => {
+        if (type === 'simple') {
+            dispatch(newSimpleThread(Object.values(sources)[0]));
+        } else if (type === 'adhoc') {
+            dispatch(newAdhocThread());
+        } else {
+            console.error(`Unable to make new thread: Unsupported thread type ${type}`);
+        }
     };
 
     const switchThread = (thread: Thread) => {
@@ -44,32 +42,6 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const removeThread = (thread: Thread) => {
         dispatch(deleteThreadLines(thread.id));
         dispatch(deleteThread(thread.id));
-    };
-
-    const onSourceChange = (selectedSource: DataSourceDefinition): void => {
-        dispatch(setActiveThreadSource(selectedSource));
-    };
-
-    const onPlotChange = (plot: DataPlotDefinition): void => {
-        dispatch(setActiveThreadPlot(plot));
-    };
-
-    const onFilterChange = (dimension: string, selected: string[]): void => {
-        const newActiveFilters = {
-            ...activeThread!.activeFilters,
-            [dimension]: selected,
-        };
-
-        dispatch(setActiveThreadFilters(newActiveFilters));
-    };
-
-    const onDescriptionChange = (newDescription: string) => {
-        dispatch(setThreadDescription({ threadId: activeThread!.id, description: newDescription }));
-    };
-
-    const onExploderChange = (dimension: string): void => {
-        const newDimension = activeThread!.exploderDimension === dimension ? undefined : dimension;
-        dispatch(setThreadExploder({ threadId: activeThread!.id, exploderDimension: newDimension }));
     };
 
     const onTabClose = (thread: Thread) => {
@@ -96,12 +68,11 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
     const threads = useAppSelector(selectAllThreads);
     const orderedThreads = useAppSelector(selectOrderedThreads);
     const activeThread = useAppSelector(selectActiveThread);
-    const sourceFilters = useSourceFilters(activeThread);
     const lines = useOrderedLines();
 
     useEffect(() => {
         if (Object.keys(threads).length === 0) {
-            dispatch(newThread(Object.values(sources)[0]));
+            dispatch(newSimpleThread(Object.values(sources)[0]));
         }
     }, [sources, dispatch, threads]);
 
@@ -138,27 +109,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                         />
                     </div>
                     <div className="config-area flex flex-row flex-auto bg-gray-100">
-                        <div className="flex flex-col p-6 w-1/3 h-full border-0 border-r border-gray-300">
-                            <SourceSelect
-                                sources={sources}
-                                selectedSource={activeThread.source}
-                                onSourceChange={onSourceChange}
-                            />
-                            <PlotSelect thread={activeThread} onPlotChange={onPlotChange} />
-                            <ThreadDescription thread={activeThread} onDescriptionChange={onDescriptionChange} />
-                        </div>
-                        <div className="flex flex-row p-6 w-2/3 h-full">
-                            {activeThread && activeThread.source.id in sourceFilters ? (
-                                <FilterSet
-                                    thread={activeThread}
-                                    filters={sourceFilters[activeThread.source.id]}
-                                    onFilterChange={onFilterChange}
-                                    onExploderChange={onExploderChange}
-                                />
-                            ) : (
-                                <Throbber />
-                            )}
-                        </div>
+                        <ThreadConfigPanel thread={activeThread} />
                     </div>
                 </div>
             </div>

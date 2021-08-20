@@ -1,7 +1,13 @@
 # NEXT
-Bug: Lines don't redraw when indexes change
+Adhoc lines
+* Refactor Thread into Thread and SimpleThread extension
+* Implement adhoc config panel and '+ Adhoc' button function
+* Data input box
+* Convert to Line in redux
 
 # BACKLOG
+Bug: Reset sub-numbering in tabs and legend when unexploding
+
 Tabs:
 * Bug: Chart redraws on tab change
 
@@ -19,6 +25,16 @@ Filter selector
 Lines:
 * Tooltips
 
+Equator lines
+* Formula input box
+* Validate formula
+* Units input box
+* Compute values
+* Draw as dotted line
+* Legend as dotted line
+* What to do when a referenced tab is deleted
+* Divide single line by exploded lines
+* Divide exploded lines by single line
 
 Custom legend for grouping sub-lines in legend
 Refactor axios into reusable async hook or thunks
@@ -40,7 +56,7 @@ tsconfig to match work
 axios fail error states
 Short labels for plots and sources
 Nicer filter selector
-Megaselect for searching sources / plots by name)
+Megaselect for searching sources / plots by name
 Source / plot tags
 Zoom
 Source groups
@@ -53,6 +69,3 @@ max-width w/ text truncation based on number of tabs
 I hate the duplication of functionality between EditableString and Tab
 Support stacked and stacked-100% charts for exploded threads
 Date range selector (default to trailing year)
-
-Defensive (i.e. stuff I haven't observed but could be possible)
-* Tab order should be deterministic and not change based on which tabs are present in the dictionary

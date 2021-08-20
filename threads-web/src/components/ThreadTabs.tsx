@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Color } from '../models/ColorProvider';
 import useColorProvider from '../hooks/useColorProvider';
-import { Thread } from '../types';
+import { Thread, ThreadType } from '../types';
 import { Tab } from './Tab';
 import { useAppDispatch } from '../redux/hooks';
 import { setThreadLabel } from '../redux/threadsSlice';
@@ -15,7 +15,7 @@ interface ThreadTabsProps {
     activeThread: Thread;
     onSelectTab: (thread: Thread) => void;
     onCloseTab: (thread: Thread) => void;
-    onNewTab: () => void;
+    onNewTab: (type: ThreadType) => void;
 }
 
 export const ThreadTabs: React.FC<ThreadTabsProps> = ({
@@ -44,10 +44,17 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
         }
     };
 
-    const handleNewTab = () => {
-        console.log('Requesting new tab');
+    const handleNewSimpleTab = () => {
+        console.log('Requesting new simple tab');
         if (onNewTab) {
-            onNewTab();
+            onNewTab('simple');
+        }
+    };
+
+    const handleNewAdhocTab = () => {
+        console.log('Requesting new adhoc tab');
+        if (onNewTab) {
+            onNewTab('adhoc');
         }
     };
 
@@ -89,10 +96,18 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
     return (
         <div className="flex w-full overflow-x-auto">
             <Tab
-                key="tabNew"
+                key="tabSimpleNew"
                 id="tabNew"
                 label="+ Thread"
-                onSelect={handleNewTab}
+                onSelect={handleNewSimpleTab}
+                suppressClose={true}
+                color={greyTab}
+            />
+            <Tab
+                key="tabAdhocNew"
+                id="tabNew"
+                label="+ Adhoc"
+                onSelect={handleNewAdhocTab}
                 suppressClose={true}
                 color={greyTab}
             />

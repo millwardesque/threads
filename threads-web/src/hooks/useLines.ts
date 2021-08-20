@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AppDispatch } from '../redux/store';
 import { initThreadLines, selectAllLines, selectOrderedLines, updateThreadLines } from '../redux/linesSlice';
-import { selectAllThreads, selectOrderedThreads } from '../redux/threadsSlice';
+import { selectOrderedThreads } from '../redux/threadsSlice';
 import { LineDefinition, LineMap, Thread, VersionedLines } from '../types';
 import { QueryRequest, QueryResults } from '../models/DataSourceDefinition';
 
@@ -48,7 +48,6 @@ const queryLineData = (dispatch: AppDispatch, thread: Thread) => {
 
 export const useLines = (): LineMap => {
     const dispatch = useAppDispatch();
-    const threads = useAppSelector(selectAllThreads);
     const lines = useAppSelector(selectAllLines);
     const orderedThreads = useAppSelector(selectOrderedThreads);
 

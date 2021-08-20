@@ -44,13 +44,14 @@ const threadsSlice = createSlice({
     name: 'threads',
     initialState,
     reducers: {
-        newThread(state, action: PayloadAction<DataSourceDefinition>) {
+        newSimpleThread(state, action: PayloadAction<DataSourceDefinition>) {
             const source = action.payload as DataSourceDefinition;
             const plot = Object.values(source.plots)[0];
 
-            console.log(`Creating new source and plot: ${source.id}.${plot.id}`);
+            console.log(`Creating new simple thread and plot: ${source.id}.${plot.id}`);
             const thread: Thread = {
                 id: uuidv4(),
+                type: 'simple',
                 description: '',
                 source,
                 plot,
@@ -61,6 +62,9 @@ const threadsSlice = createSlice({
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
+        },
+        newAdhocThread(state) {
+            console.log(`Creating new adhoc thread`);
         },
         setThread(state, action: PayloadAction<Thread>) {
             const thread = action.payload;
@@ -144,7 +148,8 @@ const threadsSlice = createSlice({
 
 export const {
     deleteThread,
-    newThread,
+    newSimpleThread,
+    newAdhocThread,
     setActiveThread,
     setActiveThreadSource,
     setActiveThreadPlot,

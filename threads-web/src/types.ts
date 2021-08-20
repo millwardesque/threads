@@ -6,8 +6,11 @@ import {
     LineData,
 } from './models/DataSourceDefinition';
 
+export type ThreadType = 'simple' | 'adhoc';
+
 export interface Thread {
     id: string;
+    type: ThreadType;
     label?: string;
     description: string;
     source: DataSourceDefinition;
