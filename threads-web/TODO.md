@@ -1,7 +1,6 @@
 # NEXT
 Adhoc lines
 * ThreadDataInput accepts adhocData and transforms to string internally
-* Centralize input validation and line parsing for adhoc lines w/ unit tests
 
 # BACKLOG
 Adhoc: Smarter date validation
