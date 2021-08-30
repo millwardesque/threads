@@ -1,11 +1,14 @@
 # NEXT
 
 # BACKLOG
+Add more FF sources
+
+Storage:
+* Make classes serializable
+
 Adhoc: Smarter date validation
-Bug: Make classes serializable
 Bug: Reset sub-numbering in tabs and legend when unexploding
 Bug: Missing data with no values within dates
-
 Bug: Clearing name in tab doesn't reset to use fallback
 
 Error banner
