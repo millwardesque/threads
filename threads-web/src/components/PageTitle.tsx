@@ -1,4 +1,4 @@
-import { EditableString } from './EditableString';
+import { EditableString } from './molecules/EditableString';
 import { selectTitle, setTitle } from '../redux/pageSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 

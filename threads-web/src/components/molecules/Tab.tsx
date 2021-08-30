@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { Color } from '../models/ColorProvider';
+import { Color } from '../../models/ColorProvider';
 
 interface TabProps {
     id: string;

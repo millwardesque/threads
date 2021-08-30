@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataPlotDefinition } from '../models/DataSourceDefinition';
 import { SimpleThread } from '../models/Thread';
-import { Select } from './Select';
+import { Select } from './molecules/Select';
 
 interface PlotSelectProps {
     thread: SimpleThread;

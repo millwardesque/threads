@@ -10,7 +10,7 @@ import { PlotSelect } from './PlotSelect';
 import { SimpleThread } from '../models/Thread';
 import { ThreadDescription } from './ThreadDescription';
 import { FilterSet } from './FilterSet';
-import { Throbber } from './Throbber';
+import { Throbber } from './molecules/Throbber';
 
 import { setActiveThreadSource, setActiveThreadPlot, setThreadDescription } from '../redux/threadsSlice';
 

@@ -12,7 +12,6 @@ Error banner
 
 Tabs:
 * Bug: Chart redraws on tab change
-
 * Bug: Blinking cursor in adhoc text box isn't visible
 
 Refactoring:

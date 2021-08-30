@@ -4,7 +4,7 @@ import { Color } from '../models/ColorProvider';
 import useColorProvider from '../hooks/useColorProvider';
 import { Thread } from '../models/Thread';
 import { ThreadType } from '../types';
-import { Tab } from './Tab';
+import { Tab } from './molecules/Tab';
 import { useAppDispatch } from '../redux/hooks';
 import { setThreadLabel } from '../redux/threadsSlice';
 

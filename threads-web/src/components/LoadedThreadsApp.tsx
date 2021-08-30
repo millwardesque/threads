@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { DataSourceMap } from '../models/DataSourceDefinition';
-import { Throbber } from './Throbber';
+import { Throbber } from './molecules/Throbber';
 import { PageTitle } from './PageTitle';
 import { ThreadsChart } from './ThreadsChart';
 import { ThreadConfigPanel } from './ThreadConfigPanel';

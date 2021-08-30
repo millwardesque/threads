@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataDimensionDefinition } from '../models/DataSourceDefinition';
 
-import { MultiSelect } from './MultiSelect';
+import { MultiSelect } from './molecules/MultiSelect';
 
 interface FilterSelectProps {
     dimension: DataDimensionDefinition;

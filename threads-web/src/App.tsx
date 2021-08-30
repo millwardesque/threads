@@ -1,4 +1,4 @@
-import { Throbber } from './components/Throbber';
+import { Throbber } from './components/molecules/Throbber';
 import { LoadedThreadsApp } from './components/LoadedThreadsApp';
 import { useSources } from './hooks/useSources';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { LineData } from '../models/DataSourceDefinition';
 
-import { StandaloneInput } from './StandaloneInput';
+import { StandaloneInput } from './molecules/StandaloneInput';
 
 interface ThreadDataInputProps {
     initialData: LineData;
