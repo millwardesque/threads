@@ -44,11 +44,7 @@ export const AdhocThreadConfigPanel: React.FC<AdhocThreadConfigPanelProps> = ({ 
             </div>
             <div className="flex flex-col p-6 w-2/3 h-full">
                 <ThreadDataInput
-                    initialData={Object.keys(thread.adhocData)
-                        .sort()
-                        .map((l) => {
-                            return `${l}, ${thread.adhocData[l]}`;
-                        })}
+                    initialData={thread.adhocData}
                     onThreadDataChange={onThreadDataChange}
                     hasValidData={hasValidData}
                 />

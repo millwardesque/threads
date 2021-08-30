@@ -1,11 +1,10 @@
 # NEXT
-Adhoc lines
-* ThreadDataInput accepts adhocData and transforms to string internally
 
 # BACKLOG
 Adhoc: Smarter date validation
 Bug: Make classes serializable
 Bug: Reset sub-numbering in tabs and legend when unexploding
+Bug: Missing data with no values within dates
 
 Bug: Clearing name in tab doesn't reset to use fallback
 

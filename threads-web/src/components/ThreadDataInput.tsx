@@ -1,9 +1,10 @@
 import React from 'react';
+import { LineData } from '../models/DataSourceDefinition';
 
 import { StandaloneInput } from './StandaloneInput';
 
 interface ThreadDataInputProps {
-    initialData: string[];
+    initialData: LineData;
     hasValidData: boolean;
     onThreadDataChange?: (newValue: string[]) => void;
 }
@@ -11,12 +12,19 @@ export const ThreadDataInput: React.FC<ThreadDataInputProps> = ({ initialData, h
     const elementId = 'threadDataInput';
 
     const onComplete = (newValue: string) => {
-        const newDataAsArray = newValue.split('\n');
-        if (onThreadDataChange && newDataAsArray !== initialData) {
+        if (onThreadDataChange && newValue !== initialDataAsString) {
             console.log('Data changed');
+            const newDataAsArray = newValue.split('\n');
             onThreadDataChange(newDataAsArray);
         }
     };
+
+    const initialDataAsString = Object.keys(initialData)
+        .sort()
+        .map((l) => {
+            return `${l}, ${initialData[l]}`;
+        })
+        .join('\n');
 
     let labelClasses = 'block';
     let inputClasses = '';
@@ -31,7 +39,7 @@ export const ThreadDataInput: React.FC<ThreadDataInputProps> = ({ initialData, h
                 Data {!hasValidData ? '[Invalid]' : ''}
             </label>
             <StandaloneInput
-                initialValue={initialData.join('\n')}
+                initialValue={initialDataAsString}
                 isMultiline={true}
                 onComplete={onComplete}
                 placeholder="CSV data without a header row in the format 'YYYY-MM-DD,metric_value'"
