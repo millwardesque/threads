@@ -1,4 +1,4 @@
-import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
+import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
 import { ThreadType } from '../types';
 
 export abstract class Thread {
@@ -32,7 +32,7 @@ export abstract class Thread {
 }
 
 export class AdhocThread extends Thread {
-    adhocData: string[];
+    adhocData: LineData;
     units: string;
 
     constructor(
@@ -42,7 +42,7 @@ export class AdhocThread extends Thread {
         description: string,
         dataVersion: number,
         units: string,
-        adhocData: string[]
+        adhocData: LineData
     ) {
         super(id, type, customLabel, description, dataVersion);
         this.units = units;

@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 import { ThreadMap } from '../types';
 import { AdhocThread, SimpleThread, Thread } from '../models/Thread';
-import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
+import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
 
 interface ThreadsState {
     threads: ThreadMap;
@@ -19,7 +19,7 @@ interface ThreadLabelArgs {
 
 interface AdhocThreadDataDescriptionArgs {
     threadId: string;
-    data: string[];
+    data: LineData;
 }
 
 interface ThreadDescriptionArgs {
@@ -69,7 +69,7 @@ const threadsSlice = createSlice({
             const defaultUnits = '';
 
             console.log(`Creating new adhoc thread`);
-            const thread = new AdhocThread(uuidv4(), 'adhoc', undefined, '', 0, defaultUnits, []);
+            const thread = new AdhocThread(uuidv4(), 'adhoc', undefined, '', 0, defaultUnits, {});
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);

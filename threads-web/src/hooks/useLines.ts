@@ -31,9 +31,8 @@ const dispatchUpdatedLines = (dispatch: AppDispatch, thread: Thread, lines: Line
 
 const refreshAdhocThreadLines = (dispatch: AppDispatch, thread: AdhocThread) => {
     const lineData: LineData = {};
-    thread.adhocData.forEach((l) => {
-        const [date, value] = l.split(',');
-        lineData[date] = Number(value);
+    Object.keys(thread.adhocData).forEach((k) => {
+        lineData[k] = thread.adhocData[k];
     });
 
     const newLines = [

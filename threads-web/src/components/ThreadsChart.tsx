@@ -58,7 +58,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     useEffect(() => {
         let axes: ChartAxes = {};
         let linesAsArray: LineDefinition[] = [];
-        console.log(lines);
         lines.forEach((threadLines) => {
             linesAsArray = linesAsArray.concat(threadLines.lines);
         });
@@ -70,6 +69,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             lineDates.forEach((item) => dateSet.add(item));
         }
         const dates: string[] = Array.from(dateSet).sort();
+        console.log(dates);
 
         // Second pass, create datasets based on available date range
         const datasets: Array<any> = [];

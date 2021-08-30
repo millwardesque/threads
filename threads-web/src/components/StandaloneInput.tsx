@@ -40,6 +40,9 @@ export const StandaloneInput: React.FC<StandaloneInputProps> = ({
         }
     };
 
+    const defaultClasses = 'box-content ';
+    const combinedClasses = defaultClasses + classes;
+
     useEffect(() => {
         // Reset the user input whenever the initial value changes since this implies we're no longer using the same upstream piece of data
         setUserInput(initialValue);
@@ -56,7 +59,7 @@ export const StandaloneInput: React.FC<StandaloneInputProps> = ({
                     onBlur={completeEditing}
                     onChange={onChange}
                     onKeyDown={onKeyDown}
-                    className={classes}
+                    className={combinedClasses}
                 ></input>
             )}
             {isMultiline && (
@@ -67,7 +70,7 @@ export const StandaloneInput: React.FC<StandaloneInputProps> = ({
                     onBlur={completeEditing}
                     onChange={onChange}
                     onKeyDown={onKeyDown}
-                    className={classes}
+                    className={combinedClasses}
                 ></textarea>
             )}
         </>

@@ -1,14 +1,21 @@
 # NEXT
 Adhoc lines
-* Validate input data
+* ThreadDataInput accepts adhocData and transforms to string internally
+* Centralize input validation and line parsing for adhoc lines w/ unit tests
 
 # BACKLOG
+Adhoc: Smarter date validation
+Bug: Make classes serializable
 Bug: Reset sub-numbering in tabs and legend when unexploding
 
 Bug: Clearing name in tab doesn't reset to use fallback
 
+Error banner
+
 Tabs:
 * Bug: Chart redraws on tab change
+
+* Bug: Blinking cursor in adhoc text box isn't visible
 
 Refactoring:
 * Use Thunks
