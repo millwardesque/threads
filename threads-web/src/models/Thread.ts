@@ -31,22 +31,63 @@ export abstract class Thread {
     abstract getFallbackLabel(): string;
 }
 
+interface CleanAdhocDatum {
+    date: string | undefined;
+    rawValue: string | undefined;
+}
+
 export class AdhocThread extends Thread {
     adhocData: LineData;
     units: string;
 
-    constructor(
-        id: string,
-        type: ThreadType,
-        customLabel: string | undefined,
-        description: string,
-        dataVersion: number,
-        units: string,
-        adhocData: LineData
-    ) {
-        super(id, type, customLabel, description, dataVersion);
+    constructor(id: string, customLabel: string | undefined, description: string, dataVersion: number, units: string) {
+        super(id, 'adhoc', customLabel, description, dataVersion);
         this.units = units;
-        this.adhocData = adhocData;
+        this.adhocData = {};
+    }
+
+    static adhocDataToLineData(adhocData: CleanAdhocDatum[]): LineData {
+        const lines: LineData = {};
+        adhocData.forEach((l) => {
+            lines[l.date!] = Number(l.rawValue!);
+        });
+        return lines;
+    }
+
+    static isValidAdhocData(adhocData: CleanAdhocDatum[]): boolean {
+        let datesAreValid = true;
+        let valuesAreValid = true;
+
+        adhocData.forEach((l) => {
+            const { date, rawValue } = l;
+            if (date === undefined || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+                datesAreValid = false;
+            }
+
+            if (rawValue === undefined || isNaN(Number(rawValue))) {
+                valuesAreValid = false;
+            }
+        });
+
+        return datesAreValid && valuesAreValid;
+    }
+
+    static cleanAdhocDataFromStrings(lines: string[]): CleanAdhocDatum[] {
+        const cleanedData: CleanAdhocDatum[] = [];
+        lines.forEach((l) => {
+            const trimmedLine = l.trim();
+            if (trimmedLine) {
+                const [date, value] = trimmedLine.split(',');
+                const trimmedDate = date ? date.trim() : undefined;
+                const trimmedValue = value ? value.trim() : undefined;
+                cleanedData.push({
+                    date: trimmedDate,
+                    rawValue: trimmedValue,
+                });
+            }
+        });
+
+        return cleanedData;
     }
 
     getUnits(): string {
@@ -66,7 +107,6 @@ export class SimpleThread extends Thread {
 
     constructor(
         id: string,
-        type: ThreadType,
         customLabel: string | undefined,
         description: string,
         dataVersion: number,
@@ -75,7 +115,7 @@ export class SimpleThread extends Thread {
         activeFilters: FiltersAndValues,
         exploderDimension: string | undefined
     ) {
-        super(id, type, customLabel, description, dataVersion);
+        super(id, 'simple', customLabel, description, dataVersion);
         this.source = source;
         this.plot = plot;
         this.activeFilters = activeFilters;

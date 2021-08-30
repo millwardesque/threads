@@ -60,7 +60,7 @@ const threadsSlice = createSlice({
             const plot = Object.values(source.plots)[0];
 
             console.log(`Creating new simple thread and plot: ${source.id}.${plot.id}`);
-            const thread = new SimpleThread(uuidv4(), 'simple', undefined, '', 0, source, plot, {}, undefined);
+            const thread = new SimpleThread(uuidv4(), undefined, '', 0, source, plot, {}, undefined);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -69,7 +69,7 @@ const threadsSlice = createSlice({
             const defaultUnits = '';
 
             console.log(`Creating new adhoc thread`);
-            const thread = new AdhocThread(uuidv4(), 'adhoc', undefined, '', 0, defaultUnits, {});
+            const thread = new AdhocThread(uuidv4(), undefined, '', 0, defaultUnits);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
