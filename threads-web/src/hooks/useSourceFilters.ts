@@ -34,12 +34,13 @@ const loadSourceFilters = (dispatch: AppDispatch, source: DataSourceDefinition):
 export const useSourceFilters = (activeThread: SimpleThread | undefined): SourceFiltersMap => {
     const dispatch = useAppDispatch();
     const sourceFilters = useAppSelector(selectAllSourceFilters);
+    const activeThreadSourceId = activeThread?.source.id;
 
     useEffect(() => {
         if (activeThread && !(activeThread.source.id in sourceFilters)) {
             loadSourceFilters(dispatch, activeThread.source);
         }
-    }, [dispatch, activeThread, sourceFilters]);
+    }, [dispatch, activeThread, activeThreadSourceId, sourceFilters]);
 
     return sourceFilters;
 };
