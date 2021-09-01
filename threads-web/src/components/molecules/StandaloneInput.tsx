@@ -40,8 +40,8 @@ export const StandaloneInput: React.FC<StandaloneInputProps> = ({
         }
     };
 
-    const defaultClasses = 'box-content ';
-    const combinedClasses = defaultClasses + classes;
+    const defaultClasses = 'box-content p-1 ';
+    const combinedClasses = defaultClasses + (classes ?? '');
 
     useEffect(() => {
         // Reset the user input whenever the initial value changes since this implies we're no longer using the same upstream piece of data

@@ -1,5 +1,4 @@
 # NEXT: BUG HUNT!
-* Bug: Blinking cursor in text boxes aren't visible
 
 # BACKLOG
 Add more FF sources

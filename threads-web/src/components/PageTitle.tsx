@@ -10,7 +10,11 @@ export const PageTitle: React.FC = () => {
         <div className="flex w-full h-12 bg-green-400 items-center justify-center">
             <EditableString
                 initialValue={title}
-                onComplete={(newTitle: string) => dispatch(setTitle(newTitle))}
+                onComplete={(newTitle: string) => {
+                    if (newTitle) {
+                        dispatch(setTitle(newTitle));
+                    }
+                }}
             ></EditableString>
         </div>
     );

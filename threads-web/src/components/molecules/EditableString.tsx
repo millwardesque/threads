@@ -58,6 +58,7 @@ export const EditableString: React.FC<EditableStringProps> = ({ initialValue, on
                     onBlur={completeEditing}
                     onChange={onChange}
                     onKeyDown={onKeyDown}
+                    className={'p-1'}
                 ></input>
             )}
             {!isEditing && (
