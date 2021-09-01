@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
+import * as Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import Chart from 'chart.js/auto';
 import { LineDefinition, VersionedLines } from '../types';
 import useColorProvider from '../hooks/useColorProvider';
 import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';
+
+const moment = extendMoment(Moment);
+
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 interface ThreadsChartProps {
     id: string;
@@ -13,6 +19,27 @@ interface ThreadsChartProps {
 interface ChartAxes {
     [id: string]: {};
 }
+
+const getDateRangeFromLines = (lines: LineDefinition[]): string[] => {
+    let minDate: string | undefined = undefined,
+        maxDate: string | undefined = undefined;
+
+    lines.forEach((l) => {
+        const lineDates = Object.keys(l.data ?? {});
+        lineDates.forEach((d) => {
+            if (!minDate || d < minDate) {
+                minDate = d;
+            }
+            if (!maxDate || d > maxDate) {
+                maxDate = d;
+            }
+        });
+    });
+
+    const momentRange = moment.range(moment(minDate, DATE_FORMAT), moment(maxDate, DATE_FORMAT));
+    const stringRange = Array.from(momentRange.by('days')).map((d) => d.format(DATE_FORMAT));
+    return stringRange;
+};
 
 const makeAxis = (id: string, showAxis: boolean, drawGrid: boolean, units: string) => {
     return {
@@ -63,13 +90,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             linesAsArray = linesAsArray.concat(threadLines.lines);
         });
 
-        // First pass: Collect, merge, and sort all the dates from all the lines to get the true date range.
-        const dateSet = new Set<string>();
-        for (let line of linesAsArray) {
-            const lineDates = Object.keys(line?.data ?? {});
-            lineDates.forEach((item) => dateSet.add(item));
-        }
-        const dates: string[] = Array.from(dateSet).sort();
+        const dates: string[] = getDateRangeFromLines(linesAsArray);
 
         // Second pass, create datasets based on available date range
         const datasets: Array<any> = [];
@@ -114,11 +135,13 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                     borderWidth: 2,
                     backgroundColor: color.light,
                     pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-                    pointBorderColor: 'rgba(0, 0, 0, 0)',
+                    pointBorderColor: color.dark,
                     pointHoverBackgroundColor: color.light,
                     pointHoverBorderColor: color.dark,
-                    pointRadius: 5,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
                     pointHoverBorderWidth: 1,
+                    spanGaps: false,
                     yAxisID: shownAxes[units],
                 };
 

@@ -1,8 +1,6 @@
 # NEXT: BUG HUNT!
 * Bug: Filter list on CSV source doesn't seem to load until switch tabs + switch back
 * Bug: Blinking cursor in adhoc text box isn't visible
-* Bug: Reset sub-numbering in tabs and legend when unexploding
-* Bug: Missing data with no values within dates
 * Bug: Clearing name in tab doesn't reset to use fallback
 
 # BACKLOG
@@ -12,7 +10,6 @@ Storage:
 * Make classes serializable
 
 Adhoc: Smarter date validation
-Bug: Missing data with no values within dates
 Bug: Clearing name in tab doesn't reset to use fallback
 
 Error banner
@@ -81,3 +78,4 @@ max-width w/ text truncation based on number of tabs
 I hate the duplication of functionality between EditableString and Tab
 Support stacked and stacked-100% charts for exploded threads
 Date range selector (default to trailing year)
+Allow for null data in chart lines
