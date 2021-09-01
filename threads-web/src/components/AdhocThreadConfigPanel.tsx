@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { LineData } from '../models/DataSourceDefinition';
 
 import { AdhocThread } from '../models/Thread';
 import { useAppDispatch } from '../redux/hooks';

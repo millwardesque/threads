@@ -1,4 +1,9 @@
-# NEXT
+# NEXT: BUG HUNT!
+* Bug: Filter list on CSV source doesn't seem to load until switch tabs + switch back
+* Bug: Blinking cursor in adhoc text box isn't visible
+* Bug: Reset sub-numbering in tabs and legend when unexploding
+* Bug: Missing data with no values within dates
+* Bug: Clearing name in tab doesn't reset to use fallback
 
 # BACKLOG
 Add more FF sources
@@ -14,8 +19,11 @@ Bug: Clearing name in tab doesn't reset to use fallback
 Error banner
 
 Tabs:
-* Bug: Chart redraws on tab change
 * Bug: Blinking cursor in adhoc text box isn't visible
+
+Chart:
+* Chart doesn't resize vertically
+* Redraws unnecessarily when lines data changes
 
 Refactoring:
 * Use Thunks
@@ -54,7 +62,6 @@ Equator lines
 Annotation lines
 Historical lines
 Trailing average, etc.
-Adhoc lines
 Bug?: Switching to a new source with a default plot that has the same ID as the current plot. Will this refresh the line properly?
 Auto-number sources
 Share types between server and client (central shared lib?)

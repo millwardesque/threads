@@ -45,9 +45,10 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const threads = useAppSelector(selectAllThreads);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
 
+    const lineSignature = JSON.stringify(lines);
     useEffect(() => {
         setIsRebuildingCanvas(true);
-    }, [lines]);
+    }, [lineSignature]);
 
     useEffect(() => {
         if (isRebuildingCanvas) {
@@ -69,7 +70,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             lineDates.forEach((item) => dateSet.add(item));
         }
         const dates: string[] = Array.from(dateSet).sort();
-        console.log(dates);
 
         // Second pass, create datasets based on available date range
         const datasets: Array<any> = [];
@@ -164,7 +164,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         return () => {
             chartInstance.destroy();
         };
-    }, [lines, threads, isRebuildingCanvas, colors]);
+    }, [lineSignature, threads, isRebuildingCanvas, colors]);
 
     return <>{isRebuildingCanvas ? undefined : <canvas id={id} ref={canvasRef} />}</>;
 };
