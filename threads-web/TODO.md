@@ -12,7 +12,6 @@ Storage:
 * Make classes serializable
 
 Adhoc: Smarter date validation
-Bug: Reset sub-numbering in tabs and legend when unexploding
 Bug: Missing data with no values within dates
 Bug: Clearing name in tab doesn't reset to use fallback
 
