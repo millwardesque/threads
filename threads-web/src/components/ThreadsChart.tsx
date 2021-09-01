@@ -72,7 +72,10 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const threads = useAppSelector(selectAllThreads);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
 
+    // These are hacks to get around useEffect's lack of a deep-compare for objects and arrays
     const lineSignature = JSON.stringify(lines);
+    const threadSignature = JSON.stringify(threads);
+
     useEffect(() => {
         setIsRebuildingCanvas(true);
     }, [lineSignature]);
@@ -187,7 +190,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         return () => {
             chartInstance.destroy();
         };
-    }, [lineSignature, threads, isRebuildingCanvas, colors]);
+    }, [lineSignature, threadSignature, threads, isRebuildingCanvas, colors]);
 
     return <>{isRebuildingCanvas ? undefined : <canvas id={id} ref={canvasRef} />}</>;
 };

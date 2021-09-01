@@ -128,7 +128,7 @@ const threadsSlice = createSlice({
             const { threadId, label } = action.payload;
             if (threadId in state.threads) {
                 console.log('Updating thread label', action.payload);
-                state.threads[threadId].customLabel = label;
+                state.threads[threadId].customLabel = label === '' ? undefined : label;
             }
         },
         clearThreadLabel(state, action: PayloadAction<string>) {

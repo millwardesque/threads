@@ -1,7 +1,5 @@
 # NEXT: BUG HUNT!
-* Bug: Filter list on CSV source doesn't seem to load until switch tabs + switch back
-* Bug: Blinking cursor in adhoc text box isn't visible
-* Bug: Clearing name in tab doesn't reset to use fallback
+* Bug: Blinking cursor in text boxes aren't visible
 
 # BACKLOG
 Add more FF sources
