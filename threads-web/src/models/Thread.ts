@@ -1,9 +1,11 @@
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
+import { SmoothingType } from '../models/Smoother';
 import { ThreadType } from '../types';
 
 export abstract class Thread {
     id: string;
     type: ThreadType;
+    smoothing: SmoothingType;
     customLabel: string | undefined;
     description: string;
     dataVersion: number;
@@ -11,12 +13,14 @@ export abstract class Thread {
     constructor(
         id: string,
         type: ThreadType,
+        smoothing: SmoothingType,
         customLabel: string | undefined,
         description: string,
         dataVersion: number
     ) {
         this.id = id;
         this.type = type;
+        this.smoothing = smoothing;
         this.customLabel = customLabel;
         this.description = description;
         this.dataVersion = dataVersion;
@@ -40,8 +44,15 @@ export class AdhocThread extends Thread {
     adhocData: LineData;
     units: string;
 
-    constructor(id: string, customLabel: string | undefined, description: string, dataVersion: number, units: string) {
-        super(id, 'adhoc', customLabel, description, dataVersion);
+    constructor(
+        id: string,
+        smoothing: SmoothingType,
+        customLabel: string | undefined,
+        description: string,
+        dataVersion: number,
+        units: string
+    ) {
+        super(id, 'adhoc', smoothing, customLabel, description, dataVersion);
         this.units = units;
         this.adhocData = {};
     }
@@ -107,6 +118,7 @@ export class SimpleThread extends Thread {
 
     constructor(
         id: string,
+        smoothing: SmoothingType,
         customLabel: string | undefined,
         description: string,
         dataVersion: number,
@@ -115,7 +127,7 @@ export class SimpleThread extends Thread {
         activeFilters: FiltersAndValues,
         exploderDimension: string | undefined
     ) {
-        super(id, 'simple', customLabel, description, dataVersion);
+        super(id, 'simple', smoothing, customLabel, description, dataVersion);
         this.source = source;
         this.plot = plot;
         this.activeFilters = activeFilters;

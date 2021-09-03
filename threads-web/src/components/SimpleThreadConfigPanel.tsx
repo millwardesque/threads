@@ -9,10 +9,17 @@ import { SourceSelect } from './SourceSelect';
 import { PlotSelect } from './PlotSelect';
 import { SimpleThread } from '../models/Thread';
 import { ThreadDescription } from './ThreadDescription';
+import { ThreadSmoothing } from './ThreadSmoothing';
 import { FilterSet } from './FilterSet';
 import { Throbber } from './molecules/Throbber';
 
-import { setActiveThreadSource, setActiveThreadPlot, setThreadDescription } from '../redux/threadsSlice';
+import {
+    setActiveThreadSource,
+    setActiveThreadPlot,
+    setThreadDescription,
+    setThreadSmoothing,
+} from '../redux/threadsSlice';
+import { SmoothingType } from '../models/Smoother';
 
 interface SimpleThreadConfigPanelProps {
     thread: SimpleThread;
@@ -21,6 +28,10 @@ interface SimpleThreadConfigPanelProps {
 export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = ({ thread }) => {
     const onDescriptionChange = (newDescription: string) => {
         dispatch(setThreadDescription({ threadId: thread!.id, description: newDescription }));
+    };
+
+    const onSmoothingChange = (smoothing: SmoothingType) => {
+        dispatch(setThreadSmoothing({ threadId: thread!.id, smoothing }));
     };
 
     const onExploderChange = (dimension: string): void => {
@@ -55,6 +66,7 @@ export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = (
                 <SourceSelect sources={sources} selectedSource={thread.source} onSourceChange={onSourceChange} />
                 <PlotSelect thread={thread} onPlotChange={onPlotChange} />
                 <ThreadDescription thread={thread} onDescriptionChange={onDescriptionChange} />
+                <ThreadSmoothing thread={thread} onSmoothingChange={onSmoothingChange} />
             </div>
             <div className="flex flex-row p-6 w-2/3 h-full">
                 {thread.source.id in sourceFilters ? (

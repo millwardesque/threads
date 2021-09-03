@@ -2,6 +2,7 @@
 
 # BACKLOG
 Add more FF sources
+Unify common stuff in config panel (description, smoothing)
 
 Storage:
 * Make classes serializable
@@ -11,11 +12,7 @@ Adhoc: Smarter date validation
 Error banner
 
 Chart:
-* Chart doesn't resize vertically
-
-* Use StandaloneInput in EditableString (requires allowing StandaloneInput to be focused)
-* Use Thunks
-* Button component
+* Update graph rather than redrawing it
 * Move chart data extraction to hook
 
 Filter selector
@@ -37,18 +34,24 @@ Equator lines
 * Divide single line by exploded lines
 * Divide exploded lines by single line
 
+Smoothing options
+* Centered average
+* Weekly average
+* Monthly average
+
 Custom legend for adding Header to sub-lines in legend
 Refactor axios into reusable async hook or thunks
 Clone / duplicate tab
 State when waiting for sources
 Undo
-Update graph rather than redrawing it
+
+Use StandaloneInput in EditableString (requires allowing StandaloneInput to be focused)
+Use Thunks
+Button component
 Persistent URLs / config loading from server
-Money formatting in axis
 Equator lines
 Annotation lines
 Historical lines
-Trailing average, etc.
 Bug?: Switching to a different source with a default plot that has the same ID as the current plot. Will this refresh the line properly?
 Share types between server and client (central shared lib?)
 tsconfig to match work
@@ -60,7 +63,6 @@ Source / plot tags
 Zoom
 Source groups
 Source maker
-Line up axes on left side?
 Check all threads' active filters after source filters change
 Hideable config bar
 Common shared filters

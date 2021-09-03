@@ -93,7 +93,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             <div className="flex flex-col h-full width-full">
                 <div className="row flex h-3/4 flex-col">
                     <div className="flex flex-row w-full h-full">
-                        <div className="graph-area w-full h-full p-4">
+                        <div className="relative w-full h-full p-4">
                             <ThreadsChart id="chart" lines={lines} />
                         </div>
                     </div>

@@ -6,6 +6,7 @@ import { LineDefinition, VersionedLines } from '../types';
 import useColorProvider from '../hooks/useColorProvider';
 import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';
+import { smoothLine } from '../models/Smoother';
 
 const moment = extendMoment(Moment);
 
@@ -126,7 +127,8 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 const subIndex = isExploded ? `.${index + 1}` : '';
                 const label = `${threadIndex + 1}${subIndex}. ${line.label || thread.getLabel()}`;
                 const units = thread.getUnits();
-                const lineData: number[] = dates.map((d) => line.data[d]);
+                const smoothedData = smoothLine(thread.smoothing, line.data, dates);
+                const lineData: number[] = dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
 

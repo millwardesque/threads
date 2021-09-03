@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from './store';
+import { SmoothingType } from '../models/Smoother';
 import { ThreadMap } from '../types';
 import { AdhocThread, SimpleThread, Thread } from '../models/Thread';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
@@ -25,6 +26,11 @@ interface AdhocThreadDataDescriptionArgs {
 interface ThreadDescriptionArgs {
     threadId: string;
     description: string;
+}
+
+interface ThreadSmoothingArgs {
+    threadId: string;
+    smoothing: SmoothingType;
 }
 
 interface ThreadUnitsArgs {
@@ -60,7 +66,7 @@ const threadsSlice = createSlice({
             const plot = Object.values(source.plots)[0];
 
             console.log(`Creating new simple thread and plot: ${source.id}.${plot.id}`);
-            const thread = new SimpleThread(uuidv4(), undefined, '', 0, source, plot, {}, undefined);
+            const thread = new SimpleThread(uuidv4(), 'daily', undefined, '', 0, source, plot, {}, undefined);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -69,7 +75,7 @@ const threadsSlice = createSlice({
             const defaultUnits = '';
 
             console.log(`Creating new adhoc thread`);
-            const thread = new AdhocThread(uuidv4(), undefined, '', 0, defaultUnits);
+            const thread = new AdhocThread(uuidv4(), 'daily', undefined, '', 0, defaultUnits);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -163,6 +169,13 @@ const threadsSlice = createSlice({
                 updateThreadDataVersion(thread);
             }
         },
+        setThreadSmoothing(state, action: PayloadAction<ThreadSmoothingArgs>) {
+            const { threadId, smoothing } = action.payload;
+            if (threadId in state.threads) {
+                console.log('Updating thread smoothing', smoothing);
+                state.threads[threadId].smoothing = smoothing;
+            }
+        },
         setThreadUnits(state, action: PayloadAction<ThreadUnitsArgs>) {
             const { threadId, units } = action.payload;
             if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
@@ -187,6 +200,7 @@ export const {
     setThreadDescription,
     setThreadExploder,
     setThreadLabel,
+    setThreadSmoothing,
     setThreadUnits,
     clearThreadLabel,
 } = threadsSlice.actions;
