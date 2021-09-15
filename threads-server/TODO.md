@@ -1,3 +1,4 @@
+Weekly dates in CSV can be interpolated to a daily graph
 tsconfig to match work
 Processing timeouts
 Only allow cors if (dev && localhost)

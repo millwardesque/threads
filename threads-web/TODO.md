@@ -72,3 +72,4 @@ Support stacked and stacked-100% charts for exploded threads
 Date range selector (default to trailing year)
 Log scale
 Thread type selector in panel rather than as +button in tab list
+Weekly instead of daily support

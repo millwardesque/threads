@@ -227,7 +227,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         <div className="flex flex-col h-full">
             {!isRebuildingCanvas && (
                 <>
-                    <div className="flex">
+                    <div className="flex justify-end pr-2">
                         <Button label="Reset zoom" onClick={resetZoom} />
                     </div>
                     <div className="flex h-full">
