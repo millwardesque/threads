@@ -1,7 +1,4 @@
 # NEXT:
-Zoom:
- - Reset button (https://www.chartjs.org/chartjs-plugin-zoom/api/)
- - Don't zoom on double-click
 
 # BACKLOG
 Filter exploder => Create Toggle component based on Button
