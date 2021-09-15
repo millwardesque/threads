@@ -1,6 +1,10 @@
 # NEXT:
+Zoom:
+ - Reset button (https://www.chartjs.org/chartjs-plugin-zoom/api/)
+ - Don't zoom on double-click
 
 # BACKLOG
+Filter exploder => Create Toggle component based on Button
 Add more FF sources
 Unify common stuff in config panel (description, smoothing)
 
@@ -60,7 +64,6 @@ Short labels for plots and sources
 Nicer filter selector
 Megaselect for searching sources / plots by name
 Source / plot tags
-Zoom
 Source groups
 Source maker
 Check all threads' active filters after source filters change
@@ -70,3 +73,5 @@ max-width w/ text truncation based on number of tabs
 I hate the duplication of functionality between EditableString and Tab
 Support stacked and stacked-100% charts for exploded threads
 Date range selector (default to trailing year)
+Log scale
+Thread type selector in panel rather than as +button in tab list

@@ -18,6 +18,7 @@
     "@types/uuid": "^8.3.0",
     "axios": "^0.21.1",
     "chart.js": "^3.3.2",
+    "chartjs-plugin-zoom": "^1.1.1",
     "moment": "^2.29.1",
     "moment-range": "^4.0.2",
     "randomcolor": "^0.6.2",
