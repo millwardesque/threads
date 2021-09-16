@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import Chart from 'chart.js/auto';
@@ -10,6 +10,7 @@ import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';
 import { smoothLine } from '../models/Smoother';
 import { Button } from './molecules/Button';
+import { Color } from '../models/ColorProvider';
 
 Chart.register(zoomPlugin);
 
@@ -24,6 +25,21 @@ interface ThreadsChartProps {
 
 interface ChartAxes {
     [id: string]: {};
+}
+
+type DatesAxis = string[];
+
+interface ChartLineDataset {
+    label: string;
+    data: number[];
+    color: Color;
+    yAxisID: string;
+}
+
+interface ChartDataset {
+    dates: DatesAxis;
+    yAxes: ChartAxes;
+    lineData: ChartLineDataset[];
 }
 
 const getDateRangeFromLines = (lines: LineDefinition[]): string[] => {
@@ -88,7 +104,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
     // These are hacks to get around useEffect's lack of a deep-compare for objects and arrays
     const lineSignature = JSON.stringify(lines);
-    const threadSignature = JSON.stringify(threads);
 
     useEffect(() => {
         setIsRebuildingCanvas(true);
@@ -100,17 +115,22 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         }
     }, [isRebuildingCanvas]);
 
-    useEffect(() => {
+    const chartData = useMemo<ChartDataset>(() => {
+        const chartData: ChartDataset = {
+            dates: [],
+            yAxes: {},
+            lineData: [],
+        };
+
+        // First pass: Collect dates
         let axes: ChartAxes = {};
         let linesAsArray: LineDefinition[] = [];
         lines.forEach((threadLines) => {
             linesAsArray = linesAsArray.concat(threadLines.lines);
         });
+        chartData.dates = getDateRangeFromLines(linesAsArray);
 
-        const dates: string[] = getDateRangeFromLines(linesAsArray);
-
-        // Second pass, create datasets based on available date range
-        const datasets: Array<any> = [];
+        // Second pass: Create datasets based on available date range
         const shownAxes: {
             [units: string]: string;
         } = {};
@@ -140,30 +160,19 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 const subIndex = isExploded ? `.${index + 1}` : '';
                 const label = `${threadIndex + 1}${subIndex}. ${line.label || thread.getLabel()}`;
                 const units = thread.getUnits();
-                const smoothedData = smoothLine(thread.smoothing, line.data, dates);
-                const lineData: number[] = dates.map((d) => smoothedData[d]);
+                const smoothedData = smoothLine(thread.smoothing, line.data, chartData.dates);
+                const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
 
                 const dataset = {
                     label,
                     data: lineData,
-                    fill: false,
-                    borderColor: color.dark,
-                    borderWidth: 2,
-                    backgroundColor: color.light,
-                    pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-                    pointBorderColor: color.dark,
-                    pointHoverBackgroundColor: color.light,
-                    pointHoverBorderColor: color.dark,
-                    pointRadius: 2,
-                    pointHoverRadius: 5,
-                    pointHoverBorderWidth: 1,
-                    spanGaps: false,
+                    color,
                     yAxisID: shownAxes[units],
                 };
 
-                datasets.push(dataset);
+                chartData.lineData.push(dataset);
 
                 if (isExploded) {
                     explodedLinesProcessed += 1;
@@ -172,9 +181,30 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
             threadsProcessed += 1;
         });
+        return chartData;
+    }, [lineSignature, colors, threads]);
+
+    useEffect(() => {
+        const datasets = chartData.lineData.map((line) => ({
+            label: line.label,
+            data: line.data,
+            fill: false,
+            borderColor: line.color.dark,
+            borderWidth: 2,
+            backgroundColor: line.color.light,
+            pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+            pointBorderColor: line.color.dark,
+            pointHoverBackgroundColor: line.color.light,
+            pointHoverBorderColor: line.color.dark,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 1,
+            spanGaps: false,
+            yAxisID: line.yAxisID,
+        }));
 
         const data = {
-            labels: dates,
+            labels: chartData.dates,
             datasets: datasets,
         };
 
@@ -202,7 +232,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 },
             },
             responsive: true,
-            scales: axes,
+            scales: chartData.yAxes,
         };
 
         const chartCanvas = canvasRef.current;
@@ -221,7 +251,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                 chartInstance.current.destroy();
             }
         };
-    }, [lineSignature, threadSignature, threads, isRebuildingCanvas, colors]);
+    }, [chartData.dates, chartData.lineData, chartData.yAxes, isRebuildingCanvas]);
 
     return (
         <div className="flex flex-col h-full">

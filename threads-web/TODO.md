@@ -1,4 +1,8 @@
 # NEXT:
+* Update graph rather than redrawing it
+*  useEffect for creating empty chart
+*  useEffect for updating empty chart
+*  Move chartData into a hook
 
 # BACKLOG
 Filter exploder => Create Toggle component based on Button
