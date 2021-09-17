@@ -11,8 +11,6 @@ interface SourceSelectProps {
 
 export const SourceSelect: React.FC<SourceSelectProps> = ({ sources, selectedSource, onSourceChange }) => {
     const handleChange = (selected: string) => {
-        console.log('Source change requested', selected);
-
         const selectedSource = selected in sources ? sources[selected] : undefined;
         if (selectedSource && onSourceChange) {
             onSourceChange(selectedSource);

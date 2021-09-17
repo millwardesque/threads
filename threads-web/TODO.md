@@ -1,5 +1,4 @@
 # NEXT:
-*  Move chartData into a hook
 
 # BACKLOG
 Filter exploder => Create Toggle component based on Button
@@ -12,9 +11,6 @@ Storage:
 Adhoc: Smarter date validation
 
 Error banner
-
-Chart:
-* Move chart data extraction to hook
 
 Filter selector
 * Option search

@@ -10,8 +10,6 @@ interface PlotSelectProps {
 
 export const PlotSelect: React.FC<PlotSelectProps> = ({ thread, onPlotChange }) => {
     const handleChange = (selected: string) => {
-        console.log('Plot change requested', selected);
-
         const selectedPlot = thread.source.plots[selected];
         if (onPlotChange) {
             onPlotChange(selectedPlot);

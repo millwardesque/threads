@@ -13,7 +13,6 @@ export const ThreadDataInput: React.FC<ThreadDataInputProps> = ({ initialData, h
 
     const onComplete = (newValue: string) => {
         if (onThreadDataChange && newValue !== initialDataAsString) {
-            console.log('Data changed');
             const newDataAsArray = newValue.split('\n');
             onThreadDataChange(newDataAsArray);
         }

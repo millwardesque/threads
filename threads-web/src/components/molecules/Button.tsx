@@ -12,7 +12,6 @@ export const Button: React.FC<ButtonProps> = ({ label, onClick }) => {
         if (onClick) {
             onClick();
         }
-        console.log('Clicked!');
     };
 
     return <input className={buttonClasses} type="button" value={label} onClick={handleClick} />;

@@ -41,8 +41,6 @@ function trailingSmoothing(line: LineData, dates: string[], trailingDays: number
         }
     });
 
-    console.log(line, smoothed);
-
     return smoothed;
 }
 

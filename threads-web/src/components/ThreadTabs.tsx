@@ -28,7 +28,6 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
     onNewTab,
 }) => {
     const handleSelectTab = (tabId: string) => {
-        console.log('Requesting tab select', tabId);
         if (!(tabId in threads)) {
             console.warn(`Unable to select tab with ID '${tabId}': No thread with that ID exists.`, threads);
         } else if (onSelectTab) {
@@ -37,7 +36,6 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
     };
 
     const handleCloseTab = (tabId: string) => {
-        console.log('Requesting tab close', tabId);
         if (!(tabId in threads)) {
             console.warn(`Unable to close tab with ID '${tabId}': No thread with that ID exists.`);
         } else if (onCloseTab) {
@@ -46,14 +44,12 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
     };
 
     const handleNewSimpleTab = () => {
-        console.log('Requesting new simple tab');
         if (onNewTab) {
             onNewTab('simple');
         }
     };
 
     const handleNewAdhocTab = () => {
-        console.log('Requesting new adhoc tab');
         if (onNewTab) {
             onNewTab('adhoc');
         }

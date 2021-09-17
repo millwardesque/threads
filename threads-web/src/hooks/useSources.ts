@@ -16,7 +16,6 @@ export const useSources = () => {
             try {
                 const result = await axios('http://localhost:2999/api/datasource');
                 dispatch(replaceAll(result.data));
-                console.log('Sources loaded');
                 setLoading('loaded');
             } catch (error) {
                 console.error('Error loading sources', error);

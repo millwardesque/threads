@@ -56,7 +56,7 @@ const refreshSimpleThreadLines = (dispatch: AppDispatch, thread: SimpleThread) =
         .then((response) => {
             const payload = response.data as QueryResults;
             if (payload.hasError) {
-                console.log('Error querying data', payload.error);
+                console.error('Error querying data', payload.error);
             } else {
                 let newLines: LineDefinition[] = [];
                 for (let [dimension, lineData] of Object.entries(payload.data)) {
@@ -71,7 +71,7 @@ const refreshSimpleThreadLines = (dispatch: AppDispatch, thread: SimpleThread) =
             }
         })
         .catch((error) => {
-            console.log('Error querying data', error);
+            console.error('Error querying data', error);
         });
 };
 

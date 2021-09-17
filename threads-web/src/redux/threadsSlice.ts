@@ -65,7 +65,6 @@ const threadsSlice = createSlice({
             const source = action.payload as DataSourceDefinition;
             const plot = Object.values(source.plots)[0];
 
-            console.log(`Creating new simple thread and plot: ${source.id}.${plot.id}`);
             const thread = new SimpleThread(uuidv4(), 'daily', undefined, '', 0, source, plot, {}, undefined);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
@@ -74,7 +73,6 @@ const threadsSlice = createSlice({
         newAdhocThread(state) {
             const defaultUnits = '';
 
-            console.log(`Creating new adhoc thread`);
             const thread = new AdhocThread(uuidv4(), 'daily', undefined, '', 0, defaultUnits);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
@@ -133,7 +131,6 @@ const threadsSlice = createSlice({
         setThreadLabel(state, action: PayloadAction<ThreadLabelArgs>) {
             const { threadId, label } = action.payload;
             if (threadId in state.threads) {
-                console.log('Updating thread label', action.payload);
                 state.threads[threadId].customLabel = label === '' ? undefined : label;
             }
         },
@@ -146,7 +143,6 @@ const threadsSlice = createSlice({
         setAdhocThreadData(state, action: PayloadAction<AdhocThreadDataDescriptionArgs>) {
             const { threadId, data } = action.payload;
             if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
-                console.log('Updating adhoc thread data', data);
                 const thread = state.threads[threadId] as AdhocThread;
                 thread.adhocData = data;
                 updateThreadDataVersion(thread);
@@ -155,15 +151,12 @@ const threadsSlice = createSlice({
         setThreadDescription(state, action: PayloadAction<ThreadDescriptionArgs>) {
             const { threadId, description } = action.payload;
             if (threadId in state.threads) {
-                console.log('Updating thread description', description);
                 state.threads[threadId].description = description;
             }
         },
         setThreadExploder(state, action: PayloadAction<ThreadExploderArgs>) {
             const { threadId, exploderDimension } = action.payload;
             if (threadId in state.threads && state.threads[threadId].type === 'simple') {
-                console.log('Updating thread exploder dimension', exploderDimension);
-
                 const thread = state.threads[threadId] as SimpleThread;
                 thread.exploderDimension = exploderDimension;
                 updateThreadDataVersion(thread);
@@ -172,14 +165,12 @@ const threadsSlice = createSlice({
         setThreadSmoothing(state, action: PayloadAction<ThreadSmoothingArgs>) {
             const { threadId, smoothing } = action.payload;
             if (threadId in state.threads) {
-                console.log('Updating thread smoothing', smoothing);
                 state.threads[threadId].smoothing = smoothing;
             }
         },
         setThreadUnits(state, action: PayloadAction<ThreadUnitsArgs>) {
             const { threadId, units } = action.payload;
             if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
-                console.log('Updating thread units', units);
                 const thread = state.threads[threadId] as AdhocThread;
                 thread.units = units;
             }
