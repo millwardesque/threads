@@ -107,7 +107,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
 
     useEffect(() => {
         setIsRebuildingCanvas(true);
-    }, [lineSignature]);
+    }, []);
 
     useEffect(() => {
         if (isRebuildingCanvas) {
@@ -115,7 +115,29 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         }
     }, [isRebuildingCanvas]);
 
+    useEffect(() => {
+        console.log('Resetting canvas');
+        const chartCanvas = canvasRef.current;
+        if (isRebuildingCanvas || chartCanvas === null) {
+            return;
+        }
+
+        chartInstance.current = new Chart(canvasRef.current, {
+            type: 'line',
+            data: {},
+            options: {},
+        });
+
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+                chartInstance.current = undefined;
+            }
+        };
+    }, [isRebuildingCanvas]);
+
     const chartData = useMemo<ChartDataset>(() => {
+        console.log('Recreating data');
         const chartData: ChartDataset = {
             dates: [],
             yAxes: {},
@@ -185,6 +207,11 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     }, [lineSignature, colors, threads]);
 
     useEffect(() => {
+        console.log('Updating chart');
+        if (!chartInstance.current) {
+            return;
+        }
+
         const datasets = chartData.lineData.map((line) => ({
             label: line.label,
             data: line.data,
@@ -221,8 +248,8 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
                         drag: {
                             enabled: true,
                             threshold: 50,
+                            mode: 'xy ',
                         },
-                        mode: 'xy',
                     },
                     pan: {
                         enabled: true,
@@ -235,23 +262,10 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             scales: chartData.yAxes,
         };
 
-        const chartCanvas = canvasRef.current;
-        if (isRebuildingCanvas || chartCanvas === null) {
-            return;
-        }
-
-        chartInstance.current = new Chart(canvasRef.current, {
-            type: 'line',
-            data,
-            options,
-        });
-
-        return () => {
-            if (chartInstance.current) {
-                chartInstance.current.destroy();
-            }
-        };
-    }, [chartData.dates, chartData.lineData, chartData.yAxes, isRebuildingCanvas]);
+        chartInstance.current.data = data;
+        chartInstance.current.options = options;
+        chartInstance.current.update();
+    }, [chartData.dates, chartData.lineData, chartData.yAxes]);
 
     return (
         <div className="flex flex-col h-full">

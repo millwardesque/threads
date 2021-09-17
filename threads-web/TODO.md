@@ -1,7 +1,4 @@
 # NEXT:
-* Update graph rather than redrawing it
-*  useEffect for creating empty chart
-*  useEffect for updating empty chart
 *  Move chartData into a hook
 
 # BACKLOG
@@ -17,7 +14,6 @@ Adhoc: Smarter date validation
 Error banner
 
 Chart:
-* Update graph rather than redrawing it
 * Move chart data extraction to hook
 
 Filter selector
