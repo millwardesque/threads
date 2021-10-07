@@ -84,111 +84,115 @@
         }
     },
     {
-        "id": "worldometer_coronavirus_daily_data",
-        "label": "Worldometer Coronavirus Daily Data",
+        "id": "virtualbrands-onboardings",
+        "label": "VirtualBrands Onboardings",
         "type": "csv",
-        "file": "../data/worldometer_coronavirus_daily_data.csv",
-        "dateField": "date",
+        "file": "../data/virtualbrands-onboardings.csv",
+        "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
+        "description": "SELECT SUBSTR(CAST(created_at as VARCHAR), 1, 10) AS ds, status, virtual_brand_onboarding_status, COUNT(*) AS count FROM hudi_ingest.facility_brands.virtual_brand_onboarding_view GROUP BY 1, 2, 3 ORDER BY 1, 2, 3;",
         "dimensions": {
-            "country": {
-                "id": "country",
-                "label": "Country"
+            "status": {
+                "id": "status",
+                "label": "Status"
+            },
+            "virtual_brand_onboarding_status": {
+                "id": "virtual_brand_onboarding_status",
+                "label": "Virtual Brands Onboarding Status"
             }
         },
         "measures": {
-            "daily_new_cases": {
-                "id": "daily_new_cases",
-                "label": "Daily new cases"
-            },
-            "daily_new_deaths": {
-                "id": "daily_new_deaths",
-                "label": "Daily new deaths"
-            },
-            "active_cases": {
-                "id": "active_cases",
-                "label": "Active cases"
-            },
-            "cumulative_total_cases": {
-                "id": "cumulative_total_cases",
-                "label": "Cumulative total cases"
-            },
-            "cumulative_total_deaths": {
-                "id": "cumulative_total_deaths",
-                "label": "Cumulative total deaths"
+            "count": {
+                "id": "count",
+                "label": "Onboardings"
             }
         },
         "plots": {
-            "daily_new_cases": {
-                "id": "daily_new_cases",
-                "measureId": "daily_new_cases",
+            "total_onboardings": {
+                "id": "total_onboardings",
+                "measureId": "count",
                 "aggregator": "sum",
-                "label": "Daily new cases",
+                "label": "Total onboardings",
                 "units": ""
             },
-            "daily_new_deaths": {
-                "id": "daily_new_deaths",
-                "measureId": "daily_new_deaths",
-                "aggregator": "sum",
-                "label": "Daily new deaths",
-                "units": ""
-            },
-            "active_cases": {
-                "id": "active_cases",
-                "measureId": "active_cases",
-                "aggregator": "sum",
-                "label": "Active cases",
-                "units": ""
-            },
-            "cumulative_total_cases": {
-                "id": "cumulative_total_cases",
-                "measureId": "cumulative_total_cases",
-                "aggregator": "sum",
-                "label": "Cumulative total cases",
-                "units": ""
-            },
-            "cumulative_total_deaths": {
-                "id": "cumulative_total_deaths",
-                "measureId": "cumulative_total_deaths",
-                "aggregator": "sum",
-                "label": "Cumulative total deaths",
+            "average_onboardings": {
+                "id": "average_onboardings",
+                "measureId": "count",
+                "aggregator": "average",
+                "label": "Average onboardings",
                 "units": ""
             }
         }
     },
     {
-        "id": "test_datasource_1",
-        "label": "Test Datasource #1",
+        "id": "virtualbrands-orders",
+        "label": "VirtualBrands Orders",
         "type": "csv",
-        "file": "../data/test_datasource_1.csv",
-        "dateField": "date",
+        "file": "../data/virtualbrands-orders.csv",
+        "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
+        "description": "SELECT\n  order_created_date as ds,\n  country_code,\n  country_name,\n  region,\n  ofo,\n  is_cancelled,\n  brand_name,\n  AVG(subtotal_usd) as average_subtotal_usd,\n  SUM(subtotal_usd) as sum_subtotal_usd,\n  COUNT(*) as orders\nFROM hudi_ingest.analytics_views.future_foods_customer_orders\nWHERE\n  order_created_date > DATE '2020-01-01'\n  AND organization_name IS NOT NULL\nGROUP BY 1, 2, 3, 4, 5, 6, 7\nORDER BY 1, 2, 3, 4, 5, 6, 7;",
         "dimensions": {
-            "test_dimension": {
-                "id": "test_dimension",
-                "label": "Test Dimension"
+            "country_code": {
+                "id": "country_code",
+                "label": "Country code"
+            },
+            "country_name": {
+                "id": "country_name",
+                "label": "Country name"
+            },
+            "region": {
+                "id": "region",
+                "label": "Region"
+            },
+            "ofo": {
+                "id": "ofo",
+                "label": "OFO"
+            },
+            "is_cancelled": {
+                "id": "is_cancelled",
+                "label": "Is cancelled"
+            },
+            "brand_name": {
+                "id": "brand_name",
+                "label": "Brand name"
             }
         },
         "measures": {
-            "test_metric": {
-                "id": "test_metric",
-                "label": "Test Metric"
+            "average_subtotal_usd": {
+                "id": "average_subtotal_usd",
+                "label": "Avg. Subtotal (USD)"
+            },
+            "sum_subtotal_usd": {
+                "id": "sum_subtotal_usd",
+                "label": "Sum Subtotal (USD)"
+            },
+            "orders": {
+                "id": "orders",
+                "label": "Orders"
             }
         },
         "plots": {
-            "sum_test_metric": {
-                "id": "sum_test_metric",
-                "measureId": "test_metric",
-                "aggregator": "sum",
-                "label": "Sum of Test Metric",
+            "average_subtotal_usd": {
+                "id": "average_subtotal_usd",
+                "measureId": "average_subtotal_usd",
+                "aggregator": "average",
+                "label": "Avg. Subtotal (USD)",
                 "units": "$"
             },
-            "avg_test_metric": {
-                "id": "avg_test_metric",
-                "measureId": "test_metric",
+            "sum_subtotal_usd": {
+                "id": "sum_subtotal_usd",
+                "measureId": "sum_subtotal_usd",
                 "aggregator": "average",
-                "label": "Avg of Test Metric",
+                "label": "Sum Subtotal (USD)",
                 "units": "$"
+            },
+            "sum_orders": {
+                "id": "sum_orders",
+                "measureId": "sum_orders",
+                "aggregator": "sum",
+                "label": "Orders",
+                "units": ""
             }
         }
     },

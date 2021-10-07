@@ -27,6 +27,7 @@ export interface DataPlotDefinition {
 export interface DataSourceDefinition {
     id: string;
     label: string;
+    description?: string;
     type: DataSourceType;
     file?: string;
     dateField: string;
