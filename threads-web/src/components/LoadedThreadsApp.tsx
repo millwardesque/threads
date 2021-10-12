@@ -98,7 +98,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                         </div>
                     </div>
                 </div>
-                <div className="row flex flex-col h-1/4">
+                <div className="row flex flex-col h-1/4 absolute bottom-0 left-0 w-full">
                     <div className="tabs-area flex flex-row">
                         <ThreadTabs
                             threads={threads}
@@ -109,7 +109,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                             onNewTab={makeNewThread}
                         />
                     </div>
-                    <div className="config-area flex flex-row flex-auto bg-gray-100 w-full absolute bottom-0 left-0">
+                    <div className="config-area flex flex-row flex-auto bg-gray-100">
                         <ThreadConfigPanel thread={activeThread} />
                     </div>
                 </div>

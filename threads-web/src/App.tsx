@@ -11,8 +11,15 @@ function App() {
 
     return (
         <div className="App flex flex-col h-screen w-screen">
-            <div className="flex flex-col flex-1 relative">
-                {!isReady() && <Throbber />}
+            <div className="flex flex-col flex-1">
+                {!isReady() && (
+                    <>
+                        <div id="header" className="flex w-full h-12 p-6 bg-green-500 items-center">
+                            <h1 className="text-2xl font-bold text-white">Threads</h1>
+                        </div>
+                        <Throbber />
+                    </>
+                )}
                 {isReady() && <LoadedThreadsApp sources={sources} />}
             </div>
         </div>

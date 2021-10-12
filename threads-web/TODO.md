@@ -1,16 +1,15 @@
-# NEXT:
+# NEXT: DEVEX
+* Make classes serializable
+*  Use correct loader in redux
 
 # BACKLOG
 Filter exploder => Create Toggle component based on Button
 Add more FF sources
-Unify common stuff in config panel (description, smoothing)
-
-Storage:
-* Make classes serializable
-
 Adhoc: Smarter date validation
-
 Error banner
+
+Bug: Zoom resets on smoothing change
+Recreate graph when browser resizes
 
 Filter selector
 * Option search
@@ -44,9 +43,7 @@ Undo
 
 Use StandaloneInput in EditableString (requires allowing StandaloneInput to be focused)
 Use Thunks
-Button component
 Persistent URLs / config loading from server
-Equator lines
 Annotation lines
 Historical lines
 Bug?: Switching to a different source with a default plot that has the same ID as the current plot. Will this refresh the line properly?
@@ -54,7 +51,6 @@ Share types between server and client (central shared lib?)
 tsconfig to match work
 axios fail error states
 Short labels for plots and sources
-Nicer filter selector
 Megaselect for searching sources / plots by name
 Source / plot tags
 Source groups
