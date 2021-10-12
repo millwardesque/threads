@@ -84,7 +84,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
         <div className="flex flex-col pb-2">
             <label className="block" htmlFor={id}>
                 {label}{' '}
-                {selected && selected.length > 0 && (
+                {selected && selected.length > 0 && selected.length !== options.length && (
                     <span>
                         ({selected.length ?? 0} / {options.length})
                     </span>

@@ -43,5 +43,5 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
     };
 
     const filterElements = getFilterSelects(thread.source, filters, thread.activeFilters);
-    return <div>{filterElements}</div>;
+    return <>{filterElements}</>;
 };

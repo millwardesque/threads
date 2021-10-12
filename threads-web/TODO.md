@@ -1,8 +1,8 @@
 # NEXT: Better multiselect
 * Focus on multiselect on expand so blur works properly
-* Chevron direction changed on collapsed/expanded
+* Chevron direction changed on collapsed / expanded
 * Chevron click toggles collapsed / expanded
-* Checkboxes beside items
+* Vertical divider (l-border?) between chevron and options
 * Type / search when expanded
 
 # BACKLOG
@@ -10,6 +10,8 @@ Filter exploder => Create Toggle component based on Button
 Add more FF sources
 Adhoc: Smarter date validation
 Error banner
+
+Visual throbber somewhere when waiting for chart data
 
 Make classes serializable
 Use correct loader in redux

@@ -68,7 +68,7 @@ export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = (
                 <ThreadDescription thread={thread} onDescriptionChange={onDescriptionChange} />
                 <ThreadSmoothing thread={thread} onSmoothingChange={onSmoothingChange} />
             </div>
-            <div className="flex flex-row p-6 w-2/3 h-full">
+            <div className="flex flex-row p-6 w-2/3 h-full flex-wrap">
                 {thread.source.id in sourceFilters ? (
                     <FilterSet
                         thread={thread}

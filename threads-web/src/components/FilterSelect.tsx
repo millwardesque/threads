@@ -44,19 +44,17 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
     }
 
     return (
-        <>
-            <div className="flex flex-col">
-                <MultiSelect
-                    label={dimension.label}
-                    selected={selected}
-                    options={options}
-                    onChange={onChange}
-                ></MultiSelect>
-                <div className="flex flex-row content-center justify-end">
-                    <span className="text-sm mr-1">Explode:</span>
-                    <input className={buttonClasses} type="button" value="Lines" onClick={onExploderClick} />
-                </div>
+        <div className="flex flex-col mr-4">
+            <MultiSelect
+                label={dimension.label}
+                selected={selected}
+                options={options}
+                onChange={onChange}
+            ></MultiSelect>
+            <div className="flex flex-row content-center justify-end">
+                <span className="text-sm mr-1">Explode:</span>
+                <input className={buttonClasses} type="button" value="Lines" onClick={onExploderClick} />
             </div>
-        </>
+        </div>
     );
 };
