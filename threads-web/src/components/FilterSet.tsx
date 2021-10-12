@@ -25,11 +25,12 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
         for (const dimension of Object.keys(filters)) {
             const selected: string[] = activeFilters && dimension in activeFilters ? activeFilters[dimension] : [];
             const isActiveExploder = thread.exploderDimension === dimension;
+            const sortedFilters = [...filters[dimension]].sort();
             const select = (
                 <FilterSelect
                     key={dimension}
                     dimension={source.dimensions[dimension]}
-                    values={filters[dimension]}
+                    values={sortedFilters}
                     selected={selected}
                     onFilterChange={onFilterChange}
                     onExploderChange={onExploderChange}

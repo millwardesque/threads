@@ -1,12 +1,18 @@
-# NEXT: DEVEX
-* Make classes serializable
-*  Use correct loader in redux
+# NEXT: Better multiselect
+* Focus on multiselect on expand so blur works properly
+* Chevron direction changed on collapsed/expanded
+* Chevron click toggles collapsed / expanded
+* Checkboxes beside items
+* Type / search when expanded
 
 # BACKLOG
 Filter exploder => Create Toggle component based on Button
 Add more FF sources
 Adhoc: Smarter date validation
 Error banner
+
+Make classes serializable
+Use correct loader in redux
 
 Bug: Zoom resets on smoothing change
 Recreate graph when browser resizes

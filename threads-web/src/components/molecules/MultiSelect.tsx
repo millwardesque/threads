@@ -1,4 +1,6 @@
-import React from 'react';
+import { ChevronDownIcon } from '@heroicons/react/solid';
+
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface MultiSelectOption {
@@ -15,7 +17,27 @@ interface MultiSelectProps {
 
 const ALL_VALUE = '_all_';
 
+/**
+ * Summarizes the state of the multiselect
+ * @param selected Currently selected options
+ * @param options Available options
+ * @returns A string summarizing the multiselect
+ */
+function getSummary(selected: string[], options: MultiSelectOption[]) {
+    if (selected.length > 0 && selected.length === options.length) {
+        return 'All';
+    } else if (selected.length === 0 && options.length > 0) {
+        return 'All';
+    } else if (selected.length === 0 && options.length === 0) {
+        return 'N/A';
+    } else {
+        return selected.join(', ');
+    }
+}
+
 export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, selected, onChange }) => {
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+
     const optionElements = options.map((o) => (
         <option key={o.value} value={o.value}>
             {o.label}
@@ -27,6 +49,16 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
         </option>
     );
     const id = uuidv4();
+
+    const summary = getSummary(selected ?? [], options);
+
+    const handleOnCollapse = () => {
+        setIsCollapsed(true);
+    };
+
+    const handleOnExpand = () => {
+        setIsCollapsed(false);
+    };
 
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOptionElements = event.target.selectedOptions;
@@ -58,9 +90,23 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
                     </span>
                 )}
             </label>
-            <select multiple onChange={handleOnChange} value={selected}>
-                {optionElements}
-            </select>
+
+            <div
+                className="rounded w-80 max-w-xs border border-gray-200 bg-white px-2 py-1 text-right cursor-pointer flex flex-row justify-end"
+                title={summary}
+                onClick={handleOnExpand}
+            >
+                <div className="flex-grow truncate">{summary}</div>
+                <div className="flex-none">
+                    <ChevronDownIcon className="h-5 w-5 text-blue-500"></ChevronDownIcon>
+                </div>
+            </div>
+
+            {!isCollapsed && (
+                <select multiple onBlur={handleOnCollapse} onChange={handleOnChange} value={selected}>
+                    {optionElements}
+                </select>
+            )}
         </div>
     );
 };
