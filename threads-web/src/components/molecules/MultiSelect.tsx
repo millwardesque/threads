@@ -81,7 +81,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
     };
 
     return (
-        <div className="flex flex-col pb-2">
+        <div className="flex flex-col pb-2 w-80 max-w-xs">
             <label className="block" htmlFor={id}>
                 {label}{' '}
                 {selected && selected.length > 0 && selected.length !== options.length && (
@@ -92,7 +92,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
             </label>
 
             <div
-                className="rounded w-80 max-w-xs border border-gray-200 bg-white px-2 py-1 text-right cursor-pointer flex flex-row justify-end"
+                className="rounded border border-gray-200 bg-white px-2 py-1 text-right cursor-pointer flex flex-row justify-end"
                 title={summary}
                 onClick={handleOnExpand}
             >
