@@ -128,7 +128,7 @@
         "id": "virtualbrands-orders",
         "label": "VirtualBrands Orders",
         "type": "csv",
-        "file": "../threads-data/data/virtualbrands-orders.csv",
+        "file": "../threads-data/data/virtualbrands-orders.now.csv",
         "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
         "description": "SELECT\n  order_created_date as ds,\n  country_code,\n  country_name,\n  region,\n  ofo,\n  is_cancelled,\n  brand_name,\n  AVG(subtotal_usd) as average_subtotal_usd,\n  SUM(subtotal_usd) as sum_subtotal_usd,\n  COUNT(*) as orders\nFROM hudi_ingest.analytics_views.future_foods_customer_orders\nWHERE\n  order_created_date > DATE '2020-01-01'\n  AND organization_name IS NOT NULL\nGROUP BY 1, 2, 3, 4, 5, 6, 7\nORDER BY 1, 2, 3, 4, 5, 6, 7;",
@@ -189,7 +189,7 @@
             },
             "sum_orders": {
                 "id": "sum_orders",
-                "measureId": "sum_orders",
+                "measureId": "orders",
                 "aggregator": "sum",
                 "label": "Orders",
                 "units": ""
@@ -236,6 +236,81 @@
                 "measureId": "new_cases",
                 "aggregator": "sum",
                 "label": "Sum of new cases",
+                "units": ""
+            }
+        }
+    },
+    {
+        "id": "vb-storelink-status",
+        "label": "Storelink Status",
+        "type": "csv",
+        "file": "../threads-data/data/storelink-status.csv",
+        "dateField": "ds",
+        "dateFormat": "yyyy-MM-dd",
+        "dimensions": {
+            "earliest_status": {
+                "id": "earliest_status",
+                "label": "Earliest Status"
+            },
+            "latest_status": {
+                "id": "latest_status",
+                "label": "Latest Status"
+            },
+            "ofo": {
+                "id": "ofo",
+                "label": "OFO"
+            },
+            "was_active": {
+                "id": "was_active",
+                "label": "Was Active"
+            },
+            "was_suspended": {
+                "id": "was_suspended",
+                "label": "Was Suspended"
+            },
+            "was_retriable": {
+                "id": "was_retriable",
+                "label": "Was Retriable"
+            },
+            "was_disabled": {
+                "id": "was_disabled",
+                "label": "Was Disabled"
+            }
+        },
+        "measures": {
+            "count": {
+                "id": "count",
+                "label": "Total"
+            },
+            "average_changes": {
+                "id": "average_changes",
+                "label": "Avg. changes"
+            },
+            "sum_changes": {
+                "id": "sum_changes",
+                "label": "Changes"
+            }
+        },
+        "plots": {
+            "sum_total": {
+                "id": "sum_total",
+                "measureId": "count",
+                "aggregator": "sum",
+                "label": "Total",
+                "units": ""
+            },
+            "average_changes": {
+                "id": "average_changes",
+                "measureId": "average_changes",
+                "aggregator": "sum",
+                "label": "Average Changes",
+                "units": ""
+            },
+            "sum_changes": {
+                "id": "sum_changes",
+                "measureId": "sum_changes",
+                "aggregator": "sum",
+                "label": "Total changes",
                 "units": ""
             }
         }

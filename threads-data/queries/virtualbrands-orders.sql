@@ -11,7 +11,7 @@ SELECT
   COUNT(*) as orders
 FROM hudi_ingest.analytics_views.future_foods_customer_orders
 WHERE
-  order_created_date > DATE '${start_date}'
+  order_created_date >= DATE '${start_date}'
   AND order_created_date < DATE '${start_date}' + INTERVAL '${days_to_fetch}' DAY
   AND organization_name IS NOT NULL
 GROUP BY 1, 2, 3, 4, 5, 6, 7
