@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid';
 
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -60,6 +60,10 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
         setIsCollapsed(false);
     };
 
+    const handleChevronClick = () => {
+        setIsCollapsed(isCollapsed ? false : true);
+    };
+
     const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOptionElements = event.target.selectedOptions;
         let selectedOptions: string[] = [];
@@ -94,11 +98,20 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
             <div
                 className="rounded border border-gray-200 bg-white px-2 py-1 text-right cursor-pointer flex flex-row justify-end"
                 title={summary}
-                onClick={handleOnExpand}
             >
-                <div className="flex-grow truncate">{summary}</div>
+                <div className="flex-grow truncate" onClick={handleOnExpand}>
+                    {summary}
+                </div>
                 <div className="flex-none">
-                    <ChevronDownIcon className="h-5 w-5 text-blue-500"></ChevronDownIcon>
+                    {isCollapsed && (
+                        <ChevronDownIcon
+                            onClick={handleChevronClick}
+                            className="h-5 w-5 text-blue-500"
+                        ></ChevronDownIcon>
+                    )}
+                    {!isCollapsed && (
+                        <ChevronUpIcon onClick={handleChevronClick} className="h-5 w-5 text-blue-500"></ChevronUpIcon>
+                    )}
                 </div>
             </div>
 
