@@ -1,18 +1,18 @@
 # NEXT: Better multiselect
-* Focus on multiselect on expand so blur works properly
-* Chevron direction changed on collapsed / expanded
-* Chevron click toggles collapsed / expanded
-* Vertical divider (l-border?) between chevron and options
-* Type / search when expanded
-* Max-width on select
-* Other threads not showing when explode is invoked on one thread?
+* Floats on top of content when expanded so blur works properly and content doesn't reflow
+* Type / search when expanded (standalone with new onChange handler to filter options)
+* Focus on earch when expanded no matter how expansion happens
+* Align list with summary righthand-side
 
 # BACKLOG
+Duplicate thread!
+Null as 0 option for sources
 Filter exploder => Create Toggle component based on Button
 Add more FF sources
 Adhoc: Smarter date validation
 Error banner
-
+Reset dimension exploder when changing threads
+Legend: Cmd+click: Only this item
 Show empty graph instead of blank pane when no data is available for filter choices
 
 Visual throbber somewhere when waiting for chart data
