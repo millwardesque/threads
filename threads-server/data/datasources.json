@@ -90,7 +90,7 @@
         "file": "../threads-data/data/virtualbrands-onboardings.csv",
         "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
-        "description": "SELECT SUBSTR(CAST(created_at as VARCHAR), 1, 10) AS ds, status, virtual_brand_onboarding_status, COUNT(*) AS count FROM hudi_ingest.facility_brands.virtual_brand_onboarding_view GROUP BY 1, 2, 3 ORDER BY 1, 2, 3;",
+        "description": "FutureFoods onboardings",
         "dimensions": {
             "status": {
                 "id": "status",
@@ -131,15 +131,11 @@
         "file": "../threads-data/data/virtualbrands-orders.now.csv",
         "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
-        "description": "SELECT\n  order_created_date as ds,\n  country_code,\n  country_name,\n  region,\n  ofo,\n  is_cancelled,\n  brand_name,\n  AVG(subtotal_usd) as average_subtotal_usd,\n  SUM(subtotal_usd) as sum_subtotal_usd,\n  COUNT(*) as orders\nFROM hudi_ingest.analytics_views.future_foods_customer_orders\nWHERE\n  order_created_date > DATE '2020-01-01'\n  AND organization_name IS NOT NULL\nGROUP BY 1, 2, 3, 4, 5, 6, 7\nORDER BY 1, 2, 3, 4, 5, 6, 7;",
+        "description": "Recent FutureFoods orders",
         "dimensions": {
-            "country_code": {
-                "id": "country_code",
-                "label": "Country code"
-            },
             "country_name": {
                 "id": "country_name",
-                "label": "Country name"
+                "label": "Country"
             },
             "region": {
                 "id": "region",
@@ -173,17 +169,71 @@
             }
         },
         "plots": {
-            "average_subtotal_usd": {
-                "id": "average_subtotal_usd",
-                "measureId": "average_subtotal_usd",
-                "aggregator": "average",
-                "label": "Avg. Subtotal (USD)",
-                "units": "$"
-            },
             "sum_subtotal_usd": {
                 "id": "sum_subtotal_usd",
                 "measureId": "sum_subtotal_usd",
-                "aggregator": "average",
+                "aggregator": "sum",
+                "label": "Sum Subtotal (USD)",
+                "units": "$"
+            },
+            "sum_orders": {
+                "id": "sum_orders",
+                "measureId": "orders",
+                "aggregator": "sum",
+                "label": "Orders",
+                "units": ""
+            }
+        }
+    },
+    {
+        "id": "virtualbrands-historical-orders",
+        "label": "VirtualBrands Historical Orders",
+        "type": "csv",
+        "file": "../threads-data/data/virtualbrands-orders.csv",
+        "dateField": "ds",
+        "dateFormat": "yyyy-MM-dd",
+        "description": "Historical FutureFoods orders",
+        "dimensions": {
+            "country_name": {
+                "id": "country_name",
+                "label": "Country"
+            },
+            "region": {
+                "id": "region",
+                "label": "Region"
+            },
+            "ofo": {
+                "id": "ofo",
+                "label": "OFO"
+            },
+            "is_cancelled": {
+                "id": "is_cancelled",
+                "label": "Is cancelled"
+            },
+            "brand_name": {
+                "id": "brand_name",
+                "label": "Brand name"
+            }
+        },
+        "measures": {
+            "average_subtotal_usd": {
+                "id": "average_subtotal_usd",
+                "label": "Avg. Subtotal (USD)"
+            },
+            "sum_subtotal_usd": {
+                "id": "sum_subtotal_usd",
+                "label": "Sum Subtotal (USD)"
+            },
+            "orders": {
+                "id": "orders",
+                "label": "Orders"
+            }
+        },
+        "plots": {
+            "sum_subtotal_usd": {
+                "id": "sum_subtotal_usd",
+                "measureId": "sum_subtotal_usd",
+                "aggregator": "sum",
                 "label": "Sum Subtotal (USD)",
                 "units": "$"
             },
@@ -282,10 +332,6 @@
                 "id": "count",
                 "label": "Total"
             },
-            "average_changes": {
-                "id": "average_changes",
-                "label": "Avg. changes"
-            },
             "sum_changes": {
                 "id": "sum_changes",
                 "label": "Changes"
@@ -297,13 +343,6 @@
                 "measureId": "count",
                 "aggregator": "sum",
                 "label": "Total",
-                "units": ""
-            },
-            "average_changes": {
-                "id": "average_changes",
-                "measureId": "average_changes",
-                "aggregator": "sum",
-                "label": "Average Changes",
                 "units": ""
             },
             "sum_changes": {
