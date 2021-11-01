@@ -12,6 +12,7 @@ import {
     newSimpleThread,
     newAdhocThread,
     deleteThread,
+    duplicateThread,
     setActiveThread,
     selectActiveThread,
     selectAllThreads,
@@ -34,6 +35,10 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
         } else {
             console.error(`Unable to make new thread: Unsupported thread type ${type}`);
         }
+    };
+
+    const makeDuplicateThread = (thread: Thread) => {
+        dispatch(duplicateThread(thread));
     };
 
     const switchThread = (thread: Thread) => {
@@ -107,6 +112,7 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
                             onSelectTab={switchThread}
                             onCloseTab={onTabClose}
                             onNewTab={makeNewThread}
+                            onDuplicateThread={makeDuplicateThread}
                         />
                     </div>
                     <div className="config-area flex flex-row flex-auto bg-gray-100">

@@ -56,11 +56,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
         setIsCollapsed(true);
     };
 
-    const handleOnExpand = () => {
-        setIsCollapsed(false);
-    };
-
-    const handleChevronClick = (newValue: boolean) => {
+    const handleToggle = (newValue: boolean) => {
         setIsCollapsed(newValue);
     };
 
@@ -85,7 +81,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
     };
 
     return (
-        <div className="flex flex-col pb-2 w-80 max-w-xs">
+        <div className="flex flex-col pb-2 w-80 max-w-xs relative">
             <label className="block" htmlFor={id}>
                 {label}{' '}
                 {selected && selected.length > 0 && selected.length !== options.length && (
@@ -99,16 +95,27 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
                 className="rounded border border-gray-200 bg-white px-2 py-1 text-right cursor-pointer flex flex-row justify-end"
                 title={summary}
             >
-                <div className="flex-grow truncate" onClick={handleOnExpand}>
+                <div
+                    className="flex-grow truncate"
+                    onClick={() => {
+                        handleToggle(isCollapsed ? false : true);
+                    }}
+                >
                     {summary}
                 </div>
                 <div className="flex-none">
-                    <ToggleButton onToggle={handleChevronClick} isOn={isCollapsed} />
+                    <ToggleButton onToggle={handleToggle} isOn={isCollapsed} />
                 </div>
             </div>
 
             {!isCollapsed && (
-                <select multiple onBlur={handleOnCollapse} onChange={handleOnChange} value={selected}>
+                <select
+                    multiple
+                    className="w-full absolute mt-16 text-right p-1 z-50"
+                    onBlur={handleOnCollapse}
+                    onChange={handleOnChange}
+                    value={selected}
+                >
                     {optionElements}
                 </select>
             )}

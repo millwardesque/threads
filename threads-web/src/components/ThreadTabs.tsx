@@ -17,6 +17,7 @@ interface ThreadTabsProps {
     onSelectTab: (thread: Thread) => void;
     onCloseTab: (thread: Thread) => void;
     onNewTab: (type: ThreadType) => void;
+    onDuplicateThread: (thread: Thread) => void;
 }
 
 export const ThreadTabs: React.FC<ThreadTabsProps> = ({
@@ -26,6 +27,7 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
     onSelectTab,
     onCloseTab,
     onNewTab,
+    onDuplicateThread,
 }) => {
     const handleSelectTab = (tabId: string) => {
         if (!(tabId in threads)) {
@@ -40,6 +42,14 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
             console.warn(`Unable to close tab with ID '${tabId}': No thread with that ID exists.`);
         } else if (onCloseTab) {
             onCloseTab(threads[tabId]);
+        }
+    };
+
+    const handleDuplicateTab = (tabId: string) => {
+        if (!(tabId in threads)) {
+            console.warn(`Unable to duplicate tab with ID '${tabId}': No thread with that ID exists.`);
+        } else if (onDuplicateThread) {
+            onDuplicateThread(threads[tabId]);
         }
     };
 
@@ -77,7 +87,9 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
                 color={colors.atIndex(index)}
                 onSelect={handleSelectTab}
                 onClose={handleCloseTab}
+                onDuplicate={handleDuplicateTab}
                 suppressClose={index === 0 && tabs.length === 1}
+                suppressDuplicate={false}
                 onRename={(_tabId, newName) => {
                     dispatch(setThreadLabel({ threadId: t.id, label: newName }));
                 }}
@@ -97,6 +109,7 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
                 label="+ Thread"
                 onSelect={handleNewSimpleTab}
                 suppressClose={true}
+                suppressDuplicate={true}
                 color={greyTab}
             />
             <Tab
@@ -105,6 +118,7 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
                 label="+ Adhoc"
                 onSelect={handleNewAdhocTab}
                 suppressClose={true}
+                suppressDuplicate={true}
                 color={greyTab}
             />
             {tabElements}

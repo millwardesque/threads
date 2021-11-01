@@ -76,7 +76,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             pointBorderColor: line.color.dark,
             pointHoverBackgroundColor: line.color.light,
             pointHoverBorderColor: line.color.dark,
-            pointRadius: 2,
+            pointRadius: 0,
             pointHoverRadius: 5,
             pointHoverBorderWidth: 1,
             spanGaps: false,

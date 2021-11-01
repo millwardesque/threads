@@ -78,6 +78,16 @@ const threadsSlice = createSlice({
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
         },
+        duplicateThread(state, action: PayloadAction<Thread>) {
+            const sourceThread = action.payload as Thread;
+            const newThread = sourceThread.clone(sourceThread);
+
+            if (newThread) {
+                state.threads[newThread.id] = newThread;
+                state.activeThreadKey = newThread.id;
+                state.orderedThreadIds.push(newThread.id);
+            }
+        },
         setThread(state, action: PayloadAction<Thread>) {
             const thread = action.payload;
             state.threads[thread.id] = thread;
@@ -180,6 +190,7 @@ const threadsSlice = createSlice({
 
 export const {
     deleteThread,
+    duplicateThread,
     newSimpleThread,
     newAdhocThread,
     setActiveThread,

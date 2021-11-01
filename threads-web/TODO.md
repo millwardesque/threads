@@ -1,11 +1,7 @@
-# NEXT: Better multiselect
-* Floats on top of content when expanded so blur works properly and content doesn't reflow
-* Type / search when expanded (standalone with new onChange handler to filter options)
-* Focus on earch when expanded no matter how expansion happens
-* Align list with summary righthand-side
+# NEXT:
 
 # BACKLOG
-Duplicate thread!
+Notable dates per thread in sources to use as reference lines (or in tooltip?)
 Null as 0 option for sources
 Filter exploder => Create Toggle component based on Button
 Add more FF sources
@@ -14,6 +10,8 @@ Error banner
 Reset dimension exploder when changing threads
 Legend: Cmd+click: Only this item
 Show empty graph instead of blank pane when no data is available for filter choices
+Tab name is copied with tab # as well
+Pause mode, or grouping changes close together
 
 Visual throbber somewhere when waiting for chart data
 
@@ -77,3 +75,9 @@ Date range selector (default to trailing year)
 Log scale
 Thread type selector in panel rather than as +button in tab list
 Weekly instead of daily support
+Move threads-server/data/datasources.json file out of git repo and load by value when starting the server
+
+Filters
+* Floats on top of content when expanded so blur works properly and content doesn't reflow
+* Type / search when expanded (standalone with new onChange handler to filter options)
+* Focus on search when expanded no matter how expansion happens
