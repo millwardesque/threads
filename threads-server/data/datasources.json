@@ -353,5 +353,61 @@
                 "units": ""
             }
         }
+    },
+    {
+        "id": "virtualbrands-locations",
+        "label": "VirtualBrands Locations",
+        "type": "csv",
+        "file": "../threads-data/data/virtualbrands-locations.csv",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
+        "dimensions": {
+            "organization_name": {
+                "id": "organization_name",
+                "label": "Org name"
+            },
+            "store_name": {
+                "id": "store_name",
+                "label": "Store name"
+            },
+            "facility_name": {
+                "id": "facility_name",
+                "label": "Facility name"
+            },
+            "master_brand_name": {
+                "id": "master_brand_name",
+                "label": "Master brand name"
+            },
+            "country_code": {
+                "id": "country_code",
+                "label": "Country code"
+            },
+            "is_active": {
+                "id": "is_active",
+                "label": "Is active?"
+            }
+        },
+        "measures": {
+            "store_age_in_days": {
+                "id": "store_age_in_days",
+                "label": "Store age (days)"
+            }
+        },
+        "plots": {
+            "count": {
+                "id": "count",
+                "measureId": "store_age_in_days",
+                "aggregator": "count",
+                "label": "Count",
+                "units": ""
+            },
+            "average_store_age_in_days": {
+                "id": "average_store_age_in_days",
+                "measureId": "store_age_in_days",
+                "aggregator": "average",
+                "label": "Avg. store age (days)",
+                "units": "days"
+            }
+        }
     }
 ]
