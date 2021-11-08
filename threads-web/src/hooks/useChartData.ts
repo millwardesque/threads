@@ -6,7 +6,7 @@ import { LineDefinition, ThreadMap, VersionedLines } from '../types';
 import { Color } from '../models/ColorProvider';
 import { smoothLine } from '../models/Smoother';
 import useColorProvider from './useColorProvider';
-import { aggregateLine } from '../models/Aggregation';
+import { aggregateLine, getAggregationUnitsOverride } from '../models/Aggregation';
 
 const moment = extendMoment(Moment);
 
@@ -113,8 +113,8 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
 
             const threadId = threadLines.lines[0].threadId;
             const thread = threads[threadId];
-            const axisId = `y-${threadId}`;
-            const units = thread.getUnits();
+            const units = getAggregationUnitsOverride(thread.aggregation) ?? thread.getUnits();
+            const axisId = `y#${threadId}#${units}`;
             const isExploded = threadLines.lines.length > 1;
 
             const createAxis = !(units in shownAxes);
@@ -123,16 +123,19 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 axes[axisId] = makeAxis(axisId, true, isFirstAxis, units);
                 shownAxes[units] = axisId;
             }
+            console.log('[CPM] Thread units', units, shownAxes, axes); // @DEBUG
 
             threadLines.lines.forEach((line, index) => {
                 const subIndex = isExploded ? `.${index + 1}` : '';
                 const label = `${threadIndex + 1}${subIndex}. ${line.label || thread.getLabel()}`;
-                const units = thread.getUnits();
                 const aggregatedData = aggregateLine(thread.aggregation, line.data, chartData.dates);
-                const smoothedData = smoothLine(thread.smoothing, aggregatedData, chartData.dates);
+                const smoothedData = smoothLine(thread.smoothing, aggregatedData.line, chartData.dates);
+                const units = aggregatedData.unitsOverride ?? thread.getUnits();
                 const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
+
+                console.log('[CPM] Line units', units, shownAxes[units]); // @DEBUG
 
                 const dataset = {
                     label,
@@ -150,6 +153,8 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
 
             threadsProcessed += 1;
         });
+
+        chartData.yAxes = axes;
         return chartData;
     }, [lineSignature, threadSignature, colors]);
 

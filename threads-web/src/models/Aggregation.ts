@@ -2,15 +2,39 @@ import { LineData } from './DataSourceDefinition';
 
 export type AggregationType = 'daily' | 'week-over-week';
 
-export function aggregateLine(aggregator: AggregationType, line: LineData, dates: string[]): LineData {
+export interface AggregatedData {
+    line: LineData;
+    unitsOverride?: string;
+}
+
+export function getAggregationUnitsOverride(aggregator: AggregationType): string | undefined {
     switch (aggregator) {
         case 'daily':
-            return noAggregation(line);
+            return undefined;
         case 'week-over-week':
-            return weekOverWeekAggregation(line, dates);
+            return '%';
         default:
-            return noAggregation(line);
+            return undefined;
     }
+}
+
+export function aggregateLine(aggregator: AggregationType, line: LineData, dates: string[]): AggregatedData {
+    let aggregatedData: LineData = {};
+    switch (aggregator) {
+        case 'daily':
+            aggregatedData = noAggregation(line);
+            break;
+        case 'week-over-week':
+            aggregatedData = weekOverWeekAggregation(line, dates);
+            break;
+        default:
+            aggregatedData = noAggregation(line);
+            break;
+    }
+    return {
+        line: aggregatedData,
+        unitsOverride: getAggregationUnitsOverride(aggregator),
+    };
 }
 
 function noAggregation(line: LineData): LineData {
@@ -30,7 +54,7 @@ function weekOverWeekAggregation(line: LineData, dates: string[]): LineData {
         } else {
             const prevWeek = dates[i - weekLength];
             if (line[prevWeek] !== 0) {
-                wowLine[date] = (line[date] - line[prevWeek]) / line[prevWeek];
+                wowLine[date] = (100.0 * (line[date] - line[prevWeek])) / line[prevWeek];
             } else {
                 wowLine[date] = 0;
             }

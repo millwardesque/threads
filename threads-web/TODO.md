@@ -1,7 +1,4 @@
 # NEXT:
-* Week-over-week %
-*   Aggregator can override units on axis
-*   Percentage units when WoW applied
 * Easier dot hover
 * Reset dimension exploder when changing threads
 * Visual throbber somewhere when waiting for chart data
