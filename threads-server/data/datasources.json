@@ -294,7 +294,7 @@
         "id": "vb-storelink-status",
         "label": "Storelink Status",
         "type": "csv",
-        "file": "../threads-data/data/storelink-status.csv",
+        "file": "../threads-data/data/virtualbrands-storelinks.csv",
         "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
         "dimensions": {
@@ -328,8 +328,8 @@
             }
         },
         "measures": {
-            "count": {
-                "id": "count",
+            "store_count": {
+                "id": "store_count",
                 "label": "Total"
             },
             "sum_changes": {
@@ -340,7 +340,71 @@
         "plots": {
             "sum_total": {
                 "id": "sum_total",
-                "measureId": "count",
+                "measureId": "store_count",
+                "aggregator": "sum",
+                "label": "Total",
+                "units": ""
+            },
+            "sum_changes": {
+                "id": "sum_changes",
+                "measureId": "sum_changes",
+                "aggregator": "sum",
+                "label": "Total changes",
+                "units": ""
+            }
+        }
+    },
+    {
+        "id": "vb-storelink-status-broken",
+        "label": "Storelink Status (Broken)",
+        "type": "csv",
+        "file": "../threads-data/data/virtualbrands-storelinks.broken.csv",
+        "dateField": "ds",
+        "dateFormat": "yyyy-MM-dd",
+        "dimensions": {
+            "earliest_status": {
+                "id": "earliest_status",
+                "label": "Earliest Status"
+            },
+            "latest_status": {
+                "id": "latest_status",
+                "label": "Latest Status"
+            },
+            "ofo": {
+                "id": "ofo",
+                "label": "OFO"
+            },
+            "was_active": {
+                "id": "was_active",
+                "label": "Was Active"
+            },
+            "was_suspended": {
+                "id": "was_suspended",
+                "label": "Was Suspended"
+            },
+            "was_retriable": {
+                "id": "was_retriable",
+                "label": "Was Retriable"
+            },
+            "was_disabled": {
+                "id": "was_disabled",
+                "label": "Was Disabled"
+            }
+        },
+        "measures": {
+            "store_count": {
+                "id": "store_count",
+                "label": "Total"
+            },
+            "sum_changes": {
+                "id": "sum_changes",
+                "label": "Changes"
+            }
+        },
+        "plots": {
+            "sum_total": {
+                "id": "sum_total",
+                "measureId": "store_count",
                 "aggregator": "sum",
                 "label": "Total",
                 "units": ""

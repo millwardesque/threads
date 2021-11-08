@@ -1,10 +1,15 @@
 # NEXT:
+* Week-over-week %
+* Easier dot hover
+* Reset dimension exploder when changing threads
+* Visual throbber somewhere when waiting for chart data
+* Local storage
 
 # BACKLOG
+Reset zoom only clickable when zoom is in use
 Notable dates per thread in sources to use as reference lines (or in tooltip?)
 Null as 0 option for sources
 Filter exploder => Create Toggle component based on Button
-Add more FF sources
 Adhoc: Smarter date validation
 Error banner
 Reset dimension exploder when changing threads
