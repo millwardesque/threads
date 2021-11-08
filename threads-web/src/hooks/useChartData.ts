@@ -6,6 +6,7 @@ import { LineDefinition, ThreadMap, VersionedLines } from '../types';
 import { Color } from '../models/ColorProvider';
 import { smoothLine } from '../models/Smoother';
 import useColorProvider from './useColorProvider';
+import { aggregateLine } from '../models/Aggregation';
 
 const moment = extendMoment(Moment);
 
@@ -127,7 +128,8 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 const subIndex = isExploded ? `.${index + 1}` : '';
                 const label = `${threadIndex + 1}${subIndex}. ${line.label || thread.getLabel()}`;
                 const units = thread.getUnits();
-                const smoothedData = smoothLine(thread.smoothing, line.data, chartData.dates);
+                const aggregatedData = aggregateLine(thread.aggregation, line.data, chartData.dates);
+                const smoothedData = smoothLine(thread.smoothing, aggregatedData, chartData.dates);
                 const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);

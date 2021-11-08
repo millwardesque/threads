@@ -1,6 +1,6 @@
 import { LineData } from './DataSourceDefinition';
 
-export type SmoothingType = 'daily' | '7-day trailing' | '28-day trailing';
+export type SmoothingType = 'daily' | '7-day trailing' | '28-day trailing' | 'week-over-week';
 
 export function smoothLine(smoothing: SmoothingType, line: LineData, dates: string[]): LineData {
     switch (smoothing) {

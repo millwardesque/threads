@@ -4,11 +4,12 @@ import { useSources } from '../hooks/useSources';
 import { useSourceFilters } from '../hooks/useSourceFilters';
 import { useAppDispatch } from '../redux/hooks';
 import { DataPlotDefinition, DataSourceDefinition } from '../models/DataSourceDefinition';
-import { setActiveThreadFilters, setThreadExploder } from '../redux/threadsSlice';
+import { setActiveThreadFilters, setThreadAggregation, setThreadExploder } from '../redux/threadsSlice';
 import { SourceSelect } from './SourceSelect';
 import { PlotSelect } from './PlotSelect';
 import { SimpleThread } from '../models/Thread';
 import { ThreadDescription } from './ThreadDescription';
+import { ThreadAggregation } from './ThreadAggregation';
 import { ThreadSmoothing } from './ThreadSmoothing';
 import { FilterSet } from './FilterSet';
 import { Throbber } from './molecules/Throbber';
@@ -19,6 +20,7 @@ import {
     setThreadDescription,
     setThreadSmoothing,
 } from '../redux/threadsSlice';
+import { AggregationType } from '../models/Aggregation';
 import { SmoothingType } from '../models/Smoother';
 
 interface SimpleThreadConfigPanelProps {
@@ -32,6 +34,10 @@ export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = (
 
     const onSmoothingChange = (smoothing: SmoothingType) => {
         dispatch(setThreadSmoothing({ threadId: thread!.id, smoothing }));
+    };
+
+    const onAggregationChange = (aggregation: AggregationType) => {
+        dispatch(setThreadAggregation({ threadId: thread!.id, aggregation }));
     };
 
     const onExploderChange = (dimension: string): void => {
@@ -66,6 +72,7 @@ export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = (
                 <SourceSelect sources={sources} selectedSource={thread.source} onSourceChange={onSourceChange} />
                 <PlotSelect thread={thread} onPlotChange={onPlotChange} />
                 <ThreadDescription thread={thread} onDescriptionChange={onDescriptionChange} />
+                <ThreadAggregation thread={thread} onAggregationChange={onAggregationChange} />
                 <ThreadSmoothing thread={thread} onSmoothingChange={onSmoothingChange} />
             </div>
             <div className="flex flex-row p-6 w-2/3 h-full flex-wrap">

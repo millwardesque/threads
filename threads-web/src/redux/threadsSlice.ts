@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from './store';
+import { AggregationType } from '../models/Aggregation';
 import { SmoothingType } from '../models/Smoother';
 import { ThreadMap } from '../types';
 import { AdhocThread, SimpleThread, Thread } from '../models/Thread';
@@ -31,6 +32,11 @@ interface ThreadDescriptionArgs {
 interface ThreadSmoothingArgs {
     threadId: string;
     smoothing: SmoothingType;
+}
+
+interface ThreadAggregationArgs {
+    threadId: string;
+    aggregation: AggregationType;
 }
 
 interface ThreadUnitsArgs {
@@ -65,7 +71,7 @@ const threadsSlice = createSlice({
             const source = action.payload as DataSourceDefinition;
             const plot = Object.values(source.plots)[0];
 
-            const thread = new SimpleThread(uuidv4(), 'daily', undefined, '', 0, source, plot, {}, undefined);
+            const thread = new SimpleThread(uuidv4(), 'daily', 'daily', undefined, '', 0, source, plot, {}, undefined);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -73,7 +79,7 @@ const threadsSlice = createSlice({
         newAdhocThread(state) {
             const defaultUnits = '';
 
-            const thread = new AdhocThread(uuidv4(), 'daily', undefined, '', 0, defaultUnits);
+            const thread = new AdhocThread(uuidv4(), 'daily', 'daily', undefined, '', 0, defaultUnits);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -158,6 +164,12 @@ const threadsSlice = createSlice({
                 updateThreadDataVersion(thread);
             }
         },
+        setThreadAggregation(state, action: PayloadAction<ThreadAggregationArgs>) {
+            const { threadId, aggregation } = action.payload;
+            if (threadId in state.threads) {
+                state.threads[threadId].aggregation = aggregation;
+            }
+        },
         setThreadDescription(state, action: PayloadAction<ThreadDescriptionArgs>) {
             const { threadId, description } = action.payload;
             if (threadId in state.threads) {
@@ -199,6 +211,7 @@ export const {
     setActiveThreadFilters,
     setAdhocThreadData,
     setThread,
+    setThreadAggregation,
     setThreadDescription,
     setThreadExploder,
     setThreadLabel,

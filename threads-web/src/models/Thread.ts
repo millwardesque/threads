@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
+import { AggregationType } from '../models/Aggregation';
 import { SmoothingType } from '../models/Smoother';
 import { ThreadType } from '../types';
 
 export abstract class Thread {
     id: string;
     type: ThreadType;
+    aggregation: AggregationType;
     smoothing: SmoothingType;
     customLabel: string | undefined;
     description: string;
@@ -15,6 +17,7 @@ export abstract class Thread {
     constructor(
         id: string,
         type: ThreadType,
+        aggregation: AggregationType,
         smoothing: SmoothingType,
         customLabel: string | undefined,
         description: string,
@@ -22,6 +25,7 @@ export abstract class Thread {
     ) {
         this.id = id;
         this.type = type;
+        this.aggregation = aggregation;
         this.smoothing = smoothing;
         this.customLabel = customLabel;
         this.description = description;
@@ -50,13 +54,14 @@ export class AdhocThread extends Thread {
 
     constructor(
         id: string,
+        aggregation: AggregationType,
         smoothing: SmoothingType,
         customLabel: string | undefined,
         description: string,
         dataVersion: number,
         units: string
     ) {
-        super(id, 'adhoc', smoothing, customLabel, description, dataVersion);
+        super(id, 'adhoc', aggregation, smoothing, customLabel, description, dataVersion);
         this.units = units;
         this.adhocData = {};
     }
@@ -125,6 +130,7 @@ export class AdhocThread extends Thread {
 
         const newThread = new AdhocThread(
             uuidv4(),
+            adhocThread.aggregation,
             adhocThread.smoothing,
             adhocThread.customLabel,
             adhocThread.description,
@@ -144,6 +150,7 @@ export class SimpleThread extends Thread {
 
     constructor(
         id: string,
+        aggregation: AggregationType,
         smoothing: SmoothingType,
         customLabel: string | undefined,
         description: string,
@@ -153,7 +160,7 @@ export class SimpleThread extends Thread {
         activeFilters: FiltersAndValues,
         exploderDimension: string | undefined
     ) {
-        super(id, 'simple', smoothing, customLabel, description, dataVersion);
+        super(id, 'simple', aggregation, smoothing, customLabel, description, dataVersion);
         this.source = source;
         this.plot = plot;
         this.activeFilters = activeFilters;
@@ -172,6 +179,7 @@ export class SimpleThread extends Thread {
 
         const newThread = new SimpleThread(
             uuidv4(),
+            simpleThread.aggregation,
             simpleThread.smoothing,
             simpleThread.customLabel,
             simpleThread.description,
