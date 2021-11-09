@@ -33,7 +33,6 @@ export class Cache {
 
     set(sourceId: string, query: QueryRequest, dataToCache: CacheData) {
         const key = this.computeCacheKey(sourceId, query);
-        console.log('Setting cache', key, dataToCache);
         this.cacheData[key] = dataToCache;
     }
 }

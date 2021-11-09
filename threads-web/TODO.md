@@ -1,5 +1,4 @@
 # NEXT:
-* Easier dot hover
 * Reset dimension exploder when changing threads
 * Visual throbber w/ pending requests somewhere when waiting for chart data
 * Local storage

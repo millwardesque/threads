@@ -1,89 +1,5 @@
 [
     {
-        "id": "ff-analytics-bm",
-        "label": "FF/BM analytics",
-        "type": "csv",
-        "file": "../threads-data/data/ff-analytics.csv",
-        "dateField": "date",
-        "dateFormat": "yyyy-MM-dd",
-        "dimensions": {
-            "site": {
-                "id": "site",
-                "label": "Site"
-            }
-        },
-        "measures": {
-            "weekly_active_users": {
-                "id": "weekly_active_users",
-                "label": "WAU (weekly active users)"
-            },
-            "banners_shown": {
-                "id": "banners_shown",
-                "label": "BM x-sell banners shown"
-            },
-            "banners_shown_to_uniques": {
-                "id": "banners_shown_to_uniques",
-                "label": "BM x-sell banners shown to unique users"
-            },
-            "banner_cta_clicks": {
-                "id": "banner_cta_clicks",
-                "label": "BM x-sell banner CTA clicks"
-            },
-            "banner_dismissals": {
-                "id": "banner_dismissals",
-                "label": "BM x-sell banner dismissals"
-            },
-            "book_a_demo_clicks": {
-                "id": "book_a_demo_clicks",
-                "label": "Book-a-demo button clicks"
-            }
-        },
-        "plots": {
-            "weekly_active_users": {
-                "id": "weekly_active_users",
-                "measureId": "weekly_active_users",
-                "aggregator": "sum",
-                "label": "Weekly active users",
-                "units": ""
-            },
-            "banners_shown": {
-                "id": "banners_shown",
-                "measureId": "banners_shown",
-                "aggregator": "sum",
-                "label": "BM x-sell banners shown",
-                "units": ""
-            },
-            "banners_shown_to_uniques": {
-                "id": "banners_shown_to_uniques",
-                "measureId": "banners_shown_to_uniques",
-                "aggregator": "sum",
-                "label": "BM x-sell banners shown to unique users",
-                "units": ""
-            },
-            "banner_cta_clicks": {
-                "id": "banner_cta_clicks",
-                "measureId": "banner_cta_clicks",
-                "aggregator": "sum",
-                "label": "BM x-sell banner CTA clicks",
-                "units": ""
-            },
-            "banner_dismissals": {
-                "id": "banner_dismissals",
-                "measureId": "banner_dismissals",
-                "aggregator": "sum",
-                "label": "BM x-sell banner dismissals",
-                "units": ""
-            },
-            "book_a_demo_clicks": {
-                "id": "book_a_demo_clicks",
-                "measureId": "book_a_demo_clicks",
-                "aggregator": "sum",
-                "label": "Book-a-demo button clicks",
-                "units": ""
-            }
-        }
-    },
-    {
         "id": "virtualbrands-onboardings",
         "label": "VirtualBrands Onboardings",
         "type": "csv",
@@ -128,7 +44,7 @@
         "id": "virtualbrands-orders",
         "label": "VirtualBrands Orders",
         "type": "csv",
-        "file": "../threads-data/data/virtualbrands-orders.now.csv",
+        "file": "../threads-data/data/virtualbrands-orders.csv",
         "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
         "description": "Recent FutureFoods orders",
@@ -189,7 +105,7 @@
         "id": "virtualbrands-historical-orders",
         "label": "VirtualBrands Historical Orders",
         "type": "csv",
-        "file": "../threads-data/data/virtualbrands-orders.csv",
+        "file": "../threads-data/data/virtualbrands-orders.historical.csv",
         "dateField": "ds",
         "dateFormat": "yyyy-MM-dd",
         "description": "Historical FutureFoods orders",
@@ -242,50 +158,6 @@
                 "measureId": "orders",
                 "aggregator": "sum",
                 "label": "Orders",
-                "units": ""
-            }
-        }
-    },
-    {
-        "id": "owid_covid_data",
-        "label": "OWID COVID-19 Data",
-        "type": "csv",
-        "file": "../threads-data/data/owid-covid-data.csv",
-        "dateField": "date",
-        "dateFormat": "yyyy-MM-dd",
-        "dimensions": {
-            "continent": {
-                "id": "continent",
-                "label": "Continent"
-            },
-            "location": {
-                "id": "location",
-                "label": "Country"
-            }
-        },
-        "measures": {
-            "total_cases": {
-                "id": "total_cases",
-                "label": "Total cases"
-            },
-            "new_cases": {
-                "id": "new_cases",
-                "label": "New cases"
-            }
-        },
-        "plots": {
-            "sum_total_cases": {
-                "id": "sum_total_cases",
-                "measureId": "total_cases",
-                "aggregator": "sum",
-                "label": "Sum of Total Cases",
-                "units": ""
-            },
-            "sum_new_cases": {
-                "id": "sum_new_cases",
-                "measureId": "new_cases",
-                "aggregator": "sum",
-                "label": "Sum of new cases",
                 "units": ""
             }
         }
@@ -355,70 +227,6 @@
         }
     },
     {
-        "id": "vb-storelink-status-broken",
-        "label": "Storelink Status (Broken)",
-        "type": "csv",
-        "file": "../threads-data/data/virtualbrands-storelinks.broken.csv",
-        "dateField": "ds",
-        "dateFormat": "yyyy-MM-dd",
-        "dimensions": {
-            "earliest_status": {
-                "id": "earliest_status",
-                "label": "Earliest Status"
-            },
-            "latest_status": {
-                "id": "latest_status",
-                "label": "Latest Status"
-            },
-            "ofo": {
-                "id": "ofo",
-                "label": "OFO"
-            },
-            "was_active": {
-                "id": "was_active",
-                "label": "Was Active"
-            },
-            "was_suspended": {
-                "id": "was_suspended",
-                "label": "Was Suspended"
-            },
-            "was_retriable": {
-                "id": "was_retriable",
-                "label": "Was Retriable"
-            },
-            "was_disabled": {
-                "id": "was_disabled",
-                "label": "Was Disabled"
-            }
-        },
-        "measures": {
-            "store_count": {
-                "id": "store_count",
-                "label": "Total"
-            },
-            "sum_changes": {
-                "id": "sum_changes",
-                "label": "Changes"
-            }
-        },
-        "plots": {
-            "sum_total": {
-                "id": "sum_total",
-                "measureId": "store_count",
-                "aggregator": "sum",
-                "label": "Total",
-                "units": ""
-            },
-            "sum_changes": {
-                "id": "sum_changes",
-                "measureId": "sum_changes",
-                "aggregator": "sum",
-                "label": "Total changes",
-                "units": ""
-            }
-        }
-    },
-    {
         "id": "virtualbrands-locations",
         "label": "VirtualBrands Locations",
         "type": "csv",
@@ -426,18 +234,6 @@
         "dateField": "date",
         "dateFormat": "yyyy-MM-dd",
         "dimensions": {
-            "organization_name": {
-                "id": "organization_name",
-                "label": "Org name"
-            },
-            "store_name": {
-                "id": "store_name",
-                "label": "Store name"
-            },
-            "facility_name": {
-                "id": "facility_name",
-                "label": "Facility name"
-            },
             "master_brand_name": {
                 "id": "master_brand_name",
                 "label": "Master brand name"
@@ -452,25 +248,22 @@
             }
         },
         "measures": {
-            "store_age_in_days": {
+            "stores": {
+                "id": "stores",
+                "label": "Stores"
+            },
+            "sum_store_age_in_days": {
                 "id": "store_age_in_days",
                 "label": "Store age (days)"
             }
         },
         "plots": {
-            "count": {
-                "id": "count",
-                "measureId": "store_age_in_days",
-                "aggregator": "count",
-                "label": "Count",
+            "stores": {
+                "id": "stores",
+                "measureId": "stores",
+                "aggregator": "sum",
+                "label": "Stores",
                 "units": ""
-            },
-            "average_store_age_in_days": {
-                "id": "average_store_age_in_days",
-                "measureId": "store_age_in_days",
-                "aggregator": "average",
-                "label": "Avg. store age (days)",
-                "units": "days"
             }
         }
     }
