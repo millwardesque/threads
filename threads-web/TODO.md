@@ -1,10 +1,11 @@
 # NEXT:
 * Easier dot hover
 * Reset dimension exploder when changing threads
-* Visual throbber somewhere when waiting for chart data
+* Visual throbber w/ pending requests somewhere when waiting for chart data
 * Local storage
 
 # BACKLOG
+Support more than one aggregator (e.g. W-o-W and Y-o-Y as a fainter line)
 Reset zoom only clickable when zoom is in use
 Notable dates per thread in sources to use as reference lines (or in tooltip?)
 Null as 0 option for sources
