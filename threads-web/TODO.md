@@ -1,13 +1,13 @@
 # NEXT:
 Calculated lines
-* '$1' form for thread-refs
-* More operators
+* Ignore whitespace
+* Multiply percentages by 100
+* Abtract operations
+* Less/more than two threads referenced
 * Validate formula
-* Show failed validation
 * Prevent self-reference
-* Force to RHS axis?
-* Draw as dotted line
-* Legend as dotted line
+* '$1' form for thread-refs
+* Constants
 * Refresh calculated lines last
 * Refresh calculated lines when dependency lines change
 * What to do when a referenced tab is deleted
@@ -15,6 +15,8 @@ Calculated lines
 * Divide exploded lines by single line
 
 # BACKLOG
+Focus on input fields when switching to adhoc / calculated thread tab
+Maintain axes on line hide
 Random sample from filters
 Reset dimension exploder when changing threads
 Visual throbber w/ pending requests somewhere when waiting for chart data

@@ -250,4 +250,17 @@ export class CalculatedThread extends Thread {
     getFallbackLabel(): string {
         return 'Calculated line';
     }
+
+    static tokenizeFormula(formula: string): string[] {
+        return formula.split(' ');
+    }
+
+    static isValidFormula(formula: string): boolean {
+        const tokens = CalculatedThread.tokenizeFormula(formula);
+        if (tokens.length !== 3) {
+            return false;
+        }
+
+        return true;
+    }
 }

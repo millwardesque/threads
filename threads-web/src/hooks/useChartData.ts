@@ -16,6 +16,7 @@ type DatesAxis = string[];
 interface ChartLineDataset {
     label: string;
     data: number[];
+    borderDash: number[];
     color: Color;
     yAxisID: string;
 }
@@ -26,17 +27,16 @@ interface ChartDataset {
     lineData: ChartLineDataset[];
 }
 
-const makeAxis = (id: string, showAxis: boolean, drawGrid: boolean, units: string) => {
+type AxisSide = 'right' | 'left';
+
+const makeAxis = (id: string, drawGrid: boolean, units: string, position: AxisSide) => {
     return {
         id,
         type: 'linear',
         beginAtZero: true,
-        position: units === '%' ? 'right' : 'left',
+        position,
         ticks: {
             callback: function (value: string) {
-                if (!showAxis) {
-                    return '';
-                }
                 switch (units) {
                     case '$':
                         return units + value.toLocaleString();
@@ -88,14 +88,16 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
             const threadId = threadLines.lines[0].threadId;
             const thread = threads[threadId];
             const units = getAggregationUnitsOverride(thread.aggregation) ?? thread.getUnits();
-            const axisId = `y#${threadId}#${units}`;
+            const axisPosition: AxisSide = thread.type === 'calculated' || units === '%' ? 'right' : 'left';
+            const axisKey = `${axisPosition}##${units}`;
+            const axisId = `y#${threadId}#${axisKey}`;
             const isExploded = threadLines.lines.length > 1;
 
-            const createAxis = !(units in shownAxes);
+            const createAxis = !(axisKey in shownAxes);
             if (createAxis) {
                 const isFirstAxis = Object.keys(axes).length === 0;
-                axes[axisId] = makeAxis(axisId, true, isFirstAxis, units);
-                shownAxes[units] = axisId;
+                axes[axisId] = makeAxis(axisId, isFirstAxis, units, axisPosition);
+                shownAxes[axisKey] = axisId;
             }
 
             threadLines.lines.forEach((line, index) => {
@@ -107,12 +109,16 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
+                const lineAxisKey = `${axisPosition}##${units}`;
+                const axisToUse = shownAxes[lineAxisKey];
+                const borderDash = thread.type === 'calculated' ? [5, 3] : [];
 
                 const dataset = {
                     label,
                     data: lineData,
+                    borderDash,
                     color,
-                    yAxisID: shownAxes[units],
+                    yAxisID: axisToUse,
                 };
 
                 chartData.lineData.push(dataset);
@@ -126,6 +132,7 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
         });
 
         chartData.yAxes = axes;
+        console.log('[CPM] chart data', chartData); // @DEBUG
         return chartData;
     }, [lineSignature, threadSignature, colors]);
 

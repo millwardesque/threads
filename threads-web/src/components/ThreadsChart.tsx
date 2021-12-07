@@ -70,6 +70,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
             data: line.data,
             fill: false,
             borderColor: line.color.dark,
+            borderDash: line.borderDash,
             borderWidth: 2,
             backgroundColor: line.color.light,
             pointBackgroundColor: 'rgba(0, 0, 0, 0)',

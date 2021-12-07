@@ -23,9 +23,15 @@ interface CalculatedThreadConfigPanelProps {
 
 export const CalculatedThreadConfigPanel: React.FC<CalculatedThreadConfigPanelProps> = ({ thread }) => {
     const dispatch = useAppDispatch();
+    const [hasValidFormula, setHasValidFormula] = useState<boolean>(true);
 
     const onFormulaChange = (newFormula: string) => {
-        dispatch(setCalculatedThreadFormula({ threadId: thread!.id, formula: newFormula }));
+        if (CalculatedThread.isValidFormula(newFormula)) {
+            dispatch(setCalculatedThreadFormula({ threadId: thread!.id, formula: newFormula }));
+            setHasValidFormula(true);
+        } else {
+            setHasValidFormula(false);
+        }
     };
 
     const onAggregationChange = (aggregation: AggregationType) => {
@@ -53,7 +59,7 @@ export const CalculatedThreadConfigPanel: React.FC<CalculatedThreadConfigPanelPr
                 <ThreadSmoothing thread={thread} onSmoothingChange={onSmoothingChange} />
             </div>
             <div className="flex flex-col p-6 w-2/3 h-full">
-                <ThreadFormula thread={thread} onFormulaChange={onFormulaChange} />
+                <ThreadFormula thread={thread} hasValidFormula={hasValidFormula} onFormulaChange={onFormulaChange} />
             </div>
         </>
     );

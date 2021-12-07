@@ -76,14 +76,25 @@ const refreshCalculatedThreadLines = (
         const line2Dates = Object.keys(line2.data);
         const dates = getDateRangeFromLines([line1, line2]);
         dates.forEach((date) => {
-            if (line2Dates.includes(date) && line2.data[date] !== 0) {
-                switch (operator) {
-                    case '/':
-                        lineData[date] = (line1.data[date] ?? 0) / line2.data[date];
-                        break;
-                    default:
-                        break;
-                }
+            const line1Value = line1.data[date] ?? 0;
+            const line2Value = line2.data[date] ?? 0;
+            switch (operator) {
+                case '*':
+                    lineData[date] = line1Value * line2Value;
+                    break;
+                case '/':
+                    if (line2Dates.includes(date) && line2.data[date] !== 0) {
+                        lineData[date] = line1Value / line2Value;
+                    }
+                    break;
+                case '+':
+                    lineData[date] = line1Value + line2Value;
+                    break;
+                case '-':
+                    lineData[date] = line1Value - line2Value;
+                    break;
+                default:
+                    break;
             }
         });
     }
