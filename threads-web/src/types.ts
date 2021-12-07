@@ -2,7 +2,7 @@ import { DataSourceMap, LineData } from './models/DataSourceDefinition';
 
 import { Thread } from './models/Thread';
 
-export type ThreadType = 'simple' | 'adhoc';
+export type ThreadType = 'simple' | 'adhoc' | 'calculated';
 
 export interface ThreadMap {
     [id: string]: Thread;

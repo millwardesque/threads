@@ -200,3 +200,54 @@ export class SimpleThread extends Thread {
         return this.plot.label;
     }
 }
+
+export class CalculatedThread extends Thread {
+    formula: string;
+    units: string;
+
+    constructor(
+        id: string,
+        aggregation: AggregationType,
+        smoothing: SmoothingType,
+        customLabel: string | undefined,
+        description: string,
+        dataVersion: number,
+        formula: string,
+        units: string
+    ) {
+        super(id, 'calculated', aggregation, smoothing, customLabel, description, dataVersion);
+        this.formula = formula;
+        this.units = units;
+    }
+
+    clone(thread: Thread): Thread | undefined {
+        if (thread.type !== 'calculated') {
+            console.log(
+                `Error: Unable to create Calculated thread from non-calculated source thread of type ${thread.type} with ID ${thread.id}`
+            );
+            return undefined;
+        }
+
+        const calculatedThread = thread as CalculatedThread;
+
+        const newThread = new CalculatedThread(
+            uuidv4(),
+            calculatedThread.aggregation,
+            calculatedThread.smoothing,
+            calculatedThread.customLabel,
+            calculatedThread.description,
+            0,
+            calculatedThread.formula,
+            calculatedThread.units
+        );
+        return newThread;
+    }
+
+    getUnits(): string {
+        return this.units;
+    }
+
+    getFallbackLabel(): string {
+        return 'Calculated line';
+    }
+}

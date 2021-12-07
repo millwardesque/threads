@@ -1,16 +1,11 @@
 import { useMemo } from 'react';
-import * as Moment from 'moment';
-import { extendMoment } from 'moment-range';
 
 import { LineDefinition, ThreadMap, VersionedLines } from '../types';
 import { Color } from '../models/ColorProvider';
 import { smoothLine } from '../models/Smoother';
 import useColorProvider from './useColorProvider';
 import { aggregateLine, getAggregationUnitsOverride } from '../models/Aggregation';
-
-const moment = extendMoment(Moment);
-
-const DATE_FORMAT = 'YYYY-MM-DD';
+import { getDateRangeFromLines } from '../utils';
 
 interface ChartAxes {
     [id: string]: {};
@@ -30,27 +25,6 @@ interface ChartDataset {
     yAxes: ChartAxes;
     lineData: ChartLineDataset[];
 }
-
-const getDateRangeFromLines = (lines: LineDefinition[]): string[] => {
-    let minDate: string | undefined = undefined,
-        maxDate: string | undefined = undefined;
-
-    lines.forEach((l) => {
-        const lineDates = Object.keys(l.data ?? {});
-        lineDates.forEach((d) => {
-            if (!minDate || d < minDate) {
-                minDate = d;
-            }
-            if (!maxDate || d > maxDate) {
-                maxDate = d;
-            }
-        });
-    });
-
-    const momentRange = moment.range(moment(minDate, DATE_FORMAT), moment(maxDate, DATE_FORMAT));
-    const stringRange = Array.from(momentRange.by('days')).map((d) => d.format(DATE_FORMAT));
-    return stringRange;
-};
 
 const makeAxis = (id: string, showAxis: boolean, drawGrid: boolean, units: string) => {
     return {
@@ -123,7 +97,6 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 axes[axisId] = makeAxis(axisId, true, isFirstAxis, units);
                 shownAxes[units] = axisId;
             }
-            console.log('[CPM] Thread units', units, shownAxes, axes); // @DEBUG
 
             threadLines.lines.forEach((line, index) => {
                 const subIndex = isExploded ? `.${index + 1}` : '';
@@ -134,8 +107,6 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
-
-                console.log('[CPM] Line units', units, shownAxes[units]); // @DEBUG
 
                 const dataset = {
                     label,

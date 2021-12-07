@@ -65,6 +65,12 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
         }
     };
 
+    const handleNewCalculatedTab = () => {
+        if (onNewTab) {
+            onNewTab('calculated');
+        }
+    };
+
     const tabs = orderedThreads.map((thread, index) => {
         return {
             id: thread.id,
@@ -117,6 +123,15 @@ export const ThreadTabs: React.FC<ThreadTabsProps> = ({
                 id="tabNew"
                 label="+ Adhoc"
                 onSelect={handleNewAdhocTab}
+                suppressClose={true}
+                suppressDuplicate={true}
+                color={greyTab}
+            />
+            <Tab
+                key="tabCalculatedNew"
+                id="tabNew"
+                label="+ Calc"
+                onSelect={handleNewCalculatedTab}
                 suppressClose={true}
                 suppressDuplicate={true}
                 color={greyTab}

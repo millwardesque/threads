@@ -5,11 +5,16 @@ export interface CacheData {
     [dimension: string]: LineData;
 }
 
+export interface CacheEntry {
+    createdAt: Date;
+    data: CacheData;
+}
+
 export class Cache {
-    cacheData: { [key: string]: CacheData };
+    cache: { [key: string]: CacheEntry };
 
     constructor() {
-        this.cacheData = {};
+        this.cache = {};
     }
 
     computeCacheKey(sourceId: string, query: QueryRequest): string {
@@ -19,20 +24,23 @@ export class Cache {
 
     exists(sourceId: string, query: QueryRequest): boolean {
         const key = this.computeCacheKey(sourceId, query);
-        return key in this.cacheData;
+        return key in this.cache;
     }
 
     get(sourceId: string, query: QueryRequest): CacheData | undefined {
         const key = this.computeCacheKey(sourceId, query);
-        if (!(key in this.cacheData)) {
+        if (!(key in this.cache)) {
             return undefined;
         } else {
-            return this.cacheData[key];
+            return this.cache[key].data;
         }
     }
 
     set(sourceId: string, query: QueryRequest, dataToCache: CacheData) {
         const key = this.computeCacheKey(sourceId, query);
-        this.cacheData[key] = dataToCache;
+        this.cache[key] = {
+            createdAt: new Date(),
+            data: dataToCache,
+        };
     }
 }

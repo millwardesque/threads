@@ -1,11 +1,14 @@
 {
     "folders": [
-		{
-			"path": ".."
-		},
-		{
-			"path": "../../css-threads-data"
-		}
-	],
+        {
+            "path": ".."
+        },
+        {
+            "path": "../../css-threads-data"
+        },
+        {
+            "path": "../../trino"
+        }
+    ],
     "settings": {}
 }

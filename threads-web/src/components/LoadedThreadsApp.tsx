@@ -11,6 +11,7 @@ import { deleteThreadLines } from '../redux/linesSlice';
 import {
     newSimpleThread,
     newAdhocThread,
+    newCalculatedThread,
     deleteThread,
     duplicateThread,
     setActiveThread,
@@ -32,6 +33,8 @@ export const LoadedThreadsApp: React.FC<LoadedThreadsAppProps> = ({ sources }) =
             dispatch(newSimpleThread(Object.values(sources)[0]));
         } else if (type === 'adhoc') {
             dispatch(newAdhocThread());
+        } else if (type === 'calculated') {
+            dispatch(newCalculatedThread());
         } else {
             console.error(`Unable to make new thread: Unsupported thread type ${type}`);
         }

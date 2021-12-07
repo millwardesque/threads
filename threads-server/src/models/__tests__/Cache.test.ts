@@ -39,7 +39,7 @@ describe('Cache', () => {
         expect(cache.get(sourceId, queryRequest)).toEqual(testData);
     });
 
-    it('exists() returns true if the cached key does exist', () => {
+    it("exists() returns true if the cached key does exist and the time hasn't expired", () => {
         cache.set(sourceId, queryRequest, testData);
         expect(cache.exists(sourceId, queryRequest)).toEqual(true);
     });
@@ -48,4 +48,7 @@ describe('Cache', () => {
         cache.set(sourceId, queryRequest, testData);
         expect(cache.get(sourceId, queryRequest)).toEqual(testData);
     });
+
+    it.todo('exists returns false if the key exists but the file timestamp is later than the cache timestamp');
+    it.todo('get() calls exists()');
 });

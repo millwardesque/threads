@@ -5,7 +5,7 @@ import type { RootState } from './store';
 import { AggregationType } from '../models/Aggregation';
 import { SmoothingType } from '../models/Smoother';
 import { ThreadMap } from '../types';
-import { AdhocThread, SimpleThread, Thread } from '../models/Thread';
+import { AdhocThread, CalculatedThread, SimpleThread, Thread } from '../models/Thread';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
 
 interface ThreadsState {
@@ -19,9 +19,14 @@ interface ThreadLabelArgs {
     label: string;
 }
 
-interface AdhocThreadDataDescriptionArgs {
+interface AdhocThreadDataArgs {
     threadId: string;
     data: LineData;
+}
+
+interface CalculatedThreadFormulaArgs {
+    threadId: string;
+    formula: string;
 }
 
 interface ThreadDescriptionArgs {
@@ -80,6 +85,24 @@ const threadsSlice = createSlice({
             const defaultUnits = '';
 
             const thread = new AdhocThread(uuidv4(), 'daily', 'daily', undefined, '', 0, defaultUnits);
+            state.threads[thread.id] = thread;
+            state.activeThreadKey = thread.id;
+            state.orderedThreadIds.push(thread.id);
+        },
+        newCalculatedThread(state) {
+            const defaultFormula = '';
+            const defaultUnits = '';
+
+            const thread = new CalculatedThread(
+                uuidv4(),
+                'daily',
+                'daily',
+                undefined,
+                '',
+                0,
+                defaultFormula,
+                defaultUnits
+            );
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -156,11 +179,19 @@ const threadsSlice = createSlice({
                 state.threads[threadId].customLabel = undefined;
             }
         },
-        setAdhocThreadData(state, action: PayloadAction<AdhocThreadDataDescriptionArgs>) {
+        setAdhocThreadData(state, action: PayloadAction<AdhocThreadDataArgs>) {
             const { threadId, data } = action.payload;
             if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
                 const thread = state.threads[threadId] as AdhocThread;
                 thread.adhocData = data;
+                updateThreadDataVersion(thread);
+            }
+        },
+        setCalculatedThreadFormula(state, action: PayloadAction<CalculatedThreadFormulaArgs>) {
+            const { threadId, formula } = action.payload;
+            if (threadId in state.threads && state.threads[threadId].type === 'calculated') {
+                const thread = state.threads[threadId] as CalculatedThread;
+                thread.formula = formula;
                 updateThreadDataVersion(thread);
             }
         },
@@ -195,6 +226,9 @@ const threadsSlice = createSlice({
             if (threadId in state.threads && state.threads[threadId].type === 'adhoc') {
                 const thread = state.threads[threadId] as AdhocThread;
                 thread.units = units;
+            } else if (threadId in state.threads && state.threads[threadId].type === 'calculated') {
+                const thread = state.threads[threadId] as CalculatedThread;
+                thread.units = units;
             }
         },
     },
@@ -205,11 +239,13 @@ export const {
     duplicateThread,
     newSimpleThread,
     newAdhocThread,
+    newCalculatedThread,
     setActiveThread,
     setActiveThreadSource,
     setActiveThreadPlot,
     setActiveThreadFilters,
     setAdhocThreadData,
+    setCalculatedThreadFormula,
     setThread,
     setThreadAggregation,
     setThreadDescription,
