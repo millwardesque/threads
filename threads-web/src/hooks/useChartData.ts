@@ -88,7 +88,7 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
             const threadId = threadLines.lines[0].threadId;
             const thread = threads[threadId];
             const units = getAggregationUnitsOverride(thread.aggregation) ?? thread.getUnits();
-            const axisPosition: AxisSide = thread.type === 'calculated' || units === '%' ? 'right' : 'left';
+            const axisPosition: AxisSide = units === '%' ? 'right' : 'left';
             const axisKey = `${axisPosition}##${units}`;
             const axisId = `y#${threadId}#${axisKey}`;
             const isExploded = threadLines.lines.length > 1;
@@ -132,7 +132,6 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
         });
 
         chartData.yAxes = axes;
-        console.log('[CPM] chart data', chartData); // @DEBUG
         return chartData;
     }, [lineSignature, threadSignature, colors]);
 

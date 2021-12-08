@@ -7,7 +7,6 @@ import { selectOrderedThreads } from '../redux/threadsSlice';
 import { AdhocThread, CalculatedThread, SimpleThread, Thread } from '../models/Thread';
 import { LineDefinition, LineMap, VersionedLines } from '../types';
 import { LineData, QueryRequest, QueryResults } from '../models/DataSourceDefinition';
-import { getDateRangeFromLines } from '../utils';
 
 const refreshLineData = (dispatch: AppDispatch, thread: Thread, orderedThreads: Thread[], lines: LineMap) => {
     dispatch(initThreadLines(thread));
@@ -54,58 +53,7 @@ const refreshCalculatedThreadLines = (
     orderedThreads: Thread[],
     lines: LineMap
 ) => {
-    const lineData: LineData = {};
-    const tokens = thread.formula.split(' ');
-
-    const threadIndex1 = parseInt(tokens[0]) - 1;
-    const operator = tokens[1];
-    const threadIndex2 = parseInt(tokens[2]) - 1;
-
-    if (orderedThreads.length > threadIndex1 && orderedThreads.length > threadIndex2) {
-        const threadId1 = orderedThreads[threadIndex1].id;
-        const threadId2 = orderedThreads[threadIndex2].id;
-        if (Object.keys(lines).includes(threadId1) && Object.keys(lines).includes(threadId2)) {
-        } else {
-            console.error(
-                `Unable to refresh calculated thread line ${thread.id}: At least one thread ID doesn't exist: '${threadId1}' and '${threadId2}'`
-            );
-        }
-
-        const line1 = lines[threadId1].lines[0];
-        const line2 = lines[threadId2].lines[0];
-        const line2Dates = Object.keys(line2.data);
-        const dates = getDateRangeFromLines([line1, line2]);
-        dates.forEach((date) => {
-            const line1Value = line1.data[date] ?? 0;
-            const line2Value = line2.data[date] ?? 0;
-            switch (operator) {
-                case '*':
-                    lineData[date] = line1Value * line2Value;
-                    break;
-                case '/':
-                    if (line2Dates.includes(date) && line2.data[date] !== 0) {
-                        lineData[date] = line1Value / line2Value;
-                    }
-                    break;
-                case '+':
-                    lineData[date] = line1Value + line2Value;
-                    break;
-                case '-':
-                    lineData[date] = line1Value - line2Value;
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
-
-    const newLines = [
-        {
-            threadId: thread.id,
-            label: undefined,
-            data: lineData,
-        },
-    ];
+    const newLines = thread.computeLines(orderedThreads, lines);
     dispatchUpdatedLines(dispatch, thread, newLines);
 };
 

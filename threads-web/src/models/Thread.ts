@@ -1,9 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
+import { LineDefinition, LineMap } from '../types';
 import { AggregationType } from '../models/Aggregation';
+import { Formula } from '../models/Formula';
 import { SmoothingType } from '../models/Smoother';
 import { ThreadType } from '../types';
+import { getDateRangeFromLines } from '../utils';
 
 export abstract class Thread {
     id: string;
@@ -251,16 +254,86 @@ export class CalculatedThread extends Thread {
         return 'Calculated line';
     }
 
-    static tokenizeFormula(formula: string): string[] {
-        return formula.split(' ');
-    }
-
-    static isValidFormula(formula: string): boolean {
-        const tokens = CalculatedThread.tokenizeFormula(formula);
-        if (tokens.length !== 3) {
-            return false;
+    computeLines(orderedThreads: Thread[], referenceLines: LineMap): LineDefinition[] {
+        if (!CalculatedThread.isValidFormula(this.formula)) {
+            return [];
         }
 
-        return true;
+        const lineData: LineData = {};
+        const formula = new Formula(this.formula);
+        const tokens = formula.tokenize();
+
+        const threadIndex1 = parseInt(tokens[0].value.substr(1)) - 1;
+        const operator = tokens[1].value;
+        const threadIndex2 = parseInt(tokens[2].value.substr(1)) - 1;
+
+        if (orderedThreads.length > threadIndex1 && orderedThreads.length > threadIndex2) {
+            const threadId1 = orderedThreads[threadIndex1].id;
+            const threadId2 = orderedThreads[threadIndex2].id;
+            if (threadId1 === this.id || threadId2 === this.id) {
+                console.error(
+                    `Unable to compute thread line ${this.id}: At least one thread-reference in equation points to the calculating thread`
+                );
+            } else if (
+                Object.keys(referenceLines).includes(threadId1) &&
+                Object.keys(referenceLines).includes(threadId2)
+            ) {
+                const line1 = referenceLines[threadId1].lines[0];
+                const line2 = referenceLines[threadId2].lines[0];
+                const line2Dates = Object.keys(line2.data);
+                const dates = getDateRangeFromLines([line1, line2]);
+                dates.forEach((date) => {
+                    const line1Value = line1.data[date] ?? 0;
+                    const line2Value = line2.data[date] ?? 0;
+                    switch (operator) {
+                        case '*':
+                            lineData[date] = line1Value * line2Value;
+                            break;
+                        case '/':
+                            if (line2Dates.includes(date) && line2.data[date] !== 0) {
+                                lineData[date] = line1Value / line2Value;
+                            }
+                            break;
+                        case '+':
+                            lineData[date] = line1Value + line2Value;
+                            break;
+                        case '-':
+                            lineData[date] = line1Value - line2Value;
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            } else {
+                console.error(
+                    `Unable to compute thread line ${this.id}: At least one thread ID doesn't exist: '${threadId1}' and '${threadId2}'`
+                );
+            }
+        }
+
+        const newLines: LineDefinition[] = [
+            {
+                threadId: this.id,
+                label: undefined,
+                data: lineData,
+            },
+        ];
+        return newLines;
+    }
+
+    static isValidFormula(formulaToCheck: string): boolean {
+        const formula = new Formula(formulaToCheck);
+        const tokens = formula.tokenize();
+        if (tokens.length !== 3) {
+            return false;
+        } else if (tokens[0].type !== 'threadref') {
+            return false;
+        } else if (tokens[1].type !== 'operator') {
+            return false;
+        } else if (tokens[2].type !== 'threadref') {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
