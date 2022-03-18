@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { Throbber } from './molecules/Throbber';
@@ -16,17 +16,17 @@ interface ThreadsChartProps {
 }
 
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
-    const resetZoom = () => {
-        if (chartInstance) {
-            chartInstance.current.resetZoom();
-        }
-    };
-
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const threads = useAppSelector(selectAllThreads);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
     const chartInstance = useRef<Chart>(undefined);
     const chartData = useChartData(threads, lines);
+
+    const resetZoom = useCallback(() => {
+        if (chartInstance) {
+            chartInstance.current.resetZoom();
+        }
+    }, []);
 
     // These are hacks to get around useEffect's lack of a deep-compare for objects and arrays
 

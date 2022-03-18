@@ -22,10 +22,14 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
         }
 
         let filterSelects = [];
+        console.log('[CPM] Filters', filters); // @DEBUG
         for (const dimension of Object.keys(filters)) {
+            console.log('[CPM] Rendering filter:', dimension, source.dimensions); // @DEBUG
             const selected: string[] = activeFilters && dimension in activeFilters ? activeFilters[dimension] : [];
             const isActiveExploder = thread.exploderDimension === dimension;
             const sortedFilters = [...filters[dimension]].sort();
+
+            console.log('[CPM] Sorted filters:', filters[dimension], sortedFilters); // @DEBUG
             const select = (
                 <FilterSelect
                     key={dimension}

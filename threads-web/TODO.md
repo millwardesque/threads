@@ -1,23 +1,26 @@
 # NEXT:
+
 Calculated lines
-* Ignore whitespace
-* Multiply percentages by 100
-* Abtract operations
-* Less/more than two threads referenced
-* Validate formula
-* Prevent self-reference
-* '$1' form for thread-refs
-* Constants
-* Refresh calculated lines last
-* Refresh calculated lines when dependency lines change
-* What to do when a referenced tab is deleted
-* Divide single line by exploded lines
-* Divide exploded lines by single line
+
+-   Handle thrown errors
+-   Use simpler placeholder extraction
+-   Field validation should check for self-reference and valid thread-refs
+-   Refresh calculated lines last
+-   Refresh calculated lines when dependency lines change
+-   What to do when a referenced tab is deleted
+-   What to do when a non-referenced tab is deleted and the order changes
+-   Divide single line by exploded lines
+-   Divide exploded lines by single line
 
 # BACKLOG
+
+Don't reset zoom on param change
 Focus on input fields when switching to adhoc / calculated thread tab
-Maintain axes on line hide
+Don't include hidden lines in axis calculations
+Calculated threads show filters common to all upstream threads
+Maintain axes on line hide?
 Random sample from filters
+Treat percentages as 0..1 range
 Reset dimension exploder when changing threads
 Visual throbber w/ pending requests somewhere when waiting for chart data
 Local storage
@@ -43,17 +46,20 @@ Bug: Zoom resets on smoothing change
 Recreate graph when browser resizes
 
 Filter selector
-* Option search
-* Collapsed by default
-* Grouped options
+
+-   Option search
+-   Collapsed by default
+-   Grouped options
 
 Lines:
-* Tooltips
+
+-   Tooltips
 
 Smoothing options
-* Centered average
-* Weekly average
-* Monthly average
+
+-   Centered average
+-   Weekly average
+-   Monthly average
 
 Custom legend for adding Header to sub-lines in legend
 Refactor axios into reusable async hook or thunks
@@ -86,8 +92,10 @@ Log scale
 Thread type selector in panel rather than as +button in tab list
 Weekly instead of daily support
 Move threads-server/data/datasources.json file out of git repo and load by value when starting the server
+Dictionary key => value mappings (e.g. Yes/No)
 
 Filters
-* Floats on top of content when expanded so blur works properly and content doesn't reflow
-* Type / search when expanded (standalone with new onChange handler to filter options)
-* Focus on search when expanded no matter how expansion happens
+
+-   Floats on top of content when expanded so blur works properly and content doesn't reflow
+-   Type / search when expanded (standalone with new onChange handler to filter options)
+-   Focus on search when expanded no matter how expansion happens

@@ -266,5 +266,42 @@
                 "units": ""
             }
         }
+    },
+    {
+        "id": "ocdsb-absentee",
+        "label": "OCDSB Absentee Report",
+        "type": "csv",
+        "file": "../threads-data/data/ocdsb.absences.csv",
+        "dateField": "date",
+        "dateFormat": "yyyy-MM-dd",
+        "dimensions": {
+            "school_board": {
+                "id": "school_board",
+                "label": "School board"
+            },
+            "school": {
+                "id": "school",
+                "label": "School"
+            },
+            "city_or_town": {
+                "id": "city_or_town",
+                "label": "City / Town"
+            }
+        },
+        "measures": {
+            "absence_percentage_staff_students": {
+                "id": "absence_percentage_staff_students",
+                "label": "Absence % (Staff and students)"
+            }
+        },
+        "plots": {
+            "absence_percentage_staff_students": {
+                "id": "absence_percentage_staff_students",
+                "measureId": "absence_percentage_staff_students",
+                "aggregator": "average",
+                "label": "Absence % (Staff and students)",
+                "units": "%"
+            }
+        }
     }
 ]

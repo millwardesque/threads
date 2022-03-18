@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash';
+import { compile } from 'mathjs';
+
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
 import { LineDefinition, LineMap } from '../types';
 import { AggregationType } from '../models/Aggregation';
@@ -263,53 +265,48 @@ export class CalculatedThread extends Thread {
         const formula = new Formula(this.formula);
         const tokens = formula.tokenize();
 
-        const threadIndex1 = parseInt(tokens[0].value.substr(1)) - 1;
-        const operator = tokens[1].value;
-        const threadIndex2 = parseInt(tokens[2].value.substr(1)) - 1;
+        const placeholders = tokens
+            .filter((token) => token.type === 'threadref')
+            .reduce<Map<string, LineDefinition>>((threadMap, placeholder) => {
+                const threadIndex = parseInt(placeholder.value.substring(1)) - 1;
+                if (threadIndex < 0 || threadIndex >= orderedThreads.length) {
+                    throw new Error(
+                        `Unable to compute thread line ${this.id}: Thread reference ${placeholder.value} doesn't exist`
+                    );
+                }
 
-        if (orderedThreads.length > threadIndex1 && orderedThreads.length > threadIndex2) {
-            const threadId1 = orderedThreads[threadIndex1].id;
-            const threadId2 = orderedThreads[threadIndex2].id;
-            if (threadId1 === this.id || threadId2 === this.id) {
-                console.error(
-                    `Unable to compute thread line ${this.id}: At least one thread-reference in equation points to the calculating thread`
-                );
-            } else if (
-                Object.keys(referenceLines).includes(threadId1) &&
-                Object.keys(referenceLines).includes(threadId2)
-            ) {
-                const line1 = referenceLines[threadId1].lines[0];
-                const line2 = referenceLines[threadId2].lines[0];
-                const line2Dates = Object.keys(line2.data);
-                const dates = getDateRangeFromLines([line1, line2]);
-                dates.forEach((date) => {
-                    const line1Value = line1.data[date] ?? 0;
-                    const line2Value = line2.data[date] ?? 0;
-                    switch (operator) {
-                        case '*':
-                            lineData[date] = line1Value * line2Value;
-                            break;
-                        case '/':
-                            if (line2Dates.includes(date) && line2.data[date] !== 0) {
-                                lineData[date] = line1Value / line2Value;
-                            }
-                            break;
-                        case '+':
-                            lineData[date] = line1Value + line2Value;
-                            break;
-                        case '-':
-                            lineData[date] = line1Value - line2Value;
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            } else {
-                console.error(
-                    `Unable to compute thread line ${this.id}: At least one thread ID doesn't exist: '${threadId1}' and '${threadId2}'`
-                );
-            }
-        }
+                const thread = orderedThreads[threadIndex];
+                if (thread.id === this.id) {
+                    throw new Error(
+                        `Unable to compute thread line ${this.id}: Thread reference ${placeholder.value} points to this calculated thread`
+                    );
+                }
+
+                if (!Object.keys(referenceLines).includes(thread.id)) {
+                    throw new Error(
+                        `Unable to compute thread line ${this.id}: Thread reference ${placeholder.value} points thread with ID ${thread.id}, which has no corresponding line.`
+                    );
+                }
+
+                const line = referenceLines[thread.id].lines[0];
+                return threadMap.set(placeholder.value, line);
+            }, new Map<string, LineDefinition>());
+
+        console.log('[CPM] Placeholders', placeholders); // @DEBUG
+
+        const expression = compile(this.formula);
+        const dates = getDateRangeFromLines(Array.from(placeholders.values()));
+        dates.forEach((date) => {
+            const expressionParams: Record<string, number> = {};
+            placeholders.forEach((line, threadRef) => {
+                expressionParams[threadRef] = line.data[date];
+            });
+
+            console.log('[CPM] Expression params', date, expressionParams); // @DEBUG
+            try {
+                lineData[date] = expression.evaluate(expressionParams);
+            } catch (error) {}
+        });
 
         const newLines: LineDefinition[] = [
             {
@@ -322,18 +319,11 @@ export class CalculatedThread extends Thread {
     }
 
     static isValidFormula(formulaToCheck: string): boolean {
-        const formula = new Formula(formulaToCheck);
-        const tokens = formula.tokenize();
-        if (tokens.length !== 3) {
-            return false;
-        } else if (tokens[0].type !== 'threadref') {
-            return false;
-        } else if (tokens[1].type !== 'operator') {
-            return false;
-        } else if (tokens[2].type !== 'threadref') {
-            return false;
-        } else {
+        try {
+            compile(formulaToCheck);
             return true;
+        } catch (error) {
+            return false;
         }
     }
 }
