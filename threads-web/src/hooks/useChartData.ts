@@ -59,8 +59,6 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[], dateRa
     const colors = useColorProvider();
     const lineSignature = JSON.stringify(lines);
     const threadSignature = JSON.stringify(threads);
-
-    console.log('[CPM] Fetching date range', dateRange); // @DEBUG
     const [minDate, maxDate] = getDateRangeFromDateRangeOption(dateRange);
 
     const chartData = useMemo<ChartDataset>(() => {

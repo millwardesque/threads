@@ -222,7 +222,6 @@ const threadsSlice = createSlice({
         },
         setThreadExploder(state, action: PayloadAction<ThreadExploderArgs>) {
             const { threadId, exploderDimension, exploderType } = action.payload;
-            console.log('[CPM] Setting exploder', exploderDimension, exploderType); // @DEBUG
             if (threadId in state.threads && state.threads[threadId].type === 'simple') {
                 const thread = state.threads[threadId] as SimpleThread;
                 thread.exploderDimension = exploderDimension;

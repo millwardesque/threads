@@ -54,10 +54,6 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
         stackedButtonClasses += ' border-gray-500 text-gray-700';
     }
 
-    if (isActiveExploder) {
-        console.log('[CPM] Exploder', dimension, activeExploderType); // @DEBUG
-    }
-
     return (
         <div className="flex flex-col mr-4">
             <MultiSelect

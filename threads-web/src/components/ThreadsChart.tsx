@@ -124,8 +124,6 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         chartInstance.current.update();
     }, [chartInstance.current, chartData]);
 
-    console.log('[CPM] Date range', selectedDateRange); // @DEBUG
-
     return (
         <div className="flex flex-col h-full">
             {!isRebuildingCanvas && (
