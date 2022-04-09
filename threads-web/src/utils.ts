@@ -1,12 +1,18 @@
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 
-import { LineDefinition } from './types';
+import { DateRangeOption, LineDefinition } from './types';
 
 const moment = extendMoment(Moment);
 const DATE_FORMAT = 'YYYY-MM-DD';
+const DAYS_PER_MONTH = 31;
+const DAYS_PER_YEAR = 366;
 
-export const getDateRangeFromLines = (lines: LineDefinition[]): string[] => {
+export const getDateRangeFromLines = (
+    lines: LineDefinition[],
+    minAllowedDate?: string,
+    maxAllowedDate?: string
+): string[] => {
     let minDate: string | undefined = undefined,
         maxDate: string | undefined = undefined;
 
@@ -22,7 +28,35 @@ export const getDateRangeFromLines = (lines: LineDefinition[]): string[] => {
         });
     });
 
+    if (minAllowedDate && minDate) {
+        minDate = minDate < minAllowedDate ? minAllowedDate : minDate;
+    }
+
+    if (maxAllowedDate && maxDate) {
+        maxDate = maxDate > maxAllowedDate ? maxAllowedDate : maxDate;
+    }
+
     const momentRange = moment.range(moment(minDate, DATE_FORMAT), moment(maxDate, DATE_FORMAT));
     const stringRange = Array.from(momentRange.by('days')).map((d) => d.format(DATE_FORMAT));
     return stringRange;
+};
+
+export const getDateRangeFromDateRangeOption = (dateRange: DateRangeOption): string[] => {
+    const today = moment();
+    const maxDate = today.format(DATE_FORMAT);
+
+    let minDate = '1900-01-01';
+    switch (dateRange) {
+        case 'trailing-month':
+            minDate = today.subtract(DAYS_PER_MONTH, 'days').format(DATE_FORMAT);
+            break;
+        case 'trailing-year':
+            minDate = today.subtract(DAYS_PER_YEAR, 'days').format(DATE_FORMAT);
+            break;
+        case 'all-time':
+            break;
+        default:
+            break;
+    }
+    return [minDate, maxDate];
 };

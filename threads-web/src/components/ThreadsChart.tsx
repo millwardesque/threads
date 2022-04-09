@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { Throbber } from './molecules/Throbber';
-import { VersionedLines } from '../types';
-import { useAppSelector } from '../redux/hooks';
+
 import { useChartData } from '../hooks/useChartData';
+import { useAppSelector } from '../redux/hooks';
 import { selectAllThreads } from '../redux/threadsSlice';
+import { DateRangeOption, VersionedLines } from '../types';
 import { Button } from './molecules/Button';
+import { Throbber } from './molecules/Throbber';
+import { DateSelector } from './DateSelector';
 
 Chart.register(zoomPlugin);
 
@@ -17,10 +19,11 @@ interface ThreadsChartProps {
 
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRangeOption>('trailing-year');
     const threads = useAppSelector(selectAllThreads);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
     const chartInstance = useRef<Chart>(undefined);
-    const chartData = useChartData(threads, lines);
+    const chartData = useChartData(threads, lines, selectedDateRange);
 
     const resetZoom = useCallback(() => {
         if (chartInstance) {
@@ -121,11 +124,16 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         chartInstance.current.update();
     }, [chartInstance.current, chartData]);
 
+    console.log('[CPM] Date range', selectedDateRange); // @DEBUG
+
     return (
         <div className="flex flex-col h-full">
             {!isRebuildingCanvas && (
                 <>
                     <div className="flex justify-end pr-2">
+                        <div className="mr-2">
+                            <DateSelector selectedDateRange={selectedDateRange} onChange={setSelectedDateRange} />
+                        </div>
                         <Button label="Reset zoom" onClick={resetZoom} />
                     </div>
                     <div className="flex h-full">

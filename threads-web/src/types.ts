@@ -2,6 +2,8 @@ import { DataSourceMap, LineData } from './models/DataSourceDefinition';
 
 import { Thread } from './models/Thread';
 
+export type DateRangeOption = 'all-time' | 'trailing-month' | 'trailing-year';
+
 export type ThreadType = 'simple' | 'adhoc' | 'calculated';
 
 export interface ThreadMap {

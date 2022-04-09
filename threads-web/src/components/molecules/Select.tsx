@@ -28,10 +28,12 @@ export const Select: React.FC<SelectProps> = ({ id, label, options, selected, on
 
     return (
         <div className="flex flex-col pb-2">
-            <label className="block" htmlFor={id}>
-                {label}
-            </label>
-            <select id={id} onChange={handleOnChange} value={selected}>
+            {label && (
+                <label className="block" htmlFor={id}>
+                    {label}
+                </label>
+            )}
+            <select className="border border-gray-300" id={id} onChange={handleOnChange} value={selected}>
                 {optionElements}
             </select>
         </div>

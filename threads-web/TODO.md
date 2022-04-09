@@ -1,5 +1,7 @@
 # NEXT:
 
+# BACKLOG
+
 Calculated lines
 
 -   Handle thrown errors
@@ -12,13 +14,11 @@ Calculated lines
 -   Divide single line by exploded lines
 -   Divide exploded lines by single line
 
-# BACKLOG
-
 Don't reset zoom on param change
 Focus on input fields when switching to adhoc / calculated thread tab
-Don't include hidden lines in axis calculations
 Calculated threads show filters common to all upstream threads
-Maintain axes on line hide?
+Maintain axes scale on line hide?
+Don't show hidden lines when graph re-renders
 Random sample from filters
 Treat percentages as 0..1 range
 Reset dimension exploder when changing threads
@@ -66,9 +66,8 @@ Refactor axios into reusable async hook or thunks
 Clone / duplicate tab
 State when waiting for sources
 Undo
-
 Use StandaloneInput in EditableString (requires allowing StandaloneInput to be focused)
-Use Thunks
+Replace redux
 Persistent URLs / config loading from server
 Annotation lines
 Historical lines

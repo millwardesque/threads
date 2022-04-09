@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { LineDefinition, ThreadMap, VersionedLines } from '../types';
+import { aggregateLine, getAggregationUnitsOverride } from '../models/Aggregation';
 import { Color } from '../models/ColorProvider';
 import { smoothLine } from '../models/Smoother';
-import useColorProvider from './useColorProvider';
-import { aggregateLine, getAggregationUnitsOverride } from '../models/Aggregation';
-import { getDateRangeFromLines } from '../utils';
 import { SimpleThread } from '../models/Thread';
+import { DateRangeOption, LineDefinition, ThreadMap, VersionedLines } from '../types';
+import { getDateRangeFromDateRangeOption, getDateRangeFromLines } from '../utils';
+import useColorProvider from './useColorProvider';
 
 interface ChartAxes {
     [id: string]: {};
@@ -55,10 +55,13 @@ const makeAxis = (id: string, drawGrid: boolean, units: string, position: AxisSi
     };
 };
 
-export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): ChartDataset => {
+export const useChartData = (threads: ThreadMap, lines: VersionedLines[], dateRange: DateRangeOption): ChartDataset => {
     const colors = useColorProvider();
     const lineSignature = JSON.stringify(lines);
     const threadSignature = JSON.stringify(threads);
+
+    console.log('[CPM] Fetching date range', dateRange); // @DEBUG
+    const [minDate, maxDate] = getDateRangeFromDateRangeOption(dateRange);
 
     const chartData = useMemo<ChartDataset>(() => {
         const chartData: ChartDataset = {
@@ -73,7 +76,7 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
         lines.forEach((threadLines) => {
             linesAsArray = linesAsArray.concat(threadLines.lines);
         });
-        chartData.dates = getDateRangeFromLines(linesAsArray);
+        chartData.dates = getDateRangeFromLines(linesAsArray, minDate, maxDate);
 
         // Second pass: Create datasets based on available date range
         const shownAxes: {
@@ -140,7 +143,7 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
 
         chartData.yAxes = axes;
         return chartData;
-    }, [lineSignature, threadSignature, colors]);
+    }, [lineSignature, threadSignature, colors, minDate, maxDate]);
 
     return chartData;
 };
