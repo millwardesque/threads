@@ -80,7 +80,7 @@ const threadsSlice = createSlice({
             const thread = new SimpleThread(
                 uuidv4(),
                 'daily',
-                'daily',
+                '7-day trailing',
                 undefined,
                 '',
                 0,
@@ -97,7 +97,7 @@ const threadsSlice = createSlice({
         newAdhocThread(state) {
             const defaultUnits = '';
 
-            const thread = new AdhocThread(uuidv4(), 'daily', 'daily', undefined, '', 0, defaultUnits);
+            const thread = new AdhocThread(uuidv4(), 'daily', '7-day trailing', undefined, '', 0, defaultUnits);
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -109,7 +109,7 @@ const threadsSlice = createSlice({
             const thread = new CalculatedThread(
                 uuidv4(),
                 'daily',
-                'daily',
+                '7-day trailing',
                 undefined,
                 '',
                 0,
