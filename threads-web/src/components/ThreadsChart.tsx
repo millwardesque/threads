@@ -68,7 +68,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         const datasets = chartData.lineData.map((line) => ({
             label: line.label,
             data: line.data,
-            fill: false,
+            fill: line.fill,
             borderColor: line.color.dark,
             borderDash: line.borderDash,
             borderWidth: 2,

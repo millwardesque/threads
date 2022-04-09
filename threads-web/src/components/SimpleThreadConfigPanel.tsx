@@ -22,6 +22,7 @@ import {
 } from '../redux/threadsSlice';
 import { AggregationType } from '../models/Aggregation';
 import { SmoothingType } from '../models/Smoother';
+import { ExploderType } from '../types';
 
 interface SimpleThreadConfigPanelProps {
     thread: SimpleThread;
@@ -40,9 +41,11 @@ export const SimpleThreadConfigPanel: React.FC<SimpleThreadConfigPanelProps> = (
         dispatch(setThreadAggregation({ threadId: thread!.id, aggregation }));
     };
 
-    const onExploderChange = (dimension: string): void => {
-        const newDimension = thread!.exploderDimension === dimension ? undefined : dimension;
-        dispatch(setThreadExploder({ threadId: thread!.id, exploderDimension: newDimension }));
+    const onExploderChange = (dimension: string, type: ExploderType | undefined): void => {
+        const isCurrentExploder = thread.exploderDimension === dimension && thread.exploderType === type;
+        const newDimension = isCurrentExploder ? undefined : dimension;
+        const newType = isCurrentExploder ? undefined : type;
+        dispatch(setThreadExploder({ threadId: thread.id, exploderDimension: newDimension, exploderType: newType }));
     };
 
     const onFilterChange = (dimension: string, selected: string[]): void => {

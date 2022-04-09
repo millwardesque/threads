@@ -6,6 +6,7 @@ import { smoothLine } from '../models/Smoother';
 import useColorProvider from './useColorProvider';
 import { aggregateLine, getAggregationUnitsOverride } from '../models/Aggregation';
 import { getDateRangeFromLines } from '../utils';
+import { SimpleThread } from '../models/Thread';
 
 interface ChartAxes {
     [id: string]: {};
@@ -19,6 +20,7 @@ interface ChartLineDataset {
     borderDash: number[];
     color: Color;
     yAxisID: string;
+    fill: boolean;
 }
 
 interface ChartDataset {
@@ -29,9 +31,10 @@ interface ChartDataset {
 
 type AxisSide = 'right' | 'left';
 
-const makeAxis = (id: string, drawGrid: boolean, units: string, position: AxisSide) => {
+const makeAxis = (id: string, drawGrid: boolean, units: string, position: AxisSide, isStacked: boolean) => {
     return {
         id,
+        stacked: isStacked,
         type: 'linear',
         beginAtZero: true,
         position,
@@ -85,18 +88,21 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 return;
             }
 
+            // @TODO Allow thread config overrides
+
             const threadId = threadLines.lines[0].threadId;
             const thread = threads[threadId];
+            const isStacked = thread instanceof SimpleThread && thread.exploderType === 'stacked' ? true : false;
             const units = getAggregationUnitsOverride(thread.aggregation) ?? thread.getUnits();
             const axisPosition: AxisSide = units === '%' ? 'right' : 'left';
-            const axisKey = `${axisPosition}##${units}`;
+            const axisKey = `${axisPosition}##${units}##${isStacked}`;
             const axisId = `y#${threadId}#${axisKey}`;
             const isExploded = threadLines.lines.length > 1;
 
             const createAxis = !(axisKey in shownAxes);
             if (createAxis) {
                 const isFirstAxis = Object.keys(axes).length === 0;
-                axes[axisId] = makeAxis(axisId, isFirstAxis, units, axisPosition);
+                axes[axisId] = makeAxis(axisId, isFirstAxis, units, axisPosition, isStacked);
                 shownAxes[axisKey] = axisId;
             }
 
@@ -109,7 +115,7 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                 const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
-                const lineAxisKey = `${axisPosition}##${units}`;
+                const lineAxisKey = `${axisPosition}##${units}##${isStacked}`;
                 const axisToUse = shownAxes[lineAxisKey];
                 const borderDash = thread.type === 'calculated' ? [5, 3] : [];
 
@@ -118,6 +124,7 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[]): Chart
                     data: lineData,
                     borderDash,
                     color,
+                    fill: isStacked,
                     yAxisID: axisToUse,
                 };
 

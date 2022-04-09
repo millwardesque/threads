@@ -27,3 +27,5 @@ export type LoadingStatus = 'not-started' | 'loading' | 'loaded' | 'error';
 export interface ApplicationState {
     sources: DataSourceMap;
 }
+
+export type ExploderType = 'lines' | 'stacked';

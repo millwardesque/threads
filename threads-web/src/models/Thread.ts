@@ -7,7 +7,7 @@ import { LineDefinition, LineMap } from '../types';
 import { AggregationType } from '../models/Aggregation';
 import { Formula } from '../models/Formula';
 import { SmoothingType } from '../models/Smoother';
-import { ThreadType } from '../types';
+import { ExploderType, ThreadType } from '../types';
 import { getDateRangeFromLines } from '../utils';
 
 export abstract class Thread {
@@ -152,6 +152,7 @@ export class SimpleThread extends Thread {
     plot: DataPlotDefinition;
     activeFilters: FiltersAndValues;
     exploderDimension: string | undefined;
+    exploderType: ExploderType | undefined;
 
     constructor(
         id: string,
@@ -163,13 +164,15 @@ export class SimpleThread extends Thread {
         source: DataSourceDefinition,
         plot: DataPlotDefinition,
         activeFilters: FiltersAndValues,
-        exploderDimension: string | undefined
+        exploderDimension: string | undefined,
+        exploderType: ExploderType | undefined
     ) {
         super(id, 'simple', aggregation, smoothing, customLabel, description, dataVersion);
         this.source = source;
         this.plot = plot;
         this.activeFilters = activeFilters;
         this.exploderDimension = exploderDimension;
+        this.exploderType = exploderType;
     }
 
     clone(thread: Thread): Thread | undefined {
@@ -192,7 +195,8 @@ export class SimpleThread extends Thread {
             simpleThread.source,
             simpleThread.plot,
             _.cloneDeep(simpleThread.activeFilters),
-            simpleThread.exploderDimension
+            simpleThread.exploderDimension,
+            simpleThread.exploderType
         );
         return newThread;
     }
@@ -292,8 +296,6 @@ export class CalculatedThread extends Thread {
                 return threadMap.set(placeholder.value, line);
             }, new Map<string, LineDefinition>());
 
-        console.log('[CPM] Placeholders', placeholders); // @DEBUG
-
         const expression = compile(this.formula);
         const dates = getDateRangeFromLines(Array.from(placeholders.values()));
         dates.forEach((date) => {
@@ -301,8 +303,6 @@ export class CalculatedThread extends Thread {
             placeholders.forEach((line, threadRef) => {
                 expressionParams[threadRef] = line.data[date];
             });
-
-            console.log('[CPM] Expression params', date, expressionParams); // @DEBUG
             try {
                 lineData[date] = expression.evaluate(expressionParams);
             } catch (error) {}

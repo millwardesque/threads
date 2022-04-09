@@ -2,14 +2,16 @@ import React from 'react';
 import { DataDimensionDefinition } from '../models/DataSourceDefinition';
 
 import { MultiSelect } from './molecules/MultiSelect';
+import { ExploderType } from '../types';
 
 interface FilterSelectProps {
     dimension: DataDimensionDefinition;
     values: string[];
     selected: string[];
     onFilterChange?: (dimension: string, selected: string[]) => void;
-    onExploderChange?: (dimension: string) => void;
+    onExploderChange?: (dimension: string, type: ExploderType | undefined) => void;
     isActiveExploder: boolean;
+    activeExploderType: ExploderType | undefined;
 }
 
 export const FilterSelect: React.FC<FilterSelectProps> = ({
@@ -19,6 +21,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
     onFilterChange,
     onExploderChange,
     isActiveExploder,
+    activeExploderType,
 }) => {
     const onChange = (newSelection: string[]) => {
         if (onFilterChange) {
@@ -30,17 +33,29 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
         return { label: v, value: v };
     });
 
-    const onExploderClick = () => {
+    const onExploderClick = (type: ExploderType | undefined) => {
         if (onExploderChange) {
-            onExploderChange(dimension.id);
+            onExploderChange(dimension.id, type);
         }
     };
 
-    let buttonClasses = 'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
-    if (isActiveExploder) {
-        buttonClasses += ' border-red-500 text-red-700';
+    let lineButtonClasses = 'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
+    if (isActiveExploder && activeExploderType === 'lines') {
+        lineButtonClasses += ' border-red-500 text-red-700';
     } else {
-        buttonClasses += ' border-gray-500 text-gray-700';
+        lineButtonClasses += ' border-gray-500 text-gray-700';
+    }
+
+    let stackedButtonClasses =
+        'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
+    if (isActiveExploder && activeExploderType === 'stacked') {
+        stackedButtonClasses += ' border-red-500 text-red-700';
+    } else {
+        stackedButtonClasses += ' border-gray-500 text-gray-700';
+    }
+
+    if (isActiveExploder) {
+        console.log('[CPM] Exploder', dimension, activeExploderType); // @DEBUG
     }
 
     return (
@@ -53,7 +68,22 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
             ></MultiSelect>
             <div className="flex flex-row content-center justify-end">
                 <span className="text-sm mr-1">Explode:</span>
-                <input className={buttonClasses} type="button" value="Lines" onClick={onExploderClick} />
+                <input
+                    className={lineButtonClasses}
+                    type="button"
+                    value="Lines"
+                    onClick={() => {
+                        onExploderClick('lines');
+                    }}
+                />
+                <input
+                    className={stackedButtonClasses}
+                    type="button"
+                    value="Stacked"
+                    onClick={() => {
+                        onExploderClick('stacked');
+                    }}
+                />
             </div>
         </div>
     );

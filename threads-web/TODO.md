@@ -86,7 +86,7 @@ Hideable config bar
 Common shared filters
 max-width w/ text truncation based on number of tabs
 I hate the duplication of functionality between EditableString and Tab
-Support stacked and stacked-100% charts for exploded threads
+Support stacked-100% charts for exploded threads
 Date range selector (default to trailing year)
 Log scale
 Thread type selector in panel rather than as +button in tab list

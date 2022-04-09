@@ -3,12 +3,13 @@ import React from 'react';
 import { DataSourceDefinition, FiltersAndValues } from '../models/DataSourceDefinition';
 import { FilterSelect } from './FilterSelect';
 import { SimpleThread } from '../models/Thread';
+import { ExploderType } from '../types';
 
 interface FilterSetProps {
     thread: SimpleThread;
     filters: FiltersAndValues;
     onFilterChange?: (dimension: string, selected: string[]) => void;
-    onExploderChange?: (dimension: string) => void;
+    onExploderChange?: (dimension: string, type: ExploderType | undefined) => void;
 }
 
 export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterChange, onExploderChange }) => {
@@ -22,14 +23,11 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
         }
 
         let filterSelects = [];
-        console.log('[CPM] Filters', filters); // @DEBUG
         for (const dimension of Object.keys(filters)) {
-            console.log('[CPM] Rendering filter:', dimension, source.dimensions); // @DEBUG
             const selected: string[] = activeFilters && dimension in activeFilters ? activeFilters[dimension] : [];
             const isActiveExploder = thread.exploderDimension === dimension;
             const sortedFilters = [...filters[dimension]].sort();
 
-            console.log('[CPM] Sorted filters:', filters[dimension], sortedFilters); // @DEBUG
             const select = (
                 <FilterSelect
                     key={dimension}
@@ -39,6 +37,7 @@ export const FilterSet: React.FC<FilterSetProps> = ({ thread, filters, onFilterC
                     onFilterChange={onFilterChange}
                     onExploderChange={onExploderChange}
                     isActiveExploder={isActiveExploder}
+                    activeExploderType={isActiveExploder ? thread.exploderType : undefined}
                 ></FilterSelect>
             );
             filterSelects.push(select);

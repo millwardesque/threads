@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 import { AggregationType } from '../models/Aggregation';
 import { SmoothingType } from '../models/Smoother';
-import { ThreadMap } from '../types';
+import { ExploderType, ThreadMap } from '../types';
 import { AdhocThread, CalculatedThread, SimpleThread, Thread } from '../models/Thread';
 import { DataPlotDefinition, DataSourceDefinition, FiltersAndValues, LineData } from '../models/DataSourceDefinition';
 
@@ -52,6 +52,7 @@ interface ThreadUnitsArgs {
 interface ThreadExploderArgs {
     threadId: string;
     exploderDimension: string | undefined;
+    exploderType: ExploderType | undefined;
 }
 
 const initialState = {
@@ -76,7 +77,19 @@ const threadsSlice = createSlice({
             const source = action.payload as DataSourceDefinition;
             const plot = Object.values(source.plots)[0];
 
-            const thread = new SimpleThread(uuidv4(), 'daily', 'daily', undefined, '', 0, source, plot, {}, undefined);
+            const thread = new SimpleThread(
+                uuidv4(),
+                'daily',
+                'daily',
+                undefined,
+                '',
+                0,
+                source,
+                plot,
+                {},
+                undefined,
+                undefined
+            );
             state.threads[thread.id] = thread;
             state.activeThreadKey = thread.id;
             state.orderedThreadIds.push(thread.id);
@@ -208,10 +221,12 @@ const threadsSlice = createSlice({
             }
         },
         setThreadExploder(state, action: PayloadAction<ThreadExploderArgs>) {
-            const { threadId, exploderDimension } = action.payload;
+            const { threadId, exploderDimension, exploderType } = action.payload;
+            console.log('[CPM] Setting exploder', exploderDimension, exploderType); // @DEBUG
             if (threadId in state.threads && state.threads[threadId].type === 'simple') {
                 const thread = state.threads[threadId] as SimpleThread;
                 thread.exploderDimension = exploderDimension;
+                thread.exploderType = exploderType;
                 updateThreadDataVersion(thread);
             }
         },
