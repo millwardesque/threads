@@ -1,6 +1,11 @@
 # NEXT:
 
+Bug: Stacking should not be combined outside of the thread
+
 # BACKLOG
+
+Refactor to chart config to have cleaner mechanism for overrides
+Bug: Stacked-100% graphs should recompute when a sub-line is hidden (e.g. by clicking the legend)
 
 Calculated lines
 
@@ -20,22 +25,22 @@ Calculated threads show filters common to all upstream threads
 Maintain axes scale on line hide?
 Don't show hidden lines when graph re-renders
 Random sample from filters
-Treat percentages as 0..1 range
+Treat percentages as 0..1 range so calculated fields don't have to be manually multiplied by 100
 Reset dimension exploder when changing threads
 Visual throbber w/ pending requests somewhere when waiting for chart data
 Local storage
+Keyboard nav for selected-dot navigation in chart
 Support more than one aggregator (e.g. W-o-W and Y-o-Y as a fainter line)
 Reset zoom only clickable when zoom is in use
 Notable dates per thread in sources to use as reference lines (or in tooltip?)
 Null as 0 option for sources
-Filter exploder => Create Toggle component based on Button
 Adhoc: Smarter date validation
 Error banner
 Reset dimension exploder when changing threads
 Legend: Cmd+click: Only this item
 Show empty graph instead of blank pane when no data is available for filter choices
 Tab name is copied with tab # as well
-Pause mode, or grouping changes close together
+Pause mode, or debouncing
 
 Visual throbber somewhere when waiting for chart data
 
@@ -63,7 +68,7 @@ Smoothing options
 
 Custom legend for adding Header to sub-lines in legend
 Refactor axios into reusable async hook or thunks
-Clone / duplicate tab
+Exploder to create new tabs
 State when waiting for sources
 Undo
 Use StandaloneInput in EditableString (requires allowing StandaloneInput to be focused)
@@ -75,6 +80,7 @@ Bug?: Switching to a different source with a default plot that has the same ID a
 Share types between server and client (central shared lib?)
 tsconfig to match work
 axios fail error states
+Use react-query
 Short labels for plots and sources
 Megaselect for searching sources / plots by name
 Source / plot tags
@@ -85,7 +91,6 @@ Hideable config bar
 Common shared filters
 max-width w/ text truncation based on number of tabs
 I hate the duplication of functionality between EditableString and Tab
-Support stacked-100% charts for exploded threads
 Log scale
 Thread type selector in panel rather than as +button in tab list
 Weekly instead of daily support

@@ -19,7 +19,7 @@ interface ThreadsChartProps {
 
 export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [selectedDateRange, setSelectedDateRange] = useState<DateRangeOption>('trailing-year');
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRangeOption>('trailing-3-months');
     const threads = useAppSelector(selectAllThreads);
     const [isRebuildingCanvas, setIsRebuildingCanvas] = useState(false);
     const chartInstance = useRef<Chart>(undefined);

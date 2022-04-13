@@ -1,3 +1,4 @@
+import { string } from 'mathjs';
 import { useMemo } from 'react';
 
 import { aggregateLine, getAggregationUnitsOverride } from '../models/Aggregation';
@@ -93,10 +94,12 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[], dateRa
 
             const threadId = threadLines.lines[0].threadId;
             const thread = threads[threadId];
-            const isStacked = thread instanceof SimpleThread && thread.exploderType === 'stacked' ? true : false;
-            const units = getAggregationUnitsOverride(thread.aggregation) ?? thread.getUnits();
+            const isStacked100 = thread instanceof SimpleThread && thread.exploderType === 'stacked-100';
+            const isStacked =
+                thread instanceof SimpleThread && (thread.exploderType === 'stacked' || isStacked100) ? true : false;
+            const units = isStacked100 ? '%' : getAggregationUnitsOverride(thread.aggregation) ?? thread.getUnits();
             const axisPosition: AxisSide = units === '%' ? 'right' : 'left';
-            const axisKey = `${axisPosition}##${units}##${isStacked}`;
+            const axisKey = `${axisPosition}##${units}##${thread instanceof SimpleThread ? thread.exploderType : ''}`;
             const axisId = `y#${threadId}#${axisKey}`;
             const isExploded = threadLines.lines.length > 1;
 
@@ -107,7 +110,33 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[], dateRa
                 shownAxes[axisKey] = axisId;
             }
 
-            threadLines.lines.forEach((line, index) => {
+            // Reprocess the lines that are part of a stacked-100% config so that values are normalized
+            let processedLines = threadLines.lines;
+            if (isStacked100) {
+                const totalsPerDate: Record<string, number> = {};
+                chartData.dates.forEach((d) => {
+                    totalsPerDate[d] = threadLines.lines.reduce((sum, current) => {
+                        return sum + (current.data[d] ?? 0);
+                    }, 0);
+                });
+
+                processedLines = threadLines.lines.map((threadLine) => {
+                    const normalizedData = Object.keys(threadLine.data).reduce<Record<string, number>>(
+                        (normalized, currentDate) => {
+                            normalized[currentDate] =
+                                (100.0 * threadLine.data[currentDate]) / totalsPerDate[currentDate];
+                            return normalized;
+                        },
+                        {}
+                    );
+                    return {
+                        ...threadLine,
+                        data: normalizedData,
+                    };
+                });
+            }
+
+            processedLines.forEach((line, index) => {
                 const subIndex = isExploded ? `.${index + 1}` : '';
                 const label = `${threadIndex + 1}${subIndex}. ${line.label || thread.getLabel()}`;
                 const aggregatedData = aggregateLine(thread.aggregation, line.data, chartData.dates);
@@ -116,7 +145,9 @@ export const useChartData = (threads: ThreadMap, lines: VersionedLines[], dateRa
                 const lineData: number[] = chartData.dates.map((d) => smoothedData[d]);
                 const colorIndex = isExploded ? threadColourOffset + explodedLinesProcessed : threadsProcessed;
                 const color = colors.atIndex(colorIndex);
-                const lineAxisKey = `${axisPosition}##${units}##${isStacked}`;
+                const lineAxisKey = `${axisPosition}##${units}##${
+                    thread instanceof SimpleThread ? thread.exploderType : ''
+                }`;
                 const axisToUse = shownAxes[lineAxisKey];
                 const borderDash = thread.type === 'calculated' ? [5, 3] : [];
 

@@ -39,7 +39,8 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
         }
     };
 
-    let lineButtonClasses = 'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
+    let lineButtonClasses =
+        'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold mr-1 py-1 px-2 rounded';
     if (isActiveExploder && activeExploderType === 'lines') {
         lineButtonClasses += ' border-red-500 text-red-700';
     } else {
@@ -47,11 +48,19 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
     }
 
     let stackedButtonClasses =
-        'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
+        'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold mr-1 py-1 px-2 rounded';
     if (isActiveExploder && activeExploderType === 'stacked') {
         stackedButtonClasses += ' border-red-500 text-red-700';
     } else {
         stackedButtonClasses += ' border-gray-500 text-gray-700';
+    }
+
+    let stacked100ButtonClasses =
+        'cursor-pointer bg-gray-200 hover:bg-gray-300 border text-xs font-bold py-1 px-2 rounded';
+    if (isActiveExploder && activeExploderType === 'stacked-100') {
+        stacked100ButtonClasses += ' border-red-500 text-red-700';
+    } else {
+        stacked100ButtonClasses += ' border-gray-500 text-gray-700';
     }
 
     return (
@@ -78,6 +87,14 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
                     value="Stacked"
                     onClick={() => {
                         onExploderClick('stacked');
+                    }}
+                />
+                <input
+                    className={stacked100ButtonClasses}
+                    type="button"
+                    value="Stacked 100%"
+                    onClick={() => {
+                        onExploderClick('stacked-100');
                     }}
                 />
             </div>

@@ -9,6 +9,10 @@ const DATE_SELECTOR_OPTIONS: Array<{ label: string; value: DateRangeOption }> = 
         value: 'trailing-month',
     },
     {
+        label: 'Trailing 3 months',
+        value: 'trailing-3-months',
+    },
+    {
         label: 'Trailing year',
         value: 'trailing-year',
     },

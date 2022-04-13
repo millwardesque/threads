@@ -2,7 +2,7 @@ import { DataSourceMap, LineData } from './models/DataSourceDefinition';
 
 import { Thread } from './models/Thread';
 
-export type DateRangeOption = 'all-time' | 'trailing-month' | 'trailing-year';
+export type DateRangeOption = 'all-time' | 'trailing-month' | 'trailing-3-months' | 'trailing-year';
 
 export type ThreadType = 'simple' | 'adhoc' | 'calculated';
 
@@ -30,4 +30,4 @@ export interface ApplicationState {
     sources: DataSourceMap;
 }
 
-export type ExploderType = 'lines' | 'stacked';
+export type ExploderType = 'lines' | 'stacked' | 'stacked-100';
