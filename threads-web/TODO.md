@@ -1,11 +1,14 @@
 # NEXT:
 
 Bug: Stacking should not be combined outside of the thread
+Bug: Render stacked graphs with transparency, and last
 
 # BACKLOG
 
 Refactor to chart config to have cleaner mechanism for overrides
 Bug: Stacked-100% graphs should recompute when a sub-line is hidden (e.g. by clicking the legend)
+Bug: Stacked-100% graphs don't seem to work with missing data?
+Bug: Chart bottom gets hidden if drawn when screen has scrolled down (e.g. scroll down to look at filters, then reload page)
 
 Calculated lines
 

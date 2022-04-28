@@ -1,46 +1,5 @@
 [
     {
-        "id": "virtualbrands-onboardings",
-        "label": "VirtualBrands Onboardings",
-        "type": "csv",
-        "file": "../threads-data/data/virtualbrands-onboardings.csv",
-        "dateField": "ds",
-        "dateFormat": "yyyy-MM-dd",
-        "description": "FutureFoods onboardings",
-        "dimensions": {
-            "status": {
-                "id": "status",
-                "label": "Status"
-            },
-            "virtual_brand_onboarding_status": {
-                "id": "virtual_brand_onboarding_status",
-                "label": "Virtual Brands Onboarding Status"
-            }
-        },
-        "measures": {
-            "count": {
-                "id": "count",
-                "label": "Onboardings"
-            }
-        },
-        "plots": {
-            "total_onboardings": {
-                "id": "total_onboardings",
-                "measureId": "count",
-                "aggregator": "sum",
-                "label": "Total onboardings",
-                "units": ""
-            },
-            "average_onboardings": {
-                "id": "average_onboardings",
-                "measureId": "count",
-                "aggregator": "average",
-                "label": "Average onboardings",
-                "units": ""
-            }
-        }
-    },
-    {
         "id": "virtualbrands-orders",
         "label": "VirtualBrands Orders",
         "type": "csv",
@@ -85,18 +44,178 @@
             }
         },
         "plots": {
+            "sum_orders": {
+                "id": "sum_orders",
+                "measureId": "orders",
+                "aggregator": "sum",
+                "label": "Orders",
+                "units": ""
+            },
             "sum_subtotal_usd": {
                 "id": "sum_subtotal_usd",
                 "measureId": "sum_subtotal_usd",
                 "aggregator": "sum",
                 "label": "Sum Subtotal (USD)",
                 "units": "$"
+            }
+        }
+    },
+    {
+        "id": "virtualbrands-orders-metadata",
+        "label": "VirtualBrands Orders Metadata",
+        "type": "csv",
+        "file": "../threads-data/data/virtualbrands-orders-metadata.csv",
+        "dateField": "ds",
+        "dateFormat": "yyyy-MM-dd",
+        "description": "FutureFoods order metadata",
+        "dimensions": {
+            "country_code": {
+                "id": "country_code",
+                "label": "Country"
             },
+            "service_slug": {
+                "id": "service_slug",
+                "label": "OFO"
+            },
+            "facility_name": {
+                "id": "facility_name",
+                "label": "Store"
+            },
+            "order_ofo_status": {
+                "id": "order_ofo_status",
+                "label": "Order Status"
+            }
+        },
+        "measures": {
+            "order_count": {
+                "id": "order_count",
+                "label": "Orders"
+            },
+            "sub_total": {
+                "id": "sub_total",
+                "label": "Subtotal"
+            },
+            "commission": {
+                "id": "commission",
+                "label": "Commission"
+            },
+            "marketing": {
+                "id": "marketing",
+                "label": "Marketing"
+            },
+            "total_commission_ofo_ff": {
+                "id": "total_commission_ofo_ff",
+                "label": "Total OFO commission (?)"
+            },
+            "ff_profit": {
+                "id": "ff_profit",
+                "label": "Future Foods profit"
+            },
+            "operator_payout": {
+                "id": "operator_payout",
+                "label": "Operator payout"
+            },
+            "margin": {
+                "id": "margin",
+                "label": "Margin"
+            }
+        },
+        "plots": {
             "sum_orders": {
                 "id": "sum_orders",
-                "measureId": "orders",
+                "measureId": "order_count",
                 "aggregator": "sum",
                 "label": "Orders",
+                "units": ""
+            },
+            "sum_subtotal_usd": {
+                "id": "sum_sub_total",
+                "measureId": "sum_sub_total",
+                "aggregator": "sum",
+                "label": "Sum Subtotal (USD)",
+                "units": "$"
+            },
+            "sum_commission": {
+                "id": "sum_commission",
+                "measureId": "commission",
+                "aggregator": "sum",
+                "label": "Sum Commission (USD)",
+                "units": "$"
+            },
+            "sum_marketing": {
+                "id": "sum_marketing",
+                "measureId": "marketing",
+                "aggregator": "sum",
+                "label": "Sum Marketing (USD)",
+                "units": "$"
+            },
+            "sum_total_commission_ofo_ff": {
+                "id": "sum_total_commission_ofo_ff",
+                "measureId": "total_commission_ofo_ff",
+                "aggregator": "sum",
+                "label": "Sum Total OFO Commission (?) (USD)",
+                "units": "$"
+            },
+            "sum_ff_profit": {
+                "id": "sum_ff_profit",
+                "measureId": "total_ff_profit",
+                "aggregator": "sum",
+                "label": "Sum Future Foods Profit (USD)",
+                "units": "$"
+            },
+            "sum_operator_payout": {
+                "id": "sum_operator_payout",
+                "measureId": "operator_payout",
+                "aggregator": "sum",
+                "label": "Sum Operator Payout (USD)",
+                "units": "$"
+            },
+            "sum_margin": {
+                "id": "sum_margin",
+                "measureId": "margin",
+                "aggregator": "sum",
+                "label": "Sum Margin (USD)",
+                "units": "$"
+            }
+        }
+    },
+    {
+        "id": "virtualbrands-onboardings",
+        "label": "VirtualBrands Onboardings",
+        "type": "csv",
+        "file": "../threads-data/data/virtualbrands-onboardings.csv",
+        "dateField": "ds",
+        "dateFormat": "yyyy-MM-dd",
+        "description": "FutureFoods onboardings",
+        "dimensions": {
+            "status": {
+                "id": "status",
+                "label": "Status"
+            },
+            "virtual_brand_onboarding_status": {
+                "id": "virtual_brand_onboarding_status",
+                "label": "Virtual Brands Onboarding Status"
+            }
+        },
+        "measures": {
+            "count": {
+                "id": "count",
+                "label": "Onboardings"
+            }
+        },
+        "plots": {
+            "total_onboardings": {
+                "id": "total_onboardings",
+                "measureId": "count",
+                "aggregator": "sum",
+                "label": "Total onboardings",
+                "units": ""
+            },
+            "average_onboardings": {
+                "id": "average_onboardings",
+                "measureId": "count",
+                "aggregator": "average",
+                "label": "Average onboardings",
                 "units": ""
             }
         }
@@ -264,43 +383,6 @@
                 "aggregator": "sum",
                 "label": "Stores",
                 "units": ""
-            }
-        }
-    },
-    {
-        "id": "ocdsb-absentee",
-        "label": "OCDSB Absentee Report",
-        "type": "csv",
-        "file": "../threads-data/data/ocdsb.absences.csv",
-        "dateField": "date",
-        "dateFormat": "yyyy-MM-dd",
-        "dimensions": {
-            "school_board": {
-                "id": "school_board",
-                "label": "School board"
-            },
-            "school": {
-                "id": "school",
-                "label": "School"
-            },
-            "city_or_town": {
-                "id": "city_or_town",
-                "label": "City / Town"
-            }
-        },
-        "measures": {
-            "absence_percentage_staff_students": {
-                "id": "absence_percentage_staff_students",
-                "label": "Absence % (Staff and students)"
-            }
-        },
-        "plots": {
-            "absence_percentage_staff_students": {
-                "id": "absence_percentage_staff_students",
-                "measureId": "absence_percentage_staff_students",
-                "aggregator": "average",
-                "label": "Absence % (Staff and students)",
-                "units": "%"
             }
         }
     }

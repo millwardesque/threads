@@ -48,10 +48,13 @@ export const getDateRangeFromDateRangeOption = (dateRange: DateRangeOption): str
     let minDate = '1900-01-01';
     switch (dateRange) {
         case 'trailing-month':
-            minDate = today.subtract(DAYS_PER_MONTH, 'days').format(DATE_FORMAT);
+            minDate = today.subtract(1, 'months').format(DATE_FORMAT);
+            break;
+        case 'trailing-3-months':
+            minDate = today.subtract(3, 'months').format(DATE_FORMAT);
             break;
         case 'trailing-year':
-            minDate = today.subtract(DAYS_PER_YEAR, 'days').format(DATE_FORMAT);
+            minDate = today.subtract(1, 'years').format(DATE_FORMAT);
             break;
         case 'all-time':
             break;

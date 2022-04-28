@@ -28,6 +28,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
     const resetZoom = useCallback(() => {
         if (chartInstance) {
             chartInstance.current.resetZoom();
+            console.log('[CPM] Zoom', chartInstance.current); // @DEBUG
         }
     }, []);
 
@@ -122,7 +123,7 @@ export const ThreadsChart: React.FC<ThreadsChartProps> = ({ id, lines }) => {
         chartInstance.current.data = data;
         chartInstance.current.options = options;
         chartInstance.current.update();
-    }, [chartInstance.current, chartData]);
+    }, [chartData]);
 
     return (
         <div className="flex flex-col h-full">
