@@ -5,8 +5,6 @@ import { DateRangeOption, LineDefinition } from './types';
 
 const moment = extendMoment(Moment);
 const DATE_FORMAT = 'YYYY-MM-DD';
-const DAYS_PER_MONTH = 31;
-const DAYS_PER_YEAR = 366;
 
 export const getDateRangeFromLines = (
     lines: LineDefinition[],
